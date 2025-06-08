@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced Goal Tracker with Analytics</title>
+    <title>Smart Goal Tracker with Auto Calculations</title>
     <style>
         :root {
             --primary: #3498db;
@@ -83,14 +83,6 @@
         
         tr:hover {
             background-color: #f5f5f5;
-        }
-        
-        .sub-goal {
-            background-color: #f9f9f9;
-        }
-        
-        .sub-goal td:first-child {
-            padding-left: 40px;
         }
         
         input[type="text"], 
@@ -204,15 +196,6 @@
             gap: 15px;
         }
         
-        .expand-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 1.2em;
-            padding: 0 5px;
-            color: var(--primary);
-        }
-        
         .progress-bar-container {
             width: 100%;
             height: 10px;
@@ -272,6 +255,30 @@
             display: block;
         }
         
+        .speed-good {
+            color: var(--success);
+        }
+        
+        .speed-warning {
+            color: var(--warning);
+        }
+        
+        .speed-danger {
+            color: var(--danger);
+        }
+        
+        .sort-arrows {
+            display: inline-flex;
+            flex-direction: column;
+            margin-left: 5px;
+            cursor: pointer;
+        }
+        
+        .sort-arrows span {
+            font-size: 0.7em;
+            line-height: 0.5;
+        }
+        
         @media (max-width: 768px) {
             body {
                 padding: 10px;
@@ -291,7 +298,7 @@
 </head>
 <body>
     <div class="header">
-        <h1>Advanced Goal Tracker</h1>
+        <h1>Smart Goal Tracker</h1>
         <div class="date-time">
             <div id="currentDate"></div>
             <div id="currentTime"></div>
@@ -301,7 +308,6 @@
     <div class="tabs">
         <div class="tab active" data-tab="tracker">Goal Tracker</div>
         <div class="tab" data-tab="logs">Progress Logs</div>
-        <div class="tab" data-tab="analytics">Analytics</div>
     </div>
     
     <div class="tab-content active" id="tracker">
@@ -310,20 +316,22 @@
             <table id="goalTable">
                 <thead>
                     <tr>
+                        <th>Category</th>
                         <th>Goal Name</th>
                         <th>Start Date</th>
                         <th>End Date</th>
                         <th>🕒 Available Time</th>
                         <th>⏳ Time Remaining</th>
                         <th>Follow-up Date</th>
-                        <th>Progress</th>
+                        <th>Progress Update <span class="sort-arrows"><span>▲</span><span>▼</span></span></th>
+                        <th>Completed</th>
                         <th>⏱️ Last Updated</th>
-                        <th>Required Progress</th>
+                        <th>Required Speed</th>
                         <th>End Target</th>
                         <th>Unit</th>
                         <th>Repetition</th>
                         <th>Status</th>
-                        <th>Progress Rank</th>
+                        <th>Current Speed</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -347,16 +355,6 @@
             <div id="progressLog"></div>
         </div>
     </div>
-    
-    <div class="tab-content" id="analytics">
-        <div class="section">
-            <h2>Goal Analytics</h2>
-            <div id="analyticsContent">
-                <p>Analytics will appear here based on your progress data.</p>
-                <!-- Analytics content will be generated dynamically -->
-            </div>
-        </div>
-    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -364,118 +362,45 @@
             let goals = [
                 {
                     id: '1',
+                    category: 'Fitness',
                     name: 'Walking',
                     startDate: '2025-06-01',
                     endDate: '2025-06-30',
                     followUpDate: '2025-06-08',
-                    progress: 12000,
-                    lastUpdated: '2025-06-08 09:32',
-                    requiredProgress: 15000,
+                    progressUpdates: [
+                        { date: '2025-06-05', amount: 5000, isPositive: true },
+                        { date: '2025-06-06', amount: 3000, isPositive: true }
+                    ],
+                    lastUpdated: '2025-06-06 18:20',
                     endTarget: 150000,
                     unit: 'steps',
                     repetition: 'Daily',
-                    status: 'Behind Schedule',
-                    rank: '8/10',
-                    subGoals: []
+                    status: 'Behind Schedule'
                 },
                 {
                     id: '2',
-                    name: 'Writing',
+                    category: 'Writing',
+                    name: 'Book Writing',
                     startDate: '2025-06-05',
                     endDate: '2025-07-05',
                     followUpDate: '2025-06-10',
-                    progress: 60,
-                    lastUpdated: '2025-06-08 18:20',
-                    requiredProgress: 30,
+                    progressUpdates: [
+                        { date: '2025-06-06', amount: 10, isPositive: true },
+                        { date: '2025-06-07', amount: 5, isPositive: true }
+                    ],
+                    lastUpdated: '2025-06-07 16:00',
                     endTarget: 120,
                     unit: 'pages',
                     repetition: 'Weekly',
-                    status: 'Completed',
-                    rank: '10/10',
-                    subGoals: [
-                        {
-                            id: '2-1',
-                            name: 'Poem',
-                            progress: 10,
-                            lastUpdated: '2025-06-06 10:45',
-                            requiredProgress: 10,
-                            endTarget: 40,
-                            unit: 'pages',
-                            repetition: 'Weekly',
-                            status: 'Completed',
-                            rank: '10/10'
-                        },
-                        {
-                            id: '2-2',
-                            name: 'Diary',
-                            progress: 8,
-                            lastUpdated: '2025-06-07 16:00',
-                            requiredProgress: 10,
-                            endTarget: 30,
-                            unit: 'pages',
-                            repetition: 'Weekly',
-                            status: 'In Progress',
-                            rank: '8/10'
-                        },
-                        {
-                            id: '2-3',
-                            name: 'Journal',
-                            progress: 7,
-                            lastUpdated: '2025-06-08 09:00',
-                            requiredProgress: 10,
-                            endTarget: 30,
-                            unit: 'pages',
-                            repetition: 'Weekly',
-                            status: 'Behind Schedule',
-                            rank: '7/10'
-                        },
-                        {
-                            id: '2-4',
-                            name: 'Notes',
-                            progress: 5,
-                            lastUpdated: '2025-06-08 08:00',
-                            requiredProgress: 10,
-                            endTarget: 20,
-                            unit: 'pages',
-                            repetition: 'Weekly',
-                            status: 'On Track',
-                            rank: '6/10'
-                        }
-                    ]
-                },
-                {
-                    id: '3',
-                    name: 'Reading',
-                    startDate: '2025-06-02',
-                    endDate: '2025-06-20',
-                    followUpDate: '2025-06-12',
-                    progress: 300,
-                    lastUpdated: '2025-06-08 09:15',
-                    requiredProgress: 600,
-                    endTarget: 1200,
-                    unit: 'minutes',
-                    repetition: 'Daily',
-                    status: 'In Progress',
-                    rank: '5/10'
-                },
-                {
-                    id: '4',
-                    name: 'Studying',
-                    startDate: '2025-06-01',
-                    endDate: '2025-09-30',
-                    followUpDate: '2025-06-15',
-                    progress: 20,
-                    lastUpdated: '2025-06-08 09:10',
-                    requiredProgress: 100,
-                    endTarget: 300,
-                    unit: 'hours',
-                    repetition: 'Monthly',
-                    status: 'On Track',
-                    rank: '7/10'
+                    status: 'On Track'
                 }
             ];
             
+            // Track all categories for dropdown
+            let allCategories = ['Fitness', 'Writing', 'Reading', 'Studying', 'Work'];
+            
             let logs = [];
+            let sortDirection = {};
             
             // Initialize the app
             updateDateTime();
@@ -492,10 +417,6 @@
                     
                     this.classList.add('active');
                     document.getElementById(this.dataset.tab).classList.add('active');
-                    
-                    if (this.dataset.tab === 'analytics') {
-                        renderAnalytics();
-                    }
                 });
             });
             
@@ -505,9 +426,89 @@
                 document.getElementById('currentTime').textContent = `⏰ ${now.toLocaleTimeString()}`;
             }
             
+            function calculateCompleted(progressUpdates) {
+                return progressUpdates.reduce((total, update) => {
+                    return total + (update.isPositive ? update.amount : -update.amount);
+                }, 0);
+            }
+            
+            function calculateRequiredSpeed(goal) {
+                const startDate = new Date(goal.startDate);
+                const endDate = new Date(goal.endDate);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                
+                const totalDays = Math.max(1, Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1);
+                const daysPassed = Math.max(0, Math.floor((today - startDate) / (1000 * 60 * 60 * 24)) + 1);
+                const daysRemaining = Math.max(0, Math.floor((endDate - today) / (1000 * 60 * 60 * 24)) + 1);
+                
+                const completed = calculateCompleted(goal.progressUpdates);
+                const remaining = Math.max(0, goal.endTarget - completed);
+                
+                if (daysRemaining <= 0) return 0;
+                return remaining / daysRemaining;
+            }
+            
+            function calculateCurrentSpeed(goal) {
+                const startDate = new Date(goal.startDate);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                
+                const daysPassed = Math.max(1, Math.floor((today - startDate) / (1000 * 60 * 60 * 24)) + 1);
+                const completed = calculateCompleted(goal.progressUpdates);
+                
+                return completed / daysPassed;
+            }
+            
+            function determineStatus(goal) {
+                const requiredSpeed = calculateRequiredSpeed(goal);
+                const currentSpeed = calculateCurrentSpeed(goal);
+                const completed = calculateCompleted(goal.progressUpdates);
+                
+                if (completed >= goal.endTarget) return 'Completed';
+                
+                if (requiredSpeed === 0) return 'Overdue';
+                
+                const ratio = currentSpeed / requiredSpeed;
+                
+                if (ratio >= 1.1) return 'Ahead of Schedule';
+                if (ratio >= 0.9) return 'On Track';
+                if (ratio >= 0.5) return 'Slightly Behind';
+                return 'Behind Schedule';
+            }
+            
             function renderGoalTable() {
                 const tbody = document.querySelector('#goalTable tbody');
                 tbody.innerHTML = '';
+                
+                // Sort goals if sortDirection is set
+                if (Object.keys(sortDirection).length > 0) {
+                    const sortKey = Object.keys(sortDirection)[0];
+                    const direction = sortDirection[sortKey];
+                    
+                    goals.sort((a, b) => {
+                        let valA, valB;
+                        
+                        if (sortKey === 'name') {
+                            valA = a.name.toLowerCase();
+                            valB = b.name.toLowerCase();
+                            return direction === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+                        } else if (sortKey === 'category') {
+                            valA = a.category.toLowerCase();
+                            valB = b.category.toLowerCase();
+                            return direction === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+                        } else if (sortKey === 'status') {
+                            valA = determineStatus(a);
+                            valB = determineStatus(b);
+                            return direction === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+                        } else if (sortKey === 'endDate') {
+                            valA = new Date(a.endDate);
+                            valB = new Date(b.endDate);
+                            return direction === 'asc' ? valA - valB : valB - valA;
+                        }
+                        return 0;
+                    });
+                }
                 
                 goals.forEach((goal, index) => {
                     // Calculate time values
@@ -516,37 +517,48 @@
                     const today = new Date();
                     today.setHours(0, 0, 0, 0);
                     
-                    const availableDays = Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
-                    const remainingDays = Math.floor((endDate - today) / (1000 * 60 * 60 * 24)) + 1;
+                    const availableDays = Math.max(1, Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1);
+                    const daysPassed = Math.max(0, Math.floor((today - startDate) / (1000 * 60 * 60 * 24)) + 1);
+                    const daysRemaining = Math.max(0, Math.floor((endDate - today) / (1000 * 60 * 60 * 24)) + 1);
                     
-                    // Calculate progress percentage
-                    const progressPercentage = goal.endTarget > 0 ? Math.min(100, Math.round((goal.progress / goal.endTarget) * 100)) : 0;
+                    // Calculate progress values
+                    const completed = calculateCompleted(goal.progressUpdates);
+                    const requiredSpeed = calculateRequiredSpeed(goal);
+                    const currentSpeed = calculateCurrentSpeed(goal);
+                    const progressPercentage = goal.endTarget > 0 ? Math.min(100, Math.round((completed / goal.endTarget) * 100)) : 0;
+                    const status = determineStatus(goal);
                     
                     // Main goal row
                     const row = document.createElement('tr');
                     row.dataset.id = goal.id;
                     row.innerHTML = `
                         <td>
-                            <button class="expand-btn" data-id="${goal.id}">➕</button>
-                            <span contenteditable="true" class="goal-name">${goal.name}</span>
+                            <select class="category-select">
+                                ${allCategories.map(cat => 
+                                    `<option ${goal.category === cat ? 'selected' : ''}>${cat}</option>`
+                                ).join('')}
+                            </select>
                         </td>
+                        <td contenteditable="true" class="goal-name">${goal.name}</td>
                         <td><input type="date" value="${goal.startDate}"></td>
                         <td><input type="date" value="${goal.endDate}"></td>
                         <td>${availableDays} days</td>
-                        <td>${remainingDays} days</td>
+                        <td>${daysRemaining} days</td>
                         <td><input type="date" value="${goal.followUpDate}"></td>
                         <td>
                             <div class="progress-input">
-                                <input type="number" value="${goal.progress}" class="progress-value">
+                                <input type="number" value="0" class="progress-update-value" placeholder="Amount">
+                                <select class="progress-update-type">
+                                    <option value="add">+</option>
+                                    <option value="subtract">-</option>
+                                </select>
                                 <button class="update-progress">Update</button>
                             </div>
-                            <div class="progress-bar-container">
-                                <div class="progress-bar" style="width: ${progressPercentage}%"></div>
-                            </div>
                         </td>
+                        <td>${completed}</td>
                         <td class="last-updated">${goal.lastUpdated}</td>
-                        <td><input type="number" value="${goal.requiredProgress}"></td>
-                        <td><input type="number" value="${goal.endTarget}"></td>
+                        <td class="${requiredSpeed > currentSpeed ? 'speed-danger' : 'speed-good'}">${requiredSpeed.toFixed(2)}</td>
+                        <td><input type="number" value="${goal.endTarget}" class="end-target-input"></td>
                         <td>
                             <select class="unit-select">
                                 <option ${goal.unit === 'steps' ? 'selected' : ''}>steps</option>
@@ -562,21 +574,13 @@
                                 <option ${goal.repetition === 'Daily' ? 'selected' : ''}>Daily</option>
                                 <option ${goal.repetition === 'Weekly' ? 'selected' : ''}>Weekly</option>
                                 <option ${goal.repetition === 'Monthly' ? 'selected' : ''}>Monthly</option>
-                                <option ${goal.repetition === 'Yearly' ? 'selected' : ''}>Yearly</option>
+                                <option ${goal.repetition === 'Quarterly' ? 'selected' : ''}>Quarterly</option>
                                 <option ${goal.repetition === 'Half-yearly' ? 'selected' : ''}>Half-yearly</option>
+                                <option ${goal.repetition === 'Yearly' ? 'selected' : ''}>Yearly</option>
                             </select>
                         </td>
-                        <td>
-                            <select class="status-select">
-                                <option value="Pending" ${goal.status === 'Pending' ? 'selected' : ''} class="status-pending">Pending</option>
-                                <option value="In Progress" ${goal.status === 'In Progress' ? 'selected' : ''} class="status-in-progress">In Progress</option>
-                                <option value="Completed" ${goal.status === 'Completed' ? 'selected' : ''} class="status-completed">Completed</option>
-                                <option value="On Track" ${goal.status === 'On Track' ? 'selected' : ''} class="status-ontrack">On Track</option>
-                                <option value="Behind Schedule" ${goal.status === 'Behind Schedule' ? 'selected' : ''} class="status-behind">Behind Schedule</option>
-                                <option value="Overdue" ${goal.status === 'Overdue' ? 'selected' : ''} class="status-overdue">Overdue</option>
-                            </select>
-                        </td>
-                        <td class="rank-cell ${getRankClass(goal.rank)}">${goal.rank}</td>
+                        <td class="${getStatusClass(status)}">${status}</td>
+                        <td>${currentSpeed.toFixed(2)}</td>
                         <td>
                             <button class="edit-btn">✏️</button>
                             <button class="delete-btn btn-danger">🗑️</button>
@@ -584,87 +588,19 @@
                     `;
                     
                     tbody.appendChild(row);
-                    
-                    // Add sub-goals if they exist
-                    if (goal.subGoals && goal.subGoals.length > 0) {
-                        goal.subGoals.forEach(subGoal => {
-                            const subRow = document.createElement('tr');
-                            subRow.className = 'sub-goal';
-                            subRow.dataset.id = subGoal.id;
-                            subRow.dataset.parentId = goal.id;
-                            subRow.innerHTML = `
-                                <td>
-                                    <span style="margin-left: 30px;">${subGoal.name}</span>
-                                </td>
-                                <td colspan="2"></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td>
-                                    <div class="progress-input">
-                                        <input type="number" value="${subGoal.progress}" class="progress-value">
-                                        <button class="update-progress">Update</button>
-                                    </div>
-                                </td>
-                                <td class="last-updated">${subGoal.lastUpdated}</td>
-                                <td><input type="number" value="${subGoal.requiredProgress}"></td>
-                                <td><input type="number" value="${subGoal.endTarget}"></td>
-                                <td>
-                                    <select class="unit-select">
-                                        <option ${subGoal.unit === 'steps' ? 'selected' : ''}>steps</option>
-                                        <option ${subGoal.unit === 'pages' ? 'selected' : ''}>pages</option>
-                                        <option ${subGoal.unit === 'minutes' ? 'selected' : ''}>minutes</option>
-                                        <option ${subGoal.unit === 'hours' ? 'selected' : ''}>hours</option>
-                                        <option ${subGoal.unit === 'chapters' ? 'selected' : ''}>chapters</option>
-                                        <option ${subGoal.unit === 'items' ? 'selected' : ''}>items</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <select class="repetition-select">
-                                        <option ${subGoal.repetition === 'Daily' ? 'selected' : ''}>Daily</option>
-                                        <option ${subGoal.repetition === 'Weekly' ? 'selected' : ''}>Weekly</option>
-                                        <option ${subGoal.repetition === 'Monthly' ? 'selected' : ''}>Monthly</option>
-                                        <option ${subGoal.repetition === 'Yearly' ? 'selected' : ''}>Yearly</option>
-                                        <option ${subGoal.repetition === 'Half-yearly' ? 'selected' : ''}>Half-yearly</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <select class="status-select">
-                                        <option value="Pending" ${subGoal.status === 'Pending' ? 'selected' : ''} class="status-pending">Pending</option>
-                                        <option value="In Progress" ${subGoal.status === 'In Progress' ? 'selected' : ''} class="status-in-progress">In Progress</option>
-                                        <option value="Completed" ${subGoal.status === 'Completed' ? 'selected' : ''} class="status-completed">Completed</option>
-                                        <option value="On Track" ${subGoal.status === 'On Track' ? 'selected' : ''} class="status-ontrack">On Track</option>
-                                        <option value="Behind Schedule" ${subGoal.status === 'Behind Schedule' ? 'selected' : ''} class="status-behind">Behind Schedule</option>
-                                        <option value="Overdue" ${subGoal.status === 'Overdue' ? 'selected' : ''} class="status-overdue">Overdue</option>
-                                    </select>
-                                </td>
-                                <td class="rank-cell ${getRankClass(subGoal.rank)}">${subGoal.rank}</td>
-                                <td>
-                                    <button class="edit-btn">✏️</button>
-                                    <button class="delete-btn btn-danger">🗑️</button>
-                                </td>
-                            `;
-                            
-                            tbody.appendChild(subRow);
-                        });
-                    }
-                });
-                
-                // Hide all sub-goals initially
-                document.querySelectorAll('.sub-goal').forEach(row => {
-                    row.style.display = 'none';
                 });
             }
             
-            function getRankClass(rank) {
-                if (!rank) return '';
-                
-                const value = parseFloat(rank.split('/')[0]) / parseFloat(rank.split('/')[1]) * 100 || 0;
-                
-                if (value >= 90) return 'rank-excellent';
-                if (value >= 70) return 'rank-good';
-                if (value >= 50) return 'rank-average';
-                return 'rank-poor';
+            function getStatusClass(status) {
+                switch(status) {
+                    case 'Completed': return 'status-completed';
+                    case 'On Track': return 'status-ontrack';
+                    case 'Ahead of Schedule': return 'status-completed';
+                    case 'Slightly Behind': return 'status-warning';
+                    case 'Behind Schedule': return 'status-behind';
+                    case 'Overdue': return 'status-overdue';
+                    default: return '';
+                }
             }
             
             function renderLogs() {
@@ -682,7 +618,7 @@
                     logEntry.innerHTML = `
                         <div class="log-goal">${log.goal}</div>
                         <div class="log-details">
-                            <span>${log.progress}</span>
+                            <span>${log.operation} ${log.amount} ${log.unit}</span>
                             <span>${log.timestamp}</span>
                         </div>
                     `;
@@ -690,42 +626,23 @@
                 });
             }
             
-            function renderAnalytics() {
-                const analyticsContent = document.getElementById('analyticsContent');
-                analyticsContent.innerHTML = '<h3>Coming Soon: Detailed Analytics Dashboard</h3><p>This section will show charts and insights based on your progress data.</p>';
-                
-                // In a future version, this would include:
-                // - Progress charts
-                // - Completion rates
-                // - Time-based analytics
-                // - Achievement milestones
-            }
-            
             function setupEventListeners() {
-                // Expand/collapse sub-goals
-                document.addEventListener('click', function(e) {
-                    if (e.target.classList.contains('expand-btn')) {
-                        const goalId = e.target.dataset.id;
-                        const subGoals = document.querySelectorAll(`.sub-goal[data-parent-id="${goalId}"]`);
-                        
-                        if (e.target.textContent === '➕') {
-                            e.target.textContent = '➖';
-                            subGoals.forEach(row => row.style.display = '');
-                        } else {
-                            e.target.textContent = '➕';
-                            subGoals.forEach(row => row.style.display = 'none');
-                        }
-                    }
-                });
-                
                 // Update progress
                 document.addEventListener('click', function(e) {
                     if (e.target.classList.contains('update-progress')) {
                         const row = e.target.closest('tr');
-                        const isSubGoal = row.classList.contains('sub-goal');
                         const goalId = row.dataset.id;
-                        const progressValue = row.querySelector('.progress-value').value;
+                        const goal = goals.find(g => g.id === goalId);
+                        
+                        const updateValue = parseFloat(row.querySelector('.progress-update-value').value);
+                        const isPositive = row.querySelector('.progress-update-type').value === 'add';
                         const unit = row.querySelector('.unit-select').value;
+                        
+                        if (isNaN(updateValue) || updateValue <= 0) {
+                            alert('Please enter a valid positive number');
+                            return;
+                        }
+                        
                         const timestamp = new Date().toLocaleString('en-US', {
                             year: 'numeric',
                             month: '2-digit',
@@ -735,55 +652,29 @@
                             hour12: true
                         }).replace(',', '');
                         
-                        // Update last updated
-                        row.querySelector('.last-updated').textContent = timestamp;
+                        // Add progress update
+                        goal.progressUpdates.push({
+                            date: new Date().toISOString().split('T')[0],
+                            amount: updateValue,
+                            isPositive: isPositive
+                        });
                         
-                        // Update the data model
-                        if (isSubGoal) {
-                            const parentGoalId = row.dataset.parentId;
-                            const parentGoal = goals.find(g => g.id === parentGoalId);
-                            const subGoal = parentGoal.subGoals.find(sg => sg.id === goalId);
-                            
-                            subGoal.progress = parseFloat(progressValue);
-                            subGoal.lastUpdated = timestamp;
-                            
-                            // Update parent goal progress (sum of sub-goals)
-                            parentGoal.progress = parentGoal.subGoals.reduce((sum, sg) => sum + sg.progress, 0);
-                            parentGoal.lastUpdated = timestamp;
-                            
-                            // Find and update the parent row in the table
-                            const parentRow = document.querySelector(`tr[data-id="${parentGoalId}"]`);
-                            if (parentRow) {
-                                parentRow.querySelector('.progress-value').value = parentGoal.progress;
-                                parentRow.querySelector('.last-updated').textContent = timestamp;
-                                
-                                // Update progress bar
-                                const progressPercentage = parentGoal.endTarget > 0 ? 
-                                    Math.min(100, Math.round((parentGoal.progress / parentGoal.endTarget) * 100)) : 0;
-                                parentRow.querySelector('.progress-bar').style.width = `${progressPercentage}%`;
-                            }
-                        } else {
-                            const goal = goals.find(g => g.id === goalId);
-                            goal.progress = parseFloat(progressValue);
-                            goal.lastUpdated = timestamp;
-                            
-                            // Update progress bar
-                            const progressPercentage = goal.endTarget > 0 ? 
-                                Math.min(100, Math.round((goal.progress / goal.endTarget) * 100)) : 0;
-                            row.querySelector('.progress-bar').style.width = `${progressPercentage}%`;
-                        }
+                        // Update last updated
+                        goal.lastUpdated = timestamp;
                         
                         // Add to log
-                        const goalName = isSubGoal ? 
-                            `${goals.find(g => g.id === row.dataset.parentId).name} - ${row.querySelector('td:first-child span').textContent}` : 
-                            row.querySelector('.goal-name').textContent;
-                        
                         logs.unshift({
-                            goal: goalName,
-                            progress: `${progressValue} ${unit}`,
+                            goal: goal.name,
+                            operation: isPositive ? 'Added' : 'Subtracted',
+                            amount: updateValue,
+                            unit: unit,
                             timestamp: timestamp
                         });
                         
+                        // Clear the input
+                        row.querySelector('.progress-update-value').value = '';
+                        
+                        renderGoalTable();
                         renderLogs();
                     }
                 });
@@ -792,31 +683,12 @@
                 document.addEventListener('click', function(e) {
                     if (e.target.classList.contains('delete-btn')) {
                         const row = e.target.closest('tr');
-                        const isSubGoal = row.classList.contains('sub-goal');
                         const goalId = row.dataset.id;
                         
                         if (confirm('Are you sure you want to delete this goal?')) {
-                            if (isSubGoal) {
-                                const parentGoalId = row.dataset.parentId;
-                                const parentGoal = goals.find(g => g.id === parentGoalId);
-                                parentGoal.subGoals = parentGoal.subGoals.filter(sg => sg.id !== goalId);
-                            } else {
-                                goals = goals.filter(g => g.id !== goalId);
-                            }
-                            
+                            goals = goals.filter(g => g.id !== goalId);
                             renderGoalTable();
                         }
-                    }
-                });
-                
-                // Edit goal (simple highlight)
-                document.addEventListener('click', function(e) {
-                    if (e.target.classList.contains('edit-btn')) {
-                        const row = e.target.closest('tr');
-                        row.style.backgroundColor = '#fffde7';
-                        setTimeout(() => {
-                            row.style.backgroundColor = '';
-                        }, 2000);
                     }
                 });
                 
@@ -830,19 +702,17 @@
                     
                     const newGoal = {
                         id: newId,
+                        category: 'General',
                         name: 'New Goal',
                         startDate: today,
                         endDate: nextMonthStr,
                         followUpDate: today,
-                        progress: 0,
+                        progressUpdates: [],
                         lastUpdated: '',
-                        requiredProgress: 1,
                         endTarget: 1,
                         unit: 'items',
                         repetition: 'Daily',
-                        status: 'Pending',
-                        rank: '0/10',
-                        subGoals: []
+                        status: 'Pending'
                     };
                     
                     goals.push(newGoal);
@@ -853,7 +723,8 @@
                 document.getElementById('exportDataBtn').addEventListener('click', function() {
                     const data = {
                         goals: goals,
-                        logs: logs
+                        logs: logs,
+                        categories: allCategories
                     };
                     
                     const dataStr = JSON.stringify(data, null, 2);
@@ -884,6 +755,7 @@
                             if (importedData.goals && Array.isArray(importedData.goals)) {
                                 goals = importedData.goals;
                                 logs = importedData.logs || [];
+                                allCategories = importedData.categories || ['General'];
                                 renderGoalTable();
                                 renderLogs();
                                 alert('Data imported successfully!');
@@ -900,64 +772,40 @@
                 
                 // Update data model when inputs change
                 document.addEventListener('change', function(e) {
-                    if (e.target.matches('input[type="date"], input[type="number"], select')) {
+                    if (e.target.classList.contains('category-select')) {
+                        const row = e.target.closest('tr');
+                        const goalId = row.dataset.id;
+                        const goal = goals.find(g => g.id === goalId);
+                        goal.category = e.target.value;
+                        
+                        // Add new category if not exists
+                        if (!allCategories.includes(e.target.value)) {
+                            allCategories.push(e.target.value);
+                        }
+                    }
+                    else if (e.target.matches('input[type="date"], input[type="number"], select')) {
                         const row = e.target.closest('tr');
                         if (!row) return;
                         
-                        const isSubGoal = row.classList.contains('sub-goal');
                         const goalId = row.dataset.id;
+                        const goal = goals.find(g => g.id === goalId);
                         
-                        if (isSubGoal) {
-                            const parentGoalId = row.dataset.parentId;
-                            const parentGoal = goals.find(g => g.id === parentGoalId);
-                            const subGoal = parentGoal.subGoals.find(sg => sg.id === goalId);
-                            
-                            if (e.target.matches('input[type="date"]')) {
-                                // Not applicable for sub-goals in this implementation
-                            } else if (e.target.matches('input[type="number"]')) {
-                                if (e.target === row.querySelector('td:nth-child(7) input')) {
-                                    subGoal.progress = parseFloat(e.target.value);
-                                } else if (e.target === row.querySelector('td:nth-child(9) input')) {
-                                    subGoal.requiredProgress = parseFloat(e.target.value);
-                                } else if (e.target === row.querySelector('td:nth-child(10) input')) {
-                                    subGoal.endTarget = parseFloat(e.target.value);
-                                }
-                            } else if (e.target.matches('select.unit-select')) {
-                                subGoal.unit = e.target.value;
-                            } else if (e.target.matches('select.repetition-select')) {
-                                subGoal.repetition = e.target.value;
-                            } else if (e.target.matches('select.status-select')) {
-                                subGoal.status = e.target.value;
+                        if (e.target.matches('input[type="date"]')) {
+                            if (e.target === row.querySelector('td:nth-child(3) input')) {
+                                goal.startDate = e.target.value;
+                            } else if (e.target === row.querySelector('td:nth-child(4) input')) {
+                                goal.endDate = e.target.value;
+                            } else if (e.target === row.querySelector('td:nth-child(7) input')) {
+                                goal.followUpDate = e.target.value;
                             }
-                        } else {
-                            const goal = goals.find(g => g.id === goalId);
-                            
-                            if (e.target.matches('input[type="date"]')) {
-                                if (e.target === row.querySelector('td:nth-child(2) input')) {
-                                    goal.startDate = e.target.value;
-                                } else if (e.target === row.querySelector('td:nth-child(3) input')) {
-                                    goal.endDate = e.target.value;
-                                } else if (e.target === row.querySelector('td:nth-child(6) input')) {
-                                    goal.followUpDate = e.target.value;
-                                }
-                            } else if (e.target.matches('input[type="number"]')) {
-                                if (e.target === row.querySelector('td:nth-child(7) input')) {
-                                    goal.progress = parseFloat(e.target.value);
-                                } else if (e.target === row.querySelector('td:nth-child(9) input')) {
-                                    goal.requiredProgress = parseFloat(e.target.value);
-                                } else if (e.target === row.querySelector('td:nth-child(10) input')) {
-                                    goal.endTarget = parseFloat(e.target.value);
-                                }
-                            } else if (e.target.matches('select.unit-select')) {
-                                goal.unit = e.target.value;
-                            } else if (e.target.matches('select.repetition-select')) {
-                                goal.repetition = e.target.value;
-                            } else if (e.target.matches('select.status-select')) {
-                                goal.status = e.target.value;
-                            }
+                        } else if (e.target.matches('input.end-target-input')) {
+                            goal.endTarget = parseFloat(e.target.value);
+                        } else if (e.target.matches('select.unit-select')) {
+                            goal.unit = e.target.value;
+                        } else if (e.target.matches('select.repetition-select')) {
+                            goal.repetition = e.target.value;
                         }
                         
-                        // Re-render to update calculated fields
                         renderGoalTable();
                     }
                 });
@@ -970,6 +818,22 @@
                         const goal = goals.find(g => g.id === goalId);
                         goal.name = e.target.textContent;
                     }
+                });
+                
+                // Sort functionality
+                document.querySelectorAll('.sort-arrows span').forEach(arrow => {
+                    arrow.addEventListener('click', function() {
+                        const header = this.closest('.sort-arrows').parentElement;
+                        const column = header.textContent.trim().split(' ')[0].toLowerCase();
+                        
+                        if (this.textContent === '▲') {
+                            sortDirection = { [column]: 'asc' };
+                        } else {
+                            sortDirection = { [column]: 'desc' };
+                        }
+                        
+                        renderGoalTable();
+                    });
                 });
             }
         });
