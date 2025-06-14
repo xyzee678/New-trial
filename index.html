@@ -2,1501 +2,1123 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Smart Goal Tracker Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Goal Tracker</title>
     <style>
-        :root {
-            --primary-color: #3498db;
-            --success-color: #2ecc71;
-            --warning-color: #f39c12;
-            --danger-color: #e74c3c;
-            --secondary-color: #95a5a6;
-            --light-bg: #f5f7fa;
-            --card-bg: #ffffff;
-            --text-color: #2c3e50;
-            --text-light: #7f8c8d;
-            --border-color: #ddd;
-        }
-        
-        * {
-            box-sizing: border-box;
-        }
-        
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
             line-height: 1.6;
-            color: var(--text-color);
-            margin: 0;
-            padding: 0;
-            background-color: var(--light-bg);
-            -webkit-text-size-adjust: 100%;
         }
-        
-        .container {
-            max-width: 100%;
-            padding: 10px;
+        .page {
+            display: none;
         }
-        
-        .header {
+        .page.active {
+            display: block;
+        }
+        .nav {
             display: flex;
-            flex-direction: column;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--border-color);
-        }
-        
-        .date-time {
-            font-size: 0.9em;
-            color: var(--text-light);
-            margin-top: 5px;
-        }
-        
-        .section {
-            background: var(--card-bg);
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            padding: 15px;
+            flex-wrap: wrap;
             margin-bottom: 20px;
-            overflow-x: auto;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            gap: 10px;
         }
-        
-        h1, h2, h3 {
-            color: var(--text-color);
-            margin-top: 0;
+        .nav button {
+            padding: 8px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            flex-grow: 1;
+            min-width: 120px;
         }
-        
-        h2 {
-            color: var(--primary-color);
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 10px;
-            font-size: 1.2rem;
+        .nav button:hover {
+            background-color: #45a049;
         }
-        
+        form {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            margin: 8px 0;
+            padding: 8px;
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button.secondary {
+            background-color: #6c757d;
+        }
+        button.secondary:hover {
+            background-color: #5a6268;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 10px 0;
-            font-size: 0.9rem;
+            margin-top: 20px;
         }
-        
         th, td {
+            border: 1px solid #ddd;
             padding: 8px;
             text-align: left;
-            border-bottom: 1px solid var(--border-color);
-            vertical-align: middle;
-            white-space: nowrap;
         }
-        
         th {
-            background-color: #f8f9fa;
-            font-weight: 600;
-            color: var(--text-color);
+            background-color: #f2f2f2;
             position: sticky;
             top: 0;
         }
-        
-        tr:hover {
-            background-color: #f5f5f5;
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
         }
-        
-        input[type="text"], 
-        input[type="number"],
-        input[type="date"],
-        select {
-            width: 100%;
-            padding: 6px;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            box-sizing: border-box;
-            font-family: inherit;
-            font-size: 0.9rem;
-        }
-        
-        button {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 6px 10px;
-            border-radius: 4px;
+        .editable {
             cursor: pointer;
-            font-size: 0.8rem;
-            transition: background-color 0.3s;
-            white-space: nowrap;
         }
-        
-        button:hover {
-            opacity: 0.9;
+        .editable:hover {
+            background-color: #f0f0f0;
         }
-        
-        .button-danger {
-            background-color: var(--danger-color);
-        }
-        
-        .button-success {
-            background-color: var(--success-color);
-        }
-        
-        .button-secondary {
-            background-color: var(--secondary-color);
-        }
-        
-        .button-small {
-            padding: 4px 6px;
-            font-size: 0.7rem;
-        }
-        
-        .button-group {
-            display: flex;
-            gap: 8px;
-            margin-top: 15px;
-            flex-wrap: wrap;
-        }
-        
-        .progress-input {
-            display: flex;
-            gap: 5px;
-            align-items: center;
-        }
-        
-        .progress-input input {
-            flex: 1;
-            max-width: 50px;
-        }
-        
-        .status-pending {
-            color: var(--warning-color);
-            font-weight: 500;
-        }
-        
-        .status-in-progress {
-            color: var(--primary-color);
-            font-weight: 500;
-        }
-        
-        .status-completed {
-            color: var(--success-color);
-            font-weight: 500;
-        }
-        
-        .status-overdue {
-            color: var(--danger-color);
-            font-weight: 500;
-        }
-        
-        .status-behind {
-            color: #e67e22;
-            font-weight: 500;
-        }
-        
-        .status-ahead {
-            color: #27ae60;
-            font-weight: 500;
-        }
-        
-        .hidden {
-            display: none;
-        }
-        
-        .log-entry {
-            margin-bottom: 5px;
-            padding: 8px;
-            background-color: #f8f9fa;
-            border-radius: 4px;
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.8rem;
-        }
-        
-        .progress-bar-container {
-            width: 100%;
-            background-color: #ecf0f1;
-            border-radius: 4px;
-            margin-top: 5px;
-        }
-        
         .progress-bar {
-            height: 6px;
-            background-color: var(--primary-color);
+            height: 20px;
+            background-color: #e0e0e0;
             border-radius: 4px;
-            transition: width 0.3s;
+            margin: 5px 0;
         }
-        
-        .tabs {
-            display: flex;
+        .progress-bar-fill {
+            height: 100%;
+            background-color: #4CAF50;
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+        }
+        .status-1 { background-color: #28a745; } /* Green - on track */
+        .status-2 { background-color: #ffc107; } /* Yellow - needs attention */
+        .status-3 { background-color: #dc3545; } /* Red - behind schedule */
+        .calendar-day {
+            border: 1px solid #ddd;
+            padding: 5px;
+            height: 80px;
+            overflow-y: auto;
+        }
+        .calendar-day.today {
+            background-color: #e6f7ff;
+        }
+        .calendar-day-header {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .calendar-entry {
+            font-size: 0.8em;
+            margin: 2px 0;
+            padding: 2px;
+            background-color: #f0f0f0;
+            border-radius: 3px;
+        }
+        .filter-controls {
             margin-bottom: 15px;
-            border-bottom: 1px solid var(--border-color);
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-        
-        .tab {
-            padding: 8px 15px;
-            cursor: pointer;
+            padding: 10px;
             background-color: #f8f9fa;
-            border: 1px solid var(--border-color);
-            border-bottom: none;
-            border-radius: 4px 4px 0 0;
-            margin-right: 5px;
-            white-space: nowrap;
-            font-size: 0.9rem;
+            border-radius: 5px;
         }
-        
-        .tab.active {
-            background-color: white;
-            border-bottom: 1px solid white;
-            margin-bottom: -1px;
-            font-weight: 600;
-        }
-        
-        .tab-content {
-            display: none;
-        }
-        
-        .tab-content.active {
-            display: block;
-        }
-        
-        .time-remaining {
-            font-size: 0.8rem;
-        }
-        
-        .positive {
-            color: var(--success-color);
-        }
-        
-        .negative {
-            color: var(--danger-color);
-        }
-        
-        .progress-rank {
-            font-weight: 600;
+        .badge {
+            display: inline-block;
+            padding: 0.25em 0.4em;
+            font-size: 75%;
+            font-weight: 700;
+            line-height: 1;
             text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: 0.25rem;
         }
-        
-        .rank-high { color: var(--success-color); }
-        .rank-medium { color: var(--warning-color); }
-        .rank-low { color: var(--danger-color); }
-        
-        .progress-cell {
-            min-width: 100px;
+        .badge-primary {
+            color: #fff;
+            background-color: #007bff;
         }
-        
-        .speed-cell {
-            min-width: 80px;
+        .badge-success {
+            color: #fff;
+            background-color: #28a745;
         }
-        
-        .category-select {
-            min-width: 100px;
+        .badge-warning {
+            color: #212529;
+            background-color: #ffc107;
         }
-        
-        .compact-view .goal-name {
-            font-weight: 600;
-        }
-        
-        .follow-up-highlight {
-            background-color: #fff9e6;
-        }
-        
-        .quick-links {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-top: 20px;
-        }
-        
-        .quick-link-btn {
-            padding: 8px 12px;
-            background-color: #3498db;
-            color: white;
-            border-radius: 4px;
-            text-decoration: none;
-            font-size: 0.9rem;
-        }
-        
-        .formula-editor {
-            width: 100%;
-            height: 100px;
-            padding: 8px;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            font-family: monospace;
-        }
-        
-        .today-btn {
-            margin-left: 10px;
-            padding: 2px 6px;
-            font-size: 0.7rem;
-        }
-        
-        @media (max-width: 768px) {
-            .section {
-                padding: 10px;
-            }
-            
-            th, td {
-                padding: 6px;
-                font-size: 0.8rem;
-            }
-            
-            .button-group {
-                gap: 5px;
-            }
-            
-            button {
-                padding: 5px 8px;
-                font-size: 0.7rem;
-            }
+        .badge-danger {
+            color: #fff;
+            background-color: #dc3545;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>Smart Goal Tracker Pro</h1>
-            <div class="date-time">
-                <div id="currentDate">Loading date...</div>
-                <div id="currentTime">Loading time...</div>
+    <div class="nav">
+        <button onclick="showPage('daily-entry')">Daily Entry</button>
+        <button onclick="showPage('add-goal')">Add Goal</button>
+        <button onclick="showPage('goals-list')">Goals List</button>
+        <button onclick="showPage('goal-status')">Goal Status</button>
+        <button onclick="showPage('goal-logs')">Goal Logs</button>
+        <button onclick="showPage('calendar-view')">Calendar View</button>
+        <button onclick="showPage('backup-restore')">Backup/Restore</button>
+    </div>
+
+    <!-- Daily Entry Page -->
+    <div id="daily-entry" class="page active">
+        <h2>Daily Progress Entry</h2>
+        <div class="filter-controls">
+            <label for="filter-goal">Filter Goals:</label>
+            <select id="filter-goal" onchange="filterGoals()">
+                <option value="">All Goals</option>
+            </select>
+        </div>
+        <form id="daily-entry-form">
+            <div class="form-group">
+                <label for="goal-select">Select Goal:</label>
+                <select id="goal-select" required></select>
             </div>
+            
+            <div class="form-group">
+                <label for="progress-change">Progress Change (positive or negative):</label>
+                <input type="number" id="progress-change" step="0.01" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="entry-date">Date:</label>
+                <input type="date" id="entry-date" required>
+            </div>
+            
+            <button type="submit">Record Progress</button>
+        </form>
+    </div>
+
+    <!-- Add Goal Page -->
+    <div id="add-goal" class="page">
+        <h2>Add New Goal</h2>
+        <form id="add-goal-form">
+            <div class="form-group">
+                <label for="goal-name">Goal Name:</label>
+                <input type="text" id="goal-name" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="start-date">Start Date:</label>
+                <input type="date" id="start-date" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="end-date">End Date:</label>
+                <input type="date" id="end-date" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="target">Target Value:</label>
+                <input type="number" id="target" step="0.01" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="unit">Unit:</label>
+                <input type="text" id="unit" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="recurrence">Recurrence:</label>
+                <select id="recurrence" required>
+                    <option value="daily">Daily</option>
+                    <option value="weekly">Weekly</option>
+                    <option value="monthly">Monthly</option>
+                    <option value="yearly">Yearly</option>
+                </select>
+            </div>
+            
+            <button type="submit">Add Goal</button>
+        </form>
+    </div>
+
+    <!-- Goals List Page -->
+    <div id="goals-list" class="page">
+        <h2>Goals List</h2>
+        <div class="filter-controls">
+            <label for="filter-list-goal">Filter Goals:</label>
+            <select id="filter-list-goal" onchange="filterGoalsList()">
+                <option value="">All Goals</option>
+            </select>
+            
+            <label for="filter-recurrence">Filter by Recurrence:</label>
+            <select id="filter-recurrence" onchange="filterGoalsList()">
+                <option value="">All Types</option>
+                <option value="daily">Daily</option>
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
+                <option value="yearly">Yearly</option>
+            </select>
+        </div>
+        <table id="goals-table">
+            <thead>
+                <tr>
+                    <th>Goal Name</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Target</th>
+                    <th>Current Progress</th>
+                    <th>Completion</th>
+                    <th>Unit</th>
+                    <th>Recurrence</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <!-- Goal Status Page -->
+    <div id="goal-status" class="page">
+        <h2>Goal Status Dashboard</h2>
+        <div class="filter-controls">
+            <label for="filter-status-goal">Filter Goals:</label>
+            <select id="filter-status-goal" onchange="filterStatusGoals()">
+                <option value="">All Goals</option>
+            </select>
+            
+            <label for="filter-status-recurrence">Filter by Recurrence:</label>
+            <select id="filter-status-recurrence" onchange="filterStatusGoals()">
+                <option value="">All Types</option>
+                <option value="daily">Daily</option>
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
+                <option value="yearly">Yearly</option>
+            </select>
+        </div>
+        <table id="status-table">
+            <thead>
+                <tr>
+                    <th>Goal Name</th>
+                    <th>Current Speed</th>
+                    <th>Required Speed</th>
+                    <th>Days Remaining</th>
+                    <th>Done</th>
+                    <th>Pending</th>
+                    <th>Unit</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <!-- Goal Logs Page -->
+    <div id="goal-logs" class="page">
+        <h2>Goal Logs</h2>
+        <div class="filter-controls">
+            <label for="filter-logs-goal">Filter by Goal:</label>
+            <select id="filter-logs-goal" onchange="filterLogs()">
+                <option value="">All Goals</option>
+            </select>
+            
+            <label for="filter-logs-action">Filter by Action:</label>
+            <select id="filter-logs-action" onchange="filterLogs()">
+                <option value="">All Actions</option>
+                <option value="Goal Added">Goal Added</option>
+                <option value="Progress Updated">Progress Updated</option>
+                <option value="Goal Updated">Goal Updated</option>
+                <option value="Goal Deleted">Goal Deleted</option>
+            </select>
+            
+            <label for="filter-logs-date">Filter by Date:</label>
+            <input type="date" id="filter-logs-date" onchange="filterLogs()">
+        </div>
+        <table id="logs-table">
+            <thead>
+                <tr>
+                    <th>Timestamp</th>
+                    <th>Goal Name</th>
+                    <th>Action</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <!-- Calendar View Page -->
+    <div id="calendar-view" class="page">
+        <h2>Calendar View</h2>
+        <div class="filter-controls">
+            <label for="calendar-month">Month:</label>
+            <select id="calendar-month" onchange="renderCalendar()">
+                <option value="0">January</option>
+                <option value="1">February</option>
+                <option value="2">March</option>
+                <option value="3">April</option>
+                <option value="4">May</option>
+                <option value="5">June</option>
+                <option value="6">July</option>
+                <option value="7">August</option>
+                <option value="8">September</option>
+                <option value="9">October</option>
+                <option value="10">November</option>
+                <option value="11">December</option>
+            </select>
+            
+            <label for="calendar-year">Year:</label>
+            <select id="calendar-year" onchange="renderCalendar()"></select>
+            
+            <label for="filter-calendar-goal">Filter by Goal:</label>
+            <select id="filter-calendar-goal" onchange="renderCalendar()">
+                <option value="">All Goals</option>
+            </select>
+        </div>
+        <div id="calendar-container"></div>
+    </div>
+
+    <!-- Backup/Restore Page -->
+    <div id="backup-restore" class="page">
+        <h2>Backup and Restore</h2>
+        <div class="form-group">
+            <h3>Export Data</h3>
+            <button onclick="exportData()">Export All Data</button>
+            <p>This will download a JSON file with all your goals and logs.</p>
         </div>
         
-        <div class="tabs">
-            <div class="tab active" data-tab="today">Today's Follow-ups</div>
-            <div class="tab" data-tab="tracker">Goal Tracker</div>
-            <div class="tab" data-tab="logs">Progress Logs</div>
-            <div class="tab" data-tab="quicklinks">Quick Links</div>
-            <div class="tab" data-tab="settings">Settings</div>
+        <div class="form-group">
+            <h3>Import Data</h3>
+            <input type="file" id="import-file" accept=".json">
+            <button onclick="importData()">Import Data</button>
+            <p>Select a previously exported JSON file to restore your data.</p>
+            <div id="import-status"></div>
         </div>
         
-        <div class="tab-content active" id="today">
-            <div class="section compact-view">
-                <h2>Goals Due for Update</h2>
-                <table id="todayTable">
-                    <thead>
-                        <tr>
-                            <th>Goal Name</th>
-                            <th>Category</th>
-                            <th>Current Progress</th>
-                            <th>Total Progress</th>
-                            <th>Required Speed</th>
-                            <th>Current Speed</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Rows will be added dynamically -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        
-        <div class="tab-content" id="tracker">
-            <div class="section">
-                <div class="button-group">
-                    <select id="sortBySelect">
-                        <option value="name">Sort by Name</option>
-                        <option value="startDate">Sort by Start Date</option>
-                        <option value="endDate">Sort by End Date</option>
-                        <option value="progress">Sort by Progress</option>
-                        <option value="status">Sort by Status</option>
-                        <option value="category">Sort by Category</option>
-                    </select>
-                    <select id="sortOrderSelect">
-                        <option value="asc">Ascending</option>
-                        <option value="desc">Descending</option>
-                    </select>
-                    <button id="applySortBtn">Apply Sort</button>
-                </div>
-                
-                <table id="goalTable">
-                    <thead>
-                        <tr>
-                            <th>Goal Name</th>
-                            <th>Category</th>
-                            <th>Start Date <button class="today-btn" data-field="startDate">Today</button></th>
-                            <th>End Date <button class="today-btn" data-field="endDate">Today</button></th>
-                            <th>Follow-up Date</th>
-                            <th>Current Progress</th>
-                            <th>Total Progress</th>
-                            <th>Required Speed</th>
-                            <th>Current Speed</th>
-                            <th>Unit</th>
-                            <th>Repetition</th>
-                            <th>End Target</th>
-                            <th>Time Remaining</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Rows will be added dynamically -->
-                    </tbody>
-                </table>
-                
-                <div class="button-group">
-                    <button id="addGoalBtn" class="button-success">➕ Add New Goal</button>
-                    <button id="exportDataBtn" class="button-secondary">📤 Export Data</button>
-                    <button id="importDataBtn" class="button-secondary">📥 Import Data</button>
-                    <button id="exportLogsBtn" class="button-secondary">📤 Export Logs</button>
-                    <button id="importLogsBtn" class="button-secondary">📥 Import Logs</button>
-                </div>
-            </div>
-        </div>
-        
-        <div class="tab-content" id="logs">
-            <div class="section">
-                <h2>Progress Logs</h2>
-                <div id="progressLogContainer"></div>
-            </div>
-        </div>
-        
-        <div class="tab-content" id="quicklinks">
-            <div class="section">
-                <h2>Quick Links</h2>
-                <div class="quick-links" id="quickLinksContainer">
-                    <!-- Links will be added dynamically -->
-                </div>
-                
-                <h3>Manage Quick Links</h3>
-                <div class="button-group">
-                    <button id="addQuickLinkBtn">Add New Link</button>
-                </div>
-                <table id="quickLinksTable">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>URL</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Rows will be added dynamically -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        
-        <div class="tab-content" id="settings">
-            <div class="section">
-                <h2>Settings</h2>
-                
-                <h3>Custom Units</h3>
-                <div class="button-group">
-                    <button id="addUnitBtn">Add New Unit</button>
-                </div>
-                <table id="unitsTable">
-                    <thead>
-                        <tr>
-                            <th>Unit Name</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Rows will be added dynamically -->
-                    </tbody>
-                </table>
-                
-                <h3>Custom Formulas</h3>
-                <div class="button-group">
-                    <button id="addFormulaBtn">Add New Formula Column</button>
-                </div>
-                <table id="formulasTable">
-                    <thead>
-                        <tr>
-                            <th>Column Name</th>
-                            <th>Formula</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Rows will be added dynamically -->
-                    </tbody>
-                </table>
-                
-                <div id="formulaEditor" class="hidden">
-                    <h4>Edit Formula</h4>
-                    <p>Available variables: currentProgress, endTarget, daysRemaining, daysElapsed</p>
-                    <textarea id="formulaText" class="formula-editor" placeholder="Example: (currentProgress / endTarget) * 100"></textarea>
-                    <div class="button-group">
-                        <button id="saveFormulaBtn">Save Formula</button>
-                        <button id="cancelFormulaBtn">Cancel</button>
-                    </div>
-                </div>
-            </div>
+        <div class="form-group">
+            <h3>Reset Data</h3>
+            <button onclick="resetData()" class="secondary">Reset All Data</button>
+            <p>Warning: This will permanently delete all your goals and logs.</p>
         </div>
     </div>
 
-    <input type="file" id="importFileInput" accept=".json" class="hidden">
-    <input type="file" id="importLogsInput" accept=".json" class="hidden">
-
     <script>
+        // Data storage
+        let goals = JSON.parse(localStorage.getItem('goals')) || [];
+        let logs = JSON.parse(localStorage.getItem('logs')) || [];
+
+        // Initialize the app
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialize with sample data
-            let goals = JSON.parse(localStorage.getItem('goals')) || [
-                {
-                    id: 1,
-                    name: "Walking",
-                    category: "Fitness",
-                    startDate: formatDate(new Date()),
-                    endDate: formatDate(new Date(new Date().setFullYear(new Date().getFullYear() + 1))),
-                    followUpDate: getNextFollowUpDate(formatDate(new Date()), "weekly"),
-                    currentProgress: 25,
-                    totalProgress: 25,
-                    unit: "km",
-                    repetition: "weekly",
-                    endTarget: 100,
-                    lastUpdated: "",
-                    history: []
-                },
-                {
-                    id: 2,
-                    name: "Writing",
-                    category: "Creative",
-                    startDate: formatDate(new Date()),
-                    endDate: formatDate(new Date(new Date().setMonth(new Date().getMonth() + 6))),
-                    followUpDate: getNextFollowUpDate(formatDate(new Date()), "daily"),
-                    currentProgress: 8,
-                    totalProgress: 8,
-                    unit: "pages",
-                    repetition: "daily",
-                    endTarget: 100,
-                    lastUpdated: "",
-                    history: []
-                },
-                {
-                    id: 3,
-                    name: "Reading",
-                    category: "Learning",
-                    startDate: formatDate(new Date()),
-                    endDate: formatDate(new Date(new Date().setFullYear(new Date().getFullYear() + 1))),
-                    followUpDate: getNextFollowUpDate(formatDate(new Date()), "monthly"),
-                    currentProgress: 3,
-                    totalProgress: 3,
-                    unit: "books",
-                    repetition: "monthly",
-                    endTarget: 12,
-                    lastUpdated: "",
-                    history: []
-                }
-            ];
+            // Set default date for entry date to today
+            const today = new Date();
+            document.getElementById('entry-date').valueAsDate = today;
+            document.getElementById('start-date').valueAsDate = today;
             
-            let logs = JSON.parse(localStorage.getItem('logs')) || [];
-            let categories = JSON.parse(localStorage.getItem('categories')) || ["Fitness", "Creative", "Learning", "Career", "Personal"];
-            let units = JSON.parse(localStorage.getItem('units')) || ["km", "miles", "pages", "books", "hours", "units", "days", "minutes"];
-            let quickLinks = JSON.parse(localStorage.getItem('quickLinks')) || [
-                { name: "Google", url: "https://google.com" },
-                { name: "GitHub", url: "https://github.com" }
-            ];
-            let customColumns = JSON.parse(localStorage.getItem('customColumns')) || [];
+            // Initialize calendar year dropdown
+            initCalendarYearDropdown();
             
-            // Initialize UI
-            updateDateTime();
-            setInterval(updateDateTime, 1000);
-            renderGoalTable();
-            renderTodayTable();
-            renderLogs();
-            renderQuickLinks();
-            renderUnitsTable();
-            renderFormulasTable();
+            // Load goals into dropdowns
+            updateAllGoalDropdowns();
+            renderGoalsTable();
+            renderStatusTable();
+            renderLogsTable();
+            renderCalendar();
             
-            // Save data to localStorage on changes
-            function saveData() {
-                localStorage.setItem('goals', JSON.stringify(goals));
-                localStorage.setItem('logs', JSON.stringify(logs));
-                localStorage.setItem('categories', JSON.stringify(categories));
-                localStorage.setItem('units', JSON.stringify(units));
-                localStorage.setItem('quickLinks', JSON.stringify(quickLinks));
-                localStorage.setItem('customColumns', JSON.stringify(customColumns));
+            // Form event listeners
+            document.getElementById('add-goal-form').addEventListener('submit', addGoal);
+            document.getElementById('daily-entry-form').addEventListener('submit', recordProgress);
+        });
+
+        // Page navigation
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+            
+            // Refresh specific pages when shown
+            if (pageId === 'goals-list') {
+                renderGoalsTable();
+            } else if (pageId === 'goal-status') {
+                renderStatusTable();
+            } else if (pageId === 'goal-logs') {
+                renderLogsTable();
+            } else if (pageId === 'calendar-view') {
+                renderCalendar();
+            }
+        }
+
+        // Initialize calendar year dropdown
+        function initCalendarYearDropdown() {
+            const yearSelect = document.getElementById('calendar-year');
+            const currentYear = new Date().getFullYear();
+            
+            for (let year = currentYear - 5; year <= currentYear + 5; year++) {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = year;
+                option.selected = year === currentYear;
+                yearSelect.appendChild(option);
+            }
+        }
+
+        // Update all goal dropdowns in the app
+        function updateAllGoalDropdowns() {
+            updateGoalDropdown('goal-select');
+            updateGoalDropdown('filter-goal');
+            updateGoalDropdown('filter-list-goal');
+            updateGoalDropdown('filter-status-goal');
+            updateGoalDropdown('filter-logs-goal');
+            updateGoalDropdown('filter-calendar-goal');
+        }
+
+        // Update a specific goal dropdown
+        function updateGoalDropdown(selectId) {
+            const select = document.getElementById(selectId);
+            const currentValue = select.value;
+            
+            select.innerHTML = '';
+            
+            // Add default/all option
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.textContent = selectId === 'goal-select' && goals.length === 0 
+                ? 'No goals available' 
+                : 'All Goals';
+            select.appendChild(defaultOption);
+            
+            // Add goals
+            goals.forEach(goal => {
+                const option = document.createElement('option');
+                option.value = goal.id;
+                option.textContent = goal.name;
+                select.appendChild(option);
+            });
+            
+            // Restore selected value if it still exists
+            if (currentValue && goals.some(g => g.id.toString() === currentValue)) {
+                select.value = currentValue;
+            }
+        }
+
+        // Add a new goal
+        function addGoal(e) {
+            e.preventDefault();
+            
+            const goal = {
+                id: Date.now(),
+                name: document.getElementById('goal-name').value,
+                startDate: document.getElementById('start-date').value,
+                endDate: document.getElementById('end-date').value,
+                target: parseFloat(document.getElementById('target').value),
+                currentProgress: 0,
+                unit: document.getElementById('unit').value,
+                recurrence: document.getElementById('recurrence').value
+            };
+            
+            // Validate end date is after start date
+            if (new Date(goal.endDate) <= new Date(goal.startDate)) {
+                alert('End date must be after start date');
+                return;
             }
             
-            // Tab functionality
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.addEventListener('click', function() {
-                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-                    
-                    this.classList.add('active');
-                    document.getElementById(this.dataset.tab).classList.add('active');
-                });
-            });
+            goals.push(goal);
+            saveData();
             
-            // Add new goal
-            document.getElementById('addGoalBtn').addEventListener('click', function() {
-                const newId = goals.length > 0 ? Math.max(...goals.map(g => g.id)) + 1 : 1;
-                const today = formatDate(new Date());
-                const defaultEndDate = formatDate(new Date(new Date().setFullYear(new Date().getFullYear() + 1)));
-                
-                const newGoal = {
-                    id: newId,
-                    name: "New Goal",
-                    category: "",
-                    startDate: today,
-                    endDate: defaultEndDate,
-                    followUpDate: getNextFollowUpDate(today, "weekly"),
-                    currentProgress: 0,
-                    totalProgress: 0,
-                    unit: "units",
-                    repetition: "weekly",
-                    endTarget: 10,
-                    status: "pending",
-                    lastUpdated: "",
-                    history: []
-                };
-                
-                goals.push(newGoal);
-                saveData();
-                renderGoalTable();
-                renderTodayTable();
-            });
+            // Log the addition
+            addLog('Goal Added', Added goal: ${goal.name});
             
-            // Export data
-            document.getElementById('exportDataBtn').addEventListener('click', function() {
-                const data = {
-                    goals: goals,
-                    logs: logs,
-                    categories: categories,
-                    units: units,
-                    quickLinks: quickLinks,
-                    customColumns: customColumns
-                };
-                
-                const dataStr = JSON.stringify(data, null, 2);
-                const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-                
-                const exportFileDefaultName = 'goal-tracker-data.json';
-                
-                const linkElement = document.createElement('a');
-                linkElement.setAttribute('href', dataUri);
-                linkElement.setAttribute('download', exportFileDefaultName);
-                linkElement.click();
-            });
+            // Reset form
+            e.target.reset();
+            document.getElementById('start-date').valueAsDate = new Date();
             
-            // Import data
-            document.getElementById('importDataBtn').addEventListener('click', function() {
-                document.getElementById('importFileInput').click();
-            });
+            // Update UI
+            updateAllGoalDropdowns();
+            renderGoalsTable();
+            renderStatusTable();
             
-            document.getElementById('importFileInput').addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (!file) return;
-                
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    try {
-                        const importedData = JSON.parse(e.target.result);
-                        if (importedData.goals) {
-                            goals = importedData.goals;
-                            logs = importedData.logs || [];
-                            categories = importedData.categories || ["Fitness", "Creative", "Learning", "Career", "Personal"];
-                            units = importedData.units || ["km", "miles", "pages", "books", "hours", "units"];
-                            quickLinks = importedData.quickLinks || [];
-                            customColumns = importedData.customColumns || [];
-                            
-                            saveData();
-                            renderGoalTable();
-                            renderTodayTable();
-                            renderLogs();
-                            renderQuickLinks();
-                            renderUnitsTable();
-                            renderFormulasTable();
-                            alert('Data imported successfully!');
-                        } else {
-                            alert('Invalid data format');
-                        }
-                    } catch (error) {
-                        alert('Error parsing data file');
-                        console.error(error);
-                    }
-                };
-                reader.readAsText(file);
-            });
+            // Show goals list
+            showPage('goals-list');
+        }
+
+        // Record progress for a goal
+        function recordProgress(e) {
+            e.preventDefault();
             
-            // Export logs
-            document.getElementById('exportLogsBtn').addEventListener('click', function() {
-                const dataStr = JSON.stringify(logs, null, 2);
-                const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-                const exportFileDefaultName = 'goal-tracker-logs.json';
-                
-                const linkElement = document.createElement('a');
-                linkElement.setAttribute('href', dataUri);
-                linkElement.setAttribute('download', exportFileDefaultName);
-                linkElement.click();
-            });
+            const goalId = parseInt(document.getElementById('goal-select').value);
+            const change = parseFloat(document.getElementById('progress-change').value);
+            const entryDate = document.getElementById('entry-date').value;
             
-            // Import logs
-            document.getElementById('importLogsBtn').addEventListener('click', function() {
-                document.getElementById('importLogsInput').click();
-            });
+            const goal = goals.find(g => g.id === goalId);
+            if (!goal) return;
             
-            document.getElementById('importLogsInput').addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (!file) return;
-                
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    try {
-                        const importedLogs = JSON.parse(e.target.result);
-                        if (Array.isArray(importedLogs)) {
-                            logs = importedLogs.concat(logs);
-                            saveData();
-                            renderLogs();
-                            alert('Logs imported successfully!');
-                        } else {
-                            alert('Invalid logs format');
-                        }
-                    } catch (error) {
-                        alert('Error parsing logs file');
-                        console.error(error);
-                    }
-                };
-                reader.readAsText(file);
-            });
+            // Update progress
+            goal.currentProgress += change;
             
-            // Apply sort
-            document.getElementById('applySortBtn').addEventListener('click', function() {
-                const sortBy = document.getElementById('sortBySelect').value;
-                const sortOrder = document.getElementById('sortOrderSelect').value;
-                
-                goals.sort((a, b) => {
-                    let valA, valB;
-                    
-                    switch (sortBy) {
-                        case 'name':
-                            valA = a.name.toLowerCase();
-                            valB = b.name.toLowerCase();
-                            break;
-                        case 'startDate':
-                            valA = new Date(a.startDate);
-                            valB = new Date(b.startDate);
-                            break;
-                        case 'endDate':
-                            valA = new Date(a.endDate);
-                            valB = new Date(b.endDate);
-                            break;
-                        case 'progress':
-                            valA = (a.currentProgress / a.endTarget) * 100;
-                            valB = (b.currentProgress / b.endTarget) * 100;
-                            break;
-                        case 'status':
-                            valA = calculateStatus(
-                                calculateCurrentSpeed(a.startDate, a.currentProgress),
-                                calculateRequiredSpeed(a.startDate, a.endDate, a.currentProgress, a.endTarget)
-                            );
-                            valB = calculateStatus(
-                                calculateCurrentSpeed(b.startDate, b.currentProgress),
-                                calculateRequiredSpeed(b.startDate, b.endDate, b.currentProgress, b.endTarget)
-                            );
-                            break;
-                        case 'category':
-                            valA = a.category || '';
-                            valB = b.category || '';
-                            break;
-                        default:
-                            valA = a.name.toLowerCase();
-                            valB = b.name.toLowerCase();
-                    }
-                    
-                    if (valA < valB) return sortOrder === 'asc' ? -1 : 1;
-                    if (valA > valB) return sortOrder === 'asc' ? 1 : -1;
-                    return 0;
-                });
-                
-                renderGoalTable();
-            });
-            
-            // Update date and time display
-            function updateDateTime() {
-                const now = new Date();
-                document.getElementById('currentDate').textContent = now.toLocaleDateString('en-US', { 
-                    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
-                });
-                document.getElementById('currentTime').textContent = now.toLocaleTimeString('en-US', {
-                    hour: '2-digit', minute: '2-digit', second: '2-digit'
-                });
+            // Ensure progress doesn't go negative
+            if (goal.currentProgress < 0) {
+                goal.currentProgress = 0;
             }
             
-            // Format date as YYYY-MM-DD
-            function formatDate(date) {
-                const d = new Date(date);
-                let month = '' + (d.getMonth() + 1);
-                let day = '' + d.getDate();
-                const year = d.getFullYear();
-                
-                if (month.length < 2) month = '0' + month;
-                if (day.length < 2) day = '0' + day;
-                
-                return [year, month, day].join('-');
+            // Log the progress
+            addLog('Progress Updated', 
+                   Updated ${goal.name}: ${change > 0 ? '+' : ''}${change} ${goal.unit}, 
+                   entryDate);
+            
+            saveData();
+            
+            // Reset form
+            document.getElementById('progress-change').value = '';
+            document.getElementById('entry-date').valueAsDate = new Date();
+            
+            // Update UI
+            renderGoalsTable();
+            renderStatusTable();
+        }
+
+        // Add a log entry
+        function addLog(action, details, customDate = null) {
+            const timestamp = customDate ? new Date(customDate) : new Date();
+            const goalName = action.includes('Goal') 
+                ? details.split(':')[1].trim() 
+                : details.split(':')[0].trim().replace('Updated ', '');
+            
+            const log = {
+                timestamp: timestamp.toISOString(),
+                displayTime: timestamp.toLocaleString(),
+                goalName: goalName,
+                action: action,
+                details: details
+            };
+            
+            logs.unshift(log);
+            saveData();
+            
+            // Only update logs table if it's currently visible
+            if (document.getElementById('goal-logs').classList.contains('active')) {
+                renderLogsTable();
+            }
+        }
+
+        // Render the goals table
+        function renderGoalsTable() {
+            const tbody = document.querySelector('#goals-table tbody');
+            tbody.innerHTML = '';
+            
+            if (goals.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = '<td colspan="9">No goals added yet</td>';
+                tbody.appendChild(row);
+                return;
             }
             
-            // Calculate next follow-up date based on repetition
-            function getNextFollowUpDate(startDate, repetition) {
-                const start = new Date(startDate);
-                const now = new Date();
-                let nextDate = new Date(start);
+            const filteredGoals = filterGoalsForTable('filter-list-goal', 'filter-recurrence');
+            
+            filteredGoals.forEach(goal => {
+                const row = document.createElement('tr');
+                const completionPercent = (goal.currentProgress / goal.target) * 100;
                 
-                while (nextDate <= now) {
-                    switch (repetition) {
-                        case 'daily':
-                            nextDate.setDate(nextDate.getDate() + 1);
-                            break;
-                        case 'weekly':
-                            nextDate.setDate(nextDate.getDate() + 7);
-                            break;
-                        case 'monthly':
-                            nextDate.setMonth(nextDate.getMonth() + 1);
-                            break;
-                        case 'quarterly':
-                            nextDate.setMonth(nextDate.getMonth() + 3);
-                            break;
-                        case 'half-yearly':
-                            nextDate.setMonth(nextDate.getMonth() + 6);
-                            break;
-                        case 'yearly':
-                            nextDate.setFullYear(nextDate.getFullYear() + 1);
-                            break;
-                        default:
-                            nextDate.setDate(nextDate.getDate() + 7); // Default to weekly
-                    }
+                row.innerHTML = `
+                    <td class="editable" onclick="makeCellEditable(this, ${goal.id}, 'name', 'text')">${goal.name}</td>
+                    <td class="editable" onclick="makeCellEditable(this, ${goal.id}, 'startDate', 'date')">${formatDate(goal.startDate)}</td>
+                    <td class="editable" onclick="makeCellEditable(this, ${goal.id}, 'endDate', 'date')">${formatDate(goal.endDate)}</td>
+                    <td class="editable" onclick="makeCellEditable(this, ${goal.id}, 'target', 'number')">${goal.target}</td>
+                    <td>${goal.currentProgress.toFixed(2)}</td>
+                    <td>
+                        <div>${Math.min(completionPercent, 100).toFixed(1)}%</div>
+                        <div class="progress-bar">
+                            <div class="progress-bar-fill" style="width: ${Math.min(completionPercent, 100)}%"></div>
+                        </div>
+                    </td>
+                    <td class="editable" onclick="makeCellEditable(this, ${goal.id}, 'unit', 'text')">${goal.unit}</td>
+                    <td class="editable" onclick="makeCellEditable(this, ${goal.id}, 'recurrence', 'select')">${capitalizeFirstLetter(goal.recurrence)}</td>
+                    <td><button onclick="deleteGoal(${goal.id})">Delete</button></td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+        }
+
+        // Filter goals for tables
+        function filterGoalsForTable(goalFilterId, recurrenceFilterId = null) {
+            const goalFilter = document.getElementById(goalFilterId).value;
+            const recurrenceFilter = recurrenceFilterId ? document.getElementById(recurrenceFilterId).value : null;
+            
+            return goals.filter(goal => {
+                const matchesGoal = !goalFilter || goal.id.toString() === goalFilter;
+                const matchesRecurrence = !recurrenceFilter || goal.recurrence === recurrenceFilter;
+                return matchesGoal && matchesRecurrence;
+            });
+        }
+
+        // Render the status table
+        function renderStatusTable() {
+            const tbody = document.querySelector('#status-table tbody');
+            tbody.innerHTML = '';
+            
+            if (goals.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = '<td colspan="8">No goals added yet</td>';
+                tbody.appendChild(row);
+                return;
+            }
+            
+            const filteredGoals = filterGoalsForTable('filter-status-goal', 'filter-status-recurrence');
+            
+            filteredGoals.forEach(goal => {
+                const row = document.createElement('tr');
+                const startDate = new Date(goal.startDate);
+                const endDate = new Date(goal.endDate);
+                const today = new Date();
+                
+                // Calculate time values
+                const totalDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+                const daysElapsed = Math.ceil((today - startDate) / (1000 * 60 * 60 * 24));
+                const daysRemaining = Math.ceil((endDate - today) / (1000 * 60 * 60 * 24));
+                
+                // Calculate speed values
+                const requiredSpeed = goal.target / totalDays;
+                const currentSpeed = goal.currentProgress / Math.max(1, daysElapsed);
+                
+                // Calculate pending
+                const pending = Math.max(0, goal.target - goal.currentProgress);
+                
+                // Determine status (1-3)
+                let status = 1; // Green - on track
+                const progressRatio = goal.currentProgress / goal.target;
+                const timeRatio = daysElapsed / totalDays;
+                
+                if (progressRatio < timeRatio * 0.7) {
+                    status = 3; // Red - behind schedule
+                } else if (progressRatio < timeRatio * 0.9) {
+                    status = 2; // Yellow - needs attention
                 }
                 
-                return formatDate(nextDate);
-            }
-            
-            // Calculate time remaining
-            function calculateTimeRemaining(endDate) {
-                const end = new Date(endDate);
-                const now = new Date();
-                const diff = end - now;
-                
-                if (diff <= 0) return "Time's up!";
-                
-                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                
-                return `${days}d ${hours}h`;
-            }
-            
-            // Calculate required speed (units per day)
-            function calculateRequiredSpeed(startDate, endDate, currentProgress, endTarget) {
-                const start = new Date(startDate);
-                const end = new Date(endDate);
-                const now = new Date();
-                
-                const totalTime = end - start;
-                const elapsedTime = now - start;
-                const remainingTime = end - now;
-                
-                if (remainingTime <= 0) return 0;
-                
-                const remainingUnits = endTarget - currentProgress;
-                const daysRemaining = remainingTime / (1000 * 60 * 60 * 24);
-                
-                return daysRemaining > 0 ? (remainingUnits / daysRemaining).toFixed(2) : 0;
-            }
-            
-            // Calculate current speed (units per day)
-            function calculateCurrentSpeed(startDate, currentProgress) {
-                const start = new Date(startDate);
-                const now = new Date();
-                
-                const elapsedTime = now - start;
-                const daysElapsed = elapsedTime / (1000 * 60 * 60 * 24);
-                
-                return daysElapsed > 0 ? (currentProgress / daysElapsed).toFixed(2) : 0;
-            }
-            
-            // Calculate status based on comparison of current speed to required speed
-            function calculateStatus(currentSpeed, requiredSpeed) {
-                if (requiredSpeed === 0) return "completed";
-                
-                const ratio = currentSpeed / requiredSpeed;
-                
-                if (ratio >= 1.1) return "ahead";
-                if (ratio >= 0.9) return "in-progress";
-                if (ratio >= 0.5) return "behind";
-                return "overdue";
-            }
-            
-            // Apply formula to goal
-            function applyFormula(goal, formula) {
-                try {
-                    const { currentProgress, endTarget } = goal;
-                    const daysRemaining = (new Date(goal.endDate) - new Date()) / (1000 * 60 * 60 * 24);
-                    const daysElapsed = (new Date() - new Date(goal.startDate)) / (1000 * 60 * 60 * 24);
-                    
-                    // Create a function with the formula
-                    const func = new Function('currentProgress', 'endTarget', 'daysRemaining', 'daysElapsed', 
-                        `return ${formula};`);
-                    
-                    return func(currentProgress, endTarget, daysRemaining, daysElapsed);
-                } catch (e) {
-                    console.error('Error applying formula:', e);
-                    return 'Error';
-                }
-            }
-            
-            // Render today's follow-up table
-            function renderTodayTable() {
-                const tbody = document.querySelector('#todayTable tbody');
-                tbody.innerHTML = '';
-                
-                const today = formatDate(new Date());
-                const todayGoals = goals.filter(goal => goal.followUpDate === today);
-                
-                if (todayGoals.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No goals due for update today</td></tr>';
-                    return;
+                // Adjust status if goal is completed
+                if (goal.currentProgress >= goal.target) {
+                    status = 1;
                 }
                 
-                todayGoals.forEach(goal => {
-                    const requiredSpeed = calculateRequiredSpeed(goal.startDate, goal.endDate, goal.currentProgress, goal.endTarget);
-                    const currentSpeed = calculateCurrentSpeed(goal.startDate, goal.currentProgress);
-                    const status = calculateStatus(currentSpeed, requiredSpeed);
-                    
-                    const row = document.createElement('tr');
-                    row.className = 'follow-up-highlight';
-                    row.dataset.id = goal.id;
-                    row.innerHTML = `
-                        <td class="goal-name">${goal.name}</td>
-                        <td>${goal.category}</td>
-                        <td>
-                            <div class="progress-input">
-                                <input type="number" value="${goal.currentProgress}" class="progress-value">
-                                <span>${goal.unit}</span>
-                            </div>
-                        </td>
-                        <td>${goal.totalProgress} ${goal.unit}</td>
-                        <td>${requiredSpeed} ${goal.unit}/day</td>
-                        <td>${currentSpeed} ${goal.unit}/day</td>
-                        <td class="status-${status}">${status.replace('-', ' ')}</td>
-                    `;
-                    
-                    tbody.appendChild(row);
-                    
-                    // Add event listener for progress update
-                    row.querySelector('.progress-value').addEventListener('change', function() {
-                        const newValue = parseFloat(this.value) || 0;
-                        const difference = newValue - goal.currentProgress;
-                        
-                        if (difference !== 0) {
-                            updateGoalProgress(goal, newValue, difference);
-                            renderTodayTable();
-                            renderGoalTable();
-                            renderLogs();
-                        }
-                    });
-                });
-            }
-            
-            // Render goal table
-            function renderGoalTable() {
-                const tbody = document.querySelector('#goalTable tbody');
-                tbody.innerHTML = '';
-                
-                if (goals.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="15" style="text-align: center;">No goals added yet</td></tr>';
-                    return;
+                // Adjust status if goal is past deadline
+                if (today > endDate && goal.currentProgress < goal.target) {
+                    status = 3;
                 }
                 
-                goals.forEach(goal => {
-                    const requiredSpeed = calculateRequiredSpeed(goal.startDate, goal.endDate, goal.currentProgress, goal.endTarget);
-                    const currentSpeed = calculateCurrentSpeed(goal.startDate, goal.currentProgress);
-                    const status = calculateStatus(currentSpeed, requiredSpeed);
-                    const timeRemaining = calculateTimeRemaining(goal.endDate);
-                    
-                    const row = document.createElement('tr');
-                    row.dataset.id = goal.id;
-                    
-                    // Base columns
-                    let rowHtml = `
-                        <td class="goal-name" contenteditable="true">${goal.name}</td>
-                        <td>
-                            <select class="category-select">
-                                <option value="">-- Select --</option>
-                                ${categories.map(cat => 
-                                    `<option ${goal.category === cat ? 'selected' : ''}>${cat}</option>`
-                                ).join('')}
-                                <option value="_new">+ Add New</option>
-                            </select>
-                        </td>
-                        <td><input type="date" value="${goal.startDate}" class="start-date"></td>
-                        <td><input type="date" value="${goal.endDate}" class="end-date"></td>
-                        <td>${goal.followUpDate}</td>
-                        <td>
-                            <div class="progress-input">
-                                <input type="number" value="${goal.currentProgress}" class="progress-value">
-                                <span>${goal.unit}</span>
-                            </div>
-                        </td>
-                        <td>${goal.totalProgress} ${goal.unit}</td>
-                        <td>${requiredSpeed} ${goal.unit}/day</td>
-                        <td>${currentSpeed} ${goal.unit}/day</td>
-                        <td>
-                            <select class="unit-select">
-                                ${units.map(unit => 
-                                    `<option ${goal.unit === unit ? 'selected' : ''}>${unit}</option>`
-                                ).join('')}
-                                <option value="_new">+ Add New</option>
-                            </select>
-                        </td>
-                        <td>
-                            <select class="repetition-select">
-                                <option ${goal.repetition === 'daily' ? 'selected' : ''}>daily</option>
-                                <option ${goal.repetition === 'weekly' ? 'selected' : ''}>weekly</option>
-                                <option ${goal.repetition === 'monthly' ? 'selected' : ''}>monthly</option>
-                                <option ${goal.repetition === 'quarterly' ? 'selected' : ''}>quarterly</option>
-                                <option ${goal.repetition === 'half-yearly' ? 'selected' : ''}>half-yearly</option>
-                                <option ${goal.repetition === 'yearly' ? 'selected' : ''}>yearly</option>
-                            </select>
-                        </td>
-                        <td><input type="number" value="${goal.endTarget}" class="end-target"></td>
-                        <td class="time-remaining ${new Date(goal.endDate) < new Date() ? 'negative' : 'positive'}">
-                            ${timeRemaining}
-                        </td>
-                        <td class="status-${status}">${status.replace('-', ' ')}</td>
-                        <td>
-                            <button class="delete-btn button-small button-danger">🗑️</button>
-                        </td>
-                    `;
-                    
-                    // Add custom columns
-                    customColumns.forEach(col => {
-                        const result = applyFormula(goal, col.formula);
-                        rowHtml += `<td>${typeof result === 'number' ? result.toFixed(2) : result}</td>`;
-                    });
-                    
-                    row.innerHTML = rowHtml;
-                    tbody.appendChild(row);
-                    
-                    // Add event listeners
-                    addGoalRowEventListeners(row, goal);
-                });
+                row.innerHTML = `
+                    <td>${goal.name}</td>
+                    <td>${currentSpeed.toFixed(2)} ${goal.unit}/${goal.recurrence}</td>
+                    <td>${requiredSpeed.toFixed(2)} ${goal.unit}/${goal.recurrence}</td>
+                    <td>${daysRemaining}</td>
+                    <td>${goal.currentProgress.toFixed(2)} ${goal.unit}</td>
+                    <td>${pending.toFixed(2)} ${goal.unit}</td>
+                    <td>${goal.unit}</td>
+                    <td><span class="status-indicator status-${status}" title="${getStatusText(status)}"></span></td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+        }
+
+        // Get status text for tooltip
+        function getStatusText(status) {
+            switch(status) {
+                case 1: return 'On track';
+                case 2: return 'Needs attention';
+                case 3: return 'Behind schedule';
+                default: return '';
+            }
+        }
+
+        // Render the logs table
+        function renderLogsTable() {
+            const tbody = document.querySelector('#logs-table tbody');
+            tbody.innerHTML = '';
+            
+            if (logs.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = '<td colspan="4">No logs yet</td>';
+                tbody.appendChild(row);
+                return;
             }
             
-            // Add event listeners to a goal row
-            function addGoalRowEventListeners(row, goal) {
-                // Update progress
-                row.querySelector('.progress-value').addEventListener('change', function() {
-                    const newValue = parseFloat(this.value) || 0;
-                    const difference = newValue - goal.currentProgress;
-                    
-                    if (difference !== 0) {
-                        updateGoalProgress(goal, newValue, difference);
-                        renderTodayTable();
-                        renderGoalTable();
-                        renderLogs();
-                    }
-                });
+            const goalFilter = document.getElementById('filter-logs-goal').value;
+            const actionFilter = document.getElementById('filter-logs-action').value;
+            const dateFilter = document.getElementById('filter-logs-date').value;
+            
+            const filteredLogs = logs.filter(log => {
+                const matchesGoal = !goalFilter || 
+                    goals.some(g => g.name === log.goalName && g.id.toString() === goalFilter);
+                const matchesAction = !actionFilter || log.action === actionFilter;
+                const matchesDate = !dateFilter || 
+                    new Date(log.timestamp).toISOString().split('T')[0] === dateFilter;
                 
-                // Delete goal
-                row.querySelector('.delete-btn').addEventListener('click', function() {
-                    if (confirm('Are you sure you want to delete this goal?')) {
-                        goals = goals.filter(g => g.id !== goal.id);
-                        saveData();
-                        renderGoalTable();
-                        renderTodayTable();
-                    }
-                });
-                
-                // Update fields when changed
-                row.querySelector('.start-date').addEventListener('change', function() {
-                    goal.startDate = this.value;
-                    goal.followUpDate = getNextFollowUpDate(goal.startDate, goal.repetition);
-                    saveData();
-                    renderGoalTable();
-                    renderTodayTable();
-                });
-                
-                row.querySelector('.end-date').addEventListener('change', function() {
-                    goal.endDate = this.value;
-                    saveData();
-                    renderGoalTable();
-                    renderTodayTable();
-                });
-                
-                row.querySelector('.end-target').addEventListener('change', function() {
-                    goal.endTarget = parseFloat(this.value) || 0;
-                    saveData();
-                    renderGoalTable();
-                    renderTodayTable();
-                });
-                
-                // Update unit
-                row.querySelector('.unit-select').addEventListener('change', function() {
-                    if (this.value === "_new") {
-                        const newUnit = prompt("Enter new unit name:");
-                        if (newUnit && newUnit.trim() !== "") {
-                            if (!units.includes(newUnit)) {
-                                units.push(newUnit);
-                                saveData();
-                                renderUnitsTable();
-                            }
-                            goal.unit = newUnit;
-                            saveData();
-                            renderGoalTable();
-                        }
-                        this.value = goal.unit || "";
-                    } else {
-                        goal.unit = this.value;
-                        saveData();
-                    }
-                });
-                
-                // Update repetition and follow-up date
-                row.querySelector('.repetition-select').addEventListener('change', function() {
-                    goal.repetition = this.value;
-                    goal.followUpDate = getNextFollowUpDate(goal.startDate, goal.repetition);
-                    saveData();
-                    renderGoalTable();
-                    renderTodayTable();
-                });
-                
-                // Update category
-                row.querySelector('.category-select').addEventListener('change', function() {
-                    if (this.value === "_new") {
-                        const newCategory = prompt("Enter new category name:");
-                        if (newCategory && newCategory.trim() !== "") {
-                            if (!categories.includes(newCategory)) {
-                                categories.push(newCategory);
-                                saveData();
-                            }
-                            goal.category = newCategory;
-                            saveData();
-                            renderGoalTable();
-                        }
-                        this.value = goal.category || "";
-                    } else {
-                        goal.category = this.value;
-                        saveData();
-                    }
-                });
-                
-                // Update goal name
-                row.querySelector('.goal-name').addEventListener('blur', function() {
-                    goal.name = this.textContent;
-                    saveData();
-                });
-                
-                // Today buttons for date fields
-                row.querySelectorAll('.today-btn').forEach(btn => {
-                    btn.addEventListener('click', function(e) {
-                        e.stopPropagation();
-                        const field = this.dataset.field;
-                        const today = formatDate(new Date());
-                        
-                        if (field === 'startDate') {
-                            goal.startDate = today;
-                            row.querySelector('.start-date').value = today;
-                            goal.followUpDate = getNextFollowUpDate(today, goal.repetition);
-                        } else if (field === 'endDate') {
-                            goal.endDate = today;
-                            row.querySelector('.end-date').value = today;
-                        }
-                        
-                        saveData();
-                        renderGoalTable();
-                        renderTodayTable();
-                    });
-                });
+                return matchesGoal && matchesAction && matchesDate;
+            });
+            
+            if (filteredLogs.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = '<td colspan="4">No logs match the current filters</td>';
+                tbody.appendChild(row);
+                return;
             }
             
-            // Update goal progress and log the change
-            function updateGoalProgress(goal, newValue, difference) {
-                const timestamp = new Date().toLocaleString();
-                const oldValue = goal.currentProgress;
-                
-                goal.currentProgress = newValue;
-                goal.totalProgress += difference; // Update total progress
-                goal.lastUpdated = timestamp;
-                
-                // Add to history
-                goal.history.push({
-                    date: timestamp,
-                    oldValue: oldValue,
-                    newValue: newValue,
-                    difference: difference
-                });
-                
-                // Add to log
-                logs.unshift({
-                    goalId: goal.id,
-                    goalName: goal.name,
-                    progress: `${newValue} ${goal.unit}`,
-                    difference: difference,
-                    timestamp: timestamp,
-                    action: 'progress-update'
-                });
-                
-                saveData();
+            filteredLogs.forEach(log => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${new Date(log.timestamp).toLocaleString()}</td>
+                    <td>${log.goalName}</td>
+                    <td>${log.action}</td>
+                    <td>${log.details}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Render the calendar view
+        function renderCalendar() {
+            const container = document.getElementById('calendar-container');
+            container.innerHTML = '';
+            
+            const month = parseInt(document.getElementById('calendar-month').value);
+            const year = parseInt(document.getElementById('calendar-year').value);
+            const goalFilter = document.getElementById('filter-calendar-goal').value;
+            
+            // Get first day of month and how many days in month
+            const firstDay = new Date(year, month, 1);
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            
+            // Create calendar header
+            const calendarHeader = document.createElement('div');
+            calendarHeader.style.display = 'grid';
+            calendarHeader.style.gridTemplateColumns = 'repeat(7, 1fr)';
+            calendarHeader.style.textAlign = 'center';
+            calendarHeader.style.fontWeight = 'bold';
+            calendarHeader.style.marginBottom = '10px';
+            
+            ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].forEach(day => {
+                const dayElement = document.createElement('div');
+                dayElement.textContent = day;
+                calendarHeader.appendChild(dayElement);
+            });
+            
+            container.appendChild(calendarHeader);
+            
+            // Create calendar grid
+            const calendarGrid = document.createElement('div');
+            calendarGrid.style.display = 'grid';
+            calendarGrid.style.gridTemplateColumns = 'repeat(7, 1fr)';
+            calendarGrid.style.gap = '5px';
+            
+            // Add empty cells for days before the first day of the month
+            for (let i = 0; i < firstDay.getDay(); i++) {
+                const emptyCell = document.createElement('div');
+                emptyCell.className = 'calendar-day';
+                calendarGrid.appendChild(emptyCell);
             }
             
-            // Render logs
-            function renderLogs() {
-                const container = document.getElementById('progressLogContainer');
-                container.innerHTML = '';
+            // Add cells for each day of the month
+            const today = new Date();
+            const isCurrentMonth = today.getMonth() === month && today.getFullYear() === year;
+            
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayCell = document.createElement('div');
+                dayCell.className = 'calendar-day';
                 
-                if (logs.length === 0) {
-                    container.innerHTML = '<p>No log entries yet.</p>';
-                    return;
+                if (isCurrentMonth && day === today.getDate()) {
+                    dayCell.classList.add('today');
                 }
                 
-                logs.forEach(log => {
+                const dayHeader = document.createElement('div');
+                dayHeader.className = 'calendar-day-header';
+                dayHeader.textContent = day;
+                dayCell.appendChild(dayHeader);
+                
+                // Filter logs for this day
+                const currentDate = new Date(year, month, day);
+                const dateStr = currentDate.toISOString().split('T')[0];
+                
+                const dayLogs = logs.filter(log => {
+                    const logDate = new Date(log.timestamp).toISOString().split('T')[0];
+                    const matchesDate = logDate === dateStr;
+                    const matchesGoal = !goalFilter || 
+                        goals.some(g => g.name === log.goalName && g.id.toString() === goalFilter);
+                    return matchesDate && matchesGoal;
+                });
+                
+                // Add log entries to the day cell
+                dayLogs.forEach(log => {
                     const logEntry = document.createElement('div');
-                    logEntry.className = 'log-entry';
+                    logEntry.className = 'calendar-entry';
                     
-                    const differenceText = log.difference > 0 ? 
-                        `<span style="color: var(--success-color);">+${log.difference}</span>` :
-                        `<span style="color: var(--danger-color);">${log.difference}</span>`;
+                    let badgeClass = 'badge-primary';
+                    if (log.action.includes('Added')) badgeClass = 'badge-success';
+                    if (log.action.includes('Deleted')) badgeClass = 'badge-danger';
+                    if (log.action.includes('Updated')) badgeClass = 'badge-warning';
                     
                     logEntry.innerHTML = `
-                        <div>
-                            <span class="log-goal">${log.goalName}</span>
-                            <span class="log-details">Updated to ${log.progress} (${differenceText})</span>
-                        </div>
-                        <div class="log-timestamp">${log.timestamp}</div>
+                        <span class="badge ${badgeClass}">${log.action.split(' ')[0]}</span>
+                        ${log.details}
                     `;
-                    
-                    container.appendChild(logEntry);
+                    dayCell.appendChild(logEntry);
                 });
+                
+                calendarGrid.appendChild(dayCell);
             }
             
-            // Render quick links
-            function renderQuickLinks() {
-                const container = document.getElementById('quickLinksContainer');
-                const tableBody = document.querySelector('#quickLinksTable tbody');
-                
-                container.innerHTML = '';
-                tableBody.innerHTML = '';
-                
-                if (quickLinks.length === 0) {
-                    container.innerHTML = '<p>No quick links added yet.</p>';
-                    tableBody.innerHTML = '<tr><td colspan="3" style="text-align: center;">No quick links added yet</td></tr>';
-                    return;
-                }
-                
-                quickLinks.forEach((link, index) => {
-                    // Display as buttons
-                    const linkBtn = document.createElement('a');
-                    linkBtn.className = 'quick-link-btn';
-                    linkBtn.href = link.url;
-                    linkBtn.target = '_blank';
-                    linkBtn.textContent = link.name;
-                    container.appendChild(linkBtn);
-                    
-                    // Display in management table
-                    const row = document.createElement('tr');
-                    row.dataset.index = index;
-                    row.innerHTML = `
-                        <td><input type="text" value="${link.name}" class="link-name"></td>
-                        <td><input type="text" value="${link.url}" class="link-url"></td>
-                        <td>
-                            <button class="save-link-btn button-small button-success">💾</button>
-                            <button class="delete-link-btn button-small button-danger">🗑️</button>
-                        </td>
-                    `;
-                    tableBody.appendChild(row);
-                    
-                    // Add event listeners
-                    row.querySelector('.save-link-btn').addEventListener('click', function() {
-                        const newName = row.querySelector('.link-name').value.trim();
-                        const newUrl = row.querySelector('.link-url').value.trim();
-                        
-                        if (newName && newUrl) {
-                            quickLinks[index] = { name: newName, url: newUrl };
-                            saveData();
-                            renderQuickLinks();
-                        } else {
-                            alert('Both name and URL are required');
-                        }
-                    });
-                    
-                    row.querySelector('.delete-link-btn').addEventListener('click', function() {
-                        if (confirm('Are you sure you want to delete this link?')) {
-                            quickLinks.splice(index, 1);
-                            saveData();
-                            renderQuickLinks();
-                        }
-                    });
-                });
+            container.appendChild(calendarGrid);
+        }
+
+        // Make a cell editable
+        function makeCellEditable(element, goalId, field, type = 'text') {
+            const goal = goals.find(g => g.id === goalId);
+            if (!goal) return;
+            
+            const currentValue = element.textContent;
+            
+            if (type === 'select') {
+                element.innerHTML = `
+                    <select onblur="updateGoalField(${goalId}, '${field}', this.value)"
+                            onchange="updateGoalField(${goalId}, '${field}', this.value)"
+                            autofocus>
+                        <option value="daily" ${goal.recurrence === 'daily' ? 'selected' : ''}>Daily</option>
+                        <option value="weekly" ${goal.recurrence === 'weekly' ? 'selected' : ''}>Weekly</option>
+                        <option value="monthly" ${goal.recurrence === 'monthly' ? 'selected' : ''}>Monthly</option>
+                        <option value="yearly" ${goal.recurrence === 'yearly' ? 'selected' : ''}>Yearly</option>
+                    </select>
+                `;
+                element.querySelector('select').focus();
+            } else {
+                element.innerHTML = `
+                    <input type="${type}" value="${currentValue}" 
+                        onblur="updateGoalField(${goalId}, '${field}', this.value)"
+                        onkeypress="if(event.keyCode===13) this.blur()"
+                        ${type === 'date' ? 'onchange="updateGoalField(' + goalId + ', \'' + field + '\', this.value)"' : ''}
+                        autofocus>
+                `;
+                element.querySelector('input').focus();
             }
+        }
+
+        // Update a goal field
+        function updateGoalField(goalId, field, value) {
+            const goal = goals.find(g => g.id === goalId);
+            if (!goal) return;
             
-            // Add new quick link
-            document.getElementById('addQuickLinkBtn').addEventListener('click', function() {
-                const name = prompt('Enter link name:');
-                if (!name) return;
+            // Special handling for date fields to ensure proper format
+            if (field === 'startDate' || field === 'endDate') {
+                if (!value) return; // Don't allow empty dates
                 
-                const url = prompt('Enter link URL:');
-                if (!url) return;
-                
-                quickLinks.push({ name: name.trim(), url: url.trim() });
-                saveData();
-                renderQuickLinks();
-            });
-            
-            // Render units table
-            function renderUnitsTable() {
-                const tableBody = document.querySelector('#unitsTable tbody');
-                tableBody.innerHTML = '';
-                
-                if (units.length === 0) {
-                    tableBody.innerHTML = '<tr><td colspan="2" style="text-align: center;">No custom units added yet</td></tr>';
-                    return;
-                }
-                
-                units.forEach((unit, index) => {
-                    const row = document.createElement('tr');
-                    row.dataset.index = index;
-                    row.innerHTML = `
-                        <td>${unit}</td>
-                        <td>
-                            <button class="delete-unit-btn button-small button-danger">🗑️</button>
-                        </td>
-                    `;
-                    tableBody.appendChild(row);
-                    
-                    // Add event listener for delete
-                    row.querySelector('.delete-unit-btn').addEventListener('click', function() {
-                        if (confirm(`Are you sure you want to delete the unit "${unit}"?`)) {
-                            // Check if any goal is using this unit
-                            const isUnitInUse = goals.some(goal => goal.unit === unit);
-                            
-                            if (isUnitInUse) {
-                                alert('This unit is currently in use by one or more goals and cannot be deleted.');
-                            } else {
-                                units.splice(index, 1);
-                                saveData();
-                                renderUnitsTable();
-                            }
-                        }
-                    });
-                });
-            }
-            
-            // Add new unit
-            document.getElementById('addUnitBtn').addEventListener('click', function() {
-                const newUnit = prompt('Enter new unit name:');
-                if (newUnit && newUnit.trim() !== "") {
-                    if (!units.includes(newUnit)) {
-                        units.push(newUnit);
-                        saveData();
-                        renderUnitsTable();
-                    } else {
-                        alert('This unit already exists');
+                // Ensure the date is in YYYY-MM-DD format
+                if (value.includes('/')) {
+                    const parts = value.split('/');
+                    if (parts.length === 3) {
+                        value = ${parts[2]}-${parts[0].padStart(2, '0')}-${parts[1].padStart(2, '0')};
                     }
                 }
-            });
-            
-            // Render formulas table
-            function renderFormulasTable() {
-                const tableBody = document.querySelector('#formulasTable tbody');
-                tableBody.innerHTML = '';
                 
-                if (customColumns.length === 0) {
-                    tableBody.innerHTML = '<tr><td colspan="3" style="text-align: center;">No custom formulas added yet</td></tr>';
+                // Validate date order if updating start or end date
+                if (field === 'startDate' && new Date(value) > new Date(goal.endDate)) {
+                    alert('Start date cannot be after end date');
+                    renderGoalsTable();
                     return;
                 }
                 
-                customColumns.forEach((col, index) => {
-                    const row = document.createElement('tr');
-                    row.dataset.index = index;
-                    row.innerHTML = `
-                        <td>${col.name}</td>
-                        <td>${col.formula}</td>
-                        <td>
-                            <button class="edit-formula-btn button-small">✏️</button>
-                            <button class="delete-formula-btn button-small button-danger">🗑️</button>
-                        </td>
-                    `;
-                    tableBody.appendChild(row);
-                    
-                    // Add event listeners
-                    row.querySelector('.edit-formula-btn').addEventListener('click', function() {
-                        editFormula(index);
-                    });
-                    
-                    row.querySelector('.delete-formula-btn').addEventListener('click', function() {
-                        if (confirm('Are you sure you want to delete this formula column?')) {
-                            customColumns.splice(index, 1);
-                            saveData();
-                            renderFormulasTable();
-                            renderGoalTable();
-                        }
-                    });
-                });
+                if (field === 'endDate' && new Date(value) < new Date(goal.startDate)) {
+                    alert('End date cannot be before start date');
+                    renderGoalsTable();
+                    return;
+                }
             }
             
-            // Add new formula column
-            document.getElementById('addFormulaBtn').addEventListener('click', function() {
-                const colName = prompt('Enter column name:');
-                if (!colName) return;
-                
-                document.getElementById('formulaEditor').classList.remove('hidden');
-                document.getElementById('formulaText').value = '';
-                
-                let currentIndex = -1; // New formula
-                
-                document.getElementById('saveFormulaBtn').onclick = function() {
-                    const formula = document.getElementById('formulaText').value.trim();
-                    if (!formula) {
-                        alert('Please enter a formula');
+            // Convert numeric fields
+            if (field === 'target') {
+                value = parseFloat(value);
+                if (isNaN(value)) {
+                    alert('Please enter a valid number');
+                    renderGoalsTable();
+                    return;
+                }
+            }
+            
+            // Update the field
+            goal[field] = value;
+            saveData();
+            
+            // Log the update
+            addLog('Goal Updated', Updated ${goal.name}'s ${field} to ${value});
+            
+            // Update UI
+            updateAllGoalDropdowns();
+            renderGoalsTable();
+            renderStatusTable();
+        }
+
+        // Delete a goal
+        function deleteGoal(goalId) {
+            if (!confirm('Are you sure you want to delete this goal?')) return;
+            
+            const goalIndex = goals.findIndex(g => g.id === goalId);
+            if (goalIndex === -1) return;
+            
+            const goalName = goals[goalIndex].name;
+            goals.splice(goalIndex, 1);
+            saveData();
+            
+            // Log the deletion
+            addLog('Goal Deleted', Deleted goal: ${goalName});
+            
+            // Update UI
+            updateAllGoalDropdowns();
+            renderGoalsTable();
+            renderStatusTable();
+        }
+
+        // Filter functions
+        function filterGoals() {
+            // This is just a placeholder - actual filtering is done during table rendering
+            console.log('Filtering goals...');
+        }
+
+        function filterGoalsList() {
+            renderGoalsTable();
+        }
+
+        function filterStatusGoals() {
+            renderStatusTable();
+        }
+
+        function filterLogs() {
+            renderLogsTable();
+        }
+
+        // Backup and restore functions
+        function exportData() {
+            const data = {
+                goals: goals,
+                logs: logs,
+                exportedAt: new Date().toISOString()
+            };
+            
+            const dataStr = JSON.stringify(data, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+            
+            const exportName = 'goal-tracker-export-' + new Date().toISOString().split('T')[0] + '.json';
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportName);
+            linkElement.click();
+        }
+
+        function importData() {
+            const fileInput = document.getElementById('import-file');
+            const statusElement = document.getElementById('import-status');
+            
+            if (fileInput.files.length === 0) {
+                statusElement.textContent = 'Please select a file first';
+                statusElement.style.color = 'red';
+                return;
+            }
+            
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    
+                    if (!data.goals || !data.logs) {
+                        throw new Error('Invalid file format');
+                    }
+                    
+                    if (!confirm(This will import ${data.goals.length} goals and ${data.logs.length} log entries. Continue?)) {
                         return;
                     }
                     
-                    if (currentIndex === -1) {
-                        // Add new
-                        customColumns.push({
-                            name: colName,
-                            formula: formula
-                        });
-                    } else {
-                        // Update existing
-                        customColumns[currentIndex] = {
-                            name: colName,
-                            formula: formula
-                        };
-                    }
-                    
+                    goals = data.goals;
+                    logs = data.logs;
                     saveData();
-                    document.getElementById('formulaEditor').classList.add('hidden');
-                    renderFormulasTable();
-                    renderGoalTable();
-                };
-                
-                document.getElementById('cancelFormulaBtn').onclick = function() {
-                    document.getElementById('formulaEditor').classList.add('hidden');
-                };
-            });
+                    
+                    statusElement.textContent = Successfully imported ${data.goals.length} goals and ${data.logs.length} log entries;
+                    statusElement.style.color = 'green';
+                    
+                    // Update UI
+                    updateAllGoalDropdowns();
+                    renderGoalsTable();
+                    renderStatusTable();
+                    renderLogsTable();
+                    renderCalendar();
+                    
+                    // Clear file input
+                    fileInput.value = '';
+                } catch (error) {
+                    statusElement.textContent = 'Error importing data: ' + error.message;
+                    statusElement.style.color = 'red';
+                    console.error(error);
+                }
+            };
             
-            // Edit existing formula
-            function editFormula(index) {
-                const col = customColumns[index];
-                document.getElementById('formulaEditor').classList.remove('hidden');
-                document.getElementById('formulaText').value = col.formula;
-                
-                let currentIndex = index;
-                
-                document.getElementById('saveFormulaBtn').onclick = function() {
-                    const formula = document.getElementById('formulaText').value.trim();
-                    if (!formula) {
-                        alert('Please enter a formula');
-                        return;
-                    }
-                    
-                    customColumns[currentIndex] = {
-                        name: col.name,
-                        formula: formula
-                    };
-                    
-                    saveData();
-                    document.getElementById('formulaEditor').classList.add('hidden');
-                    renderFormulasTable();
-                    renderGoalTable();
-                };
-                
-                document.getElementById('cancelFormulaBtn').onclick = function() {
-                    document.getElementById('formulaEditor').classList.add('hidden');
-                };
+            reader.readAsText(file);
+        }
+
+        function resetData() {
+            if (!confirm('Are you absolutely sure you want to delete ALL your goals and logs? This cannot be undone.')) {
+                return;
             }
-        });
+            
+            goals = [];
+            logs = [];
+            saveData();
+            
+            // Update UI
+            updateAllGoalDropdowns();
+            renderGoalsTable();
+            renderStatusTable();
+            renderLogsTable();
+            renderCalendar();
+            
+            alert('All data has been reset');
+        }
+
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('goals', JSON.stringify(goals));
+            localStorage.setItem('logs', JSON.stringify(logs));
+        }
+
+        // Helper functions
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            const date = new Date(dateStr);
+            return date.toLocaleDateString();
+        }
+
+        function capitalizeFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
     </script>
 </body>
 </html>
