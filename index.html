@@ -3,1122 +3,438 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enhanced Goal Tracker</title>
+    <title>ProgressPro</title>
     <style>
+        :root {
+            --primary: #3b82f6;
+            --danger: #ef4444;
+            --success: #10b981;
+            --border: #e5e7eb;
+        }
         body {
-            font-family: Arial, sans-serif;
-            max-width: 1000px;
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f9fafb;
+        }
+        .container {
+            max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
-            line-height: 1.6;
         }
-        .page {
-            display: none;
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
         }
-        .page.active {
-            display: block;
+        .progress-bar {
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            border-radius: 4px;
+            width: 0%;
+        }
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            margin-bottom: 10px;
         }
         .nav {
             display: flex;
-            flex-wrap: wrap;
+            gap: 15px;
             margin-bottom: 20px;
-            background-color: #f0f0f0;
-            padding: 10px;
-            border-radius: 5px;
-            gap: 10px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
         }
-        .nav button {
-            padding: 8px 15px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            flex-grow: 1;
-            min-width: 120px;
+        .nav a {
+            text-decoration: none;
+            color: #333;
+            padding: 5px 10px;
         }
-        .nav button:hover {
-            background-color: #45a049;
+        .nav a.active {
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
         }
-        form {
-            margin-bottom: 20px;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #f9f9f9;
+        .task-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
         }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        input, select {
-            margin: 8px 0;
-            padding: 8px;
-            width: 100%;
-            box-sizing: border-box;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        button {
-            padding: 10px 15px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-right: 10px;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        button.secondary {
-            background-color: #6c757d;
-        }
-        button.secondary:hover {
-            background-color: #5a6268;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-            position: sticky;
-            top: 0;
-        }
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        .editable {
-            cursor: pointer;
-        }
-        .editable:hover {
-            background-color: #f0f0f0;
-        }
-        .progress-bar {
-            height: 20px;
-            background-color: #e0e0e0;
-            border-radius: 4px;
-            margin: 5px 0;
-        }
-        .progress-bar-fill {
-            height: 100%;
-            background-color: #4CAF50;
-            border-radius: 4px;
-            width: 0%;
-            transition: width 0.3s ease;
-        }
-        .status-indicator {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-        }
-        .status-1 { background-color: #28a745; } /* Green - on track */
-        .status-2 { background-color: #ffc107; } /* Yellow - needs attention */
-        .status-3 { background-color: #dc3545; } /* Red - behind schedule */
-        .calendar-day {
-            border: 1px solid #ddd;
-            padding: 5px;
-            height: 80px;
-            overflow-y: auto;
-        }
-        .calendar-day.today {
-            background-color: #e6f7ff;
-        }
-        .calendar-day-header {
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        .calendar-entry {
-            font-size: 0.8em;
-            margin: 2px 0;
-            padding: 2px;
-            background-color: #f0f0f0;
-            border-radius: 3px;
-        }
-        .filter-controls {
-            margin-bottom: 15px;
-            padding: 10px;
-            background-color: #f8f9fa;
-            border-radius: 5px;
-        }
-        .badge {
-            display: inline-block;
-            padding: 0.25em 0.4em;
-            font-size: 75%;
-            font-weight: 700;
-            line-height: 1;
-            text-align: center;
-            white-space: nowrap;
-            vertical-align: baseline;
-            border-radius: 0.25rem;
-        }
-        .badge-primary {
-            color: #fff;
-            background-color: #007bff;
-        }
-        .badge-success {
-            color: #fff;
-            background-color: #28a745;
-        }
-        .badge-warning {
-            color: #212529;
-            background-color: #ffc107;
-        }
-        .badge-danger {
-            color: #fff;
-            background-color: #dc3545;
+        .task-item.completed {
+            opacity: 0.7;
+            text-decoration: line-through;
         }
     </style>
 </head>
 <body>
-    <div class="nav">
-        <button onclick="showPage('daily-entry')">Daily Entry</button>
-        <button onclick="showPage('add-goal')">Add Goal</button>
-        <button onclick="showPage('goals-list')">Goals List</button>
-        <button onclick="showPage('goal-status')">Goal Status</button>
-        <button onclick="showPage('goal-logs')">Goal Logs</button>
-        <button onclick="showPage('calendar-view')">Calendar View</button>
-        <button onclick="showPage('backup-restore')">Backup/Restore</button>
-    </div>
-
-    <!-- Daily Entry Page -->
-    <div id="daily-entry" class="page active">
-        <h2>Daily Progress Entry</h2>
-        <div class="filter-controls">
-            <label for="filter-goal">Filter Goals:</label>
-            <select id="filter-goal" onchange="filterGoals()">
-                <option value="">All Goals</option>
-            </select>
-        </div>
-        <form id="daily-entry-form">
-            <div class="form-group">
-                <label for="goal-select">Select Goal:</label>
-                <select id="goal-select" required></select>
-            </div>
-            
-            <div class="form-group">
-                <label for="progress-change">Progress Change (positive or negative):</label>
-                <input type="number" id="progress-change" step="0.01" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="entry-date">Date:</label>
-                <input type="date" id="entry-date" required>
-            </div>
-            
-            <button type="submit">Record Progress</button>
-        </form>
-    </div>
-
-    <!-- Add Goal Page -->
-    <div id="add-goal" class="page">
-        <h2>Add New Goal</h2>
-        <form id="add-goal-form">
-            <div class="form-group">
-                <label for="goal-name">Goal Name:</label>
-                <input type="text" id="goal-name" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="start-date">Start Date:</label>
-                <input type="date" id="start-date" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="end-date">End Date:</label>
-                <input type="date" id="end-date" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="target">Target Value:</label>
-                <input type="number" id="target" step="0.01" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="unit">Unit:</label>
-                <input type="text" id="unit" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="recurrence">Recurrence:</label>
-                <select id="recurrence" required>
-                    <option value="daily">Daily</option>
-                    <option value="weekly">Weekly</option>
-                    <option value="monthly">Monthly</option>
-                    <option value="yearly">Yearly</option>
-                </select>
-            </div>
-            
-            <button type="submit">Add Goal</button>
-        </form>
-    </div>
-
-    <!-- Goals List Page -->
-    <div id="goals-list" class="page">
-        <h2>Goals List</h2>
-        <div class="filter-controls">
-            <label for="filter-list-goal">Filter Goals:</label>
-            <select id="filter-list-goal" onchange="filterGoalsList()">
-                <option value="">All Goals</option>
-            </select>
-            
-            <label for="filter-recurrence">Filter by Recurrence:</label>
-            <select id="filter-recurrence" onchange="filterGoalsList()">
-                <option value="">All Types</option>
-                <option value="daily">Daily</option>
-                <option value="weekly">Weekly</option>
-                <option value="monthly">Monthly</option>
-                <option value="yearly">Yearly</option>
-            </select>
-        </div>
-        <table id="goals-table">
-            <thead>
-                <tr>
-                    <th>Goal Name</th>
-                    <th>Start Date</th>
-                    <th>End Date</th>
-                    <th>Target</th>
-                    <th>Current Progress</th>
-                    <th>Completion</th>
-                    <th>Unit</th>
-                    <th>Recurrence</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </div>
-
-    <!-- Goal Status Page -->
-    <div id="goal-status" class="page">
-        <h2>Goal Status Dashboard</h2>
-        <div class="filter-controls">
-            <label for="filter-status-goal">Filter Goals:</label>
-            <select id="filter-status-goal" onchange="filterStatusGoals()">
-                <option value="">All Goals</option>
-            </select>
-            
-            <label for="filter-status-recurrence">Filter by Recurrence:</label>
-            <select id="filter-status-recurrence" onchange="filterStatusGoals()">
-                <option value="">All Types</option>
-                <option value="daily">Daily</option>
-                <option value="weekly">Weekly</option>
-                <option value="monthly">Monthly</option>
-                <option value="yearly">Yearly</option>
-            </select>
-        </div>
-        <table id="status-table">
-            <thead>
-                <tr>
-                    <th>Goal Name</th>
-                    <th>Current Speed</th>
-                    <th>Required Speed</th>
-                    <th>Days Remaining</th>
-                    <th>Done</th>
-                    <th>Pending</th>
-                    <th>Unit</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </div>
-
-    <!-- Goal Logs Page -->
-    <div id="goal-logs" class="page">
-        <h2>Goal Logs</h2>
-        <div class="filter-controls">
-            <label for="filter-logs-goal">Filter by Goal:</label>
-            <select id="filter-logs-goal" onchange="filterLogs()">
-                <option value="">All Goals</option>
-            </select>
-            
-            <label for="filter-logs-action">Filter by Action:</label>
-            <select id="filter-logs-action" onchange="filterLogs()">
-                <option value="">All Actions</option>
-                <option value="Goal Added">Goal Added</option>
-                <option value="Progress Updated">Progress Updated</option>
-                <option value="Goal Updated">Goal Updated</option>
-                <option value="Goal Deleted">Goal Deleted</option>
-            </select>
-            
-            <label for="filter-logs-date">Filter by Date:</label>
-            <input type="date" id="filter-logs-date" onchange="filterLogs()">
-        </div>
-        <table id="logs-table">
-            <thead>
-                <tr>
-                    <th>Timestamp</th>
-                    <th>Goal Name</th>
-                    <th>Action</th>
-                    <th>Details</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </div>
-
-    <!-- Calendar View Page -->
-    <div id="calendar-view" class="page">
-        <h2>Calendar View</h2>
-        <div class="filter-controls">
-            <label for="calendar-month">Month:</label>
-            <select id="calendar-month" onchange="renderCalendar()">
-                <option value="0">January</option>
-                <option value="1">February</option>
-                <option value="2">March</option>
-                <option value="3">April</option>
-                <option value="4">May</option>
-                <option value="5">June</option>
-                <option value="6">July</option>
-                <option value="7">August</option>
-                <option value="8">September</option>
-                <option value="9">October</option>
-                <option value="10">November</option>
-                <option value="11">December</option>
-            </select>
-            
-            <label for="calendar-year">Year:</label>
-            <select id="calendar-year" onchange="renderCalendar()"></select>
-            
-            <label for="filter-calendar-goal">Filter by Goal:</label>
-            <select id="filter-calendar-goal" onchange="renderCalendar()">
-                <option value="">All Goals</option>
-            </select>
-        </div>
-        <div id="calendar-container"></div>
-    </div>
-
-    <!-- Backup/Restore Page -->
-    <div id="backup-restore" class="page">
-        <h2>Backup and Restore</h2>
-        <div class="form-group">
-            <h3>Export Data</h3>
-            <button onclick="exportData()">Export All Data</button>
-            <p>This will download a JSON file with all your goals and logs.</p>
-        </div>
+    <div class="container">
+        <h1>ProgressPro</h1>
         
-        <div class="form-group">
-            <h3>Import Data</h3>
-            <input type="file" id="import-file" accept=".json">
-            <button onclick="importData()">Import Data</button>
-            <p>Select a previously exported JSON file to restore your data.</p>
-            <div id="import-status"></div>
+        <div class="nav">
+            <a href="#" class="active" onclick="showTab('today')">Today</a>
+            <a href="#" onclick="showTab('goals')">Goals</a>
+            <a href="#" onclick="showTab('tasks')">Tasks</a>
+            <a href="#" onclick="showTab('notes')">Notes</a>
+            <a href="#" onclick="showTab('links')">Links</a>
         </div>
-        
-        <div class="form-group">
-            <h3>Reset Data</h3>
-            <button onclick="resetData()" class="secondary">Reset All Data</button>
-            <p>Warning: This will permanently delete all your goals and logs.</p>
+
+        <!-- Today's View -->
+        <div id="today" class="tab-content">
+            <h2>Today's Dashboard</h2>
+            <div class="card">
+                <h3>Active Goals</h3>
+                <div id="today-goals"></div>
+            </div>
+            <div class="card">
+                <h3>Today's Tasks</h3>
+                <div id="today-tasks"></div>
+            </div>
+        </div>
+
+        <!-- Goals -->
+        <div id="goals" class="tab-content" style="display:none">
+            <div class="card">
+                <h2>Add New Goal</h2>
+                <form id="goal-form">
+                    <input type="text" id="goal-name" placeholder="Goal name" required>
+                    <input type="number" id="goal-target" placeholder="Target value" required>
+                    <input type="text" id="goal-unit" placeholder="Unit (e.g., miles, kg)">
+                    <button type="submit">Add Goal</button>
+                </form>
+            </div>
+            <div class="card">
+                <h2>Your Goals</h2>
+                <div id="goals-list"></div>
+            </div>
+        </div>
+
+        <!-- Tasks -->
+        <div id="tasks" class="tab-content" style="display:none">
+            <div class="card">
+                <h2>Add Task</h2>
+                <form id="task-form">
+                    <input type="text" id="task-title" placeholder="Task title" required>
+                    <select id="task-priority">
+                        <option value="high">High Priority</option>
+                        <option value="medium" selected>Medium Priority</option>
+                        <option value="low">Low Priority</option>
+                    </select>
+                    <button type="submit">Add Task</button>
+                </form>
+            </div>
+            <div class="card">
+                <h2>Your Tasks</h2>
+                <div id="tasks-list"></div>
+            </div>
+        </div>
+
+        <!-- Notes -->
+        <div id="notes" class="tab-content" style="display:none">
+            <div class="card">
+                <h2>Add Note</h2>
+                <form id="note-form">
+                    <textarea id="note-content" placeholder="Your note..." rows="3" required></textarea>
+                    <button type="submit">Save Note</button>
+                </form>
+            </div>
+            <div class="card">
+                <h2>Your Notes</h2>
+                <div id="notes-list"></div>
+            </div>
+        </div>
+
+        <!-- Links -->
+        <div id="links" class="tab-content" style="display:none">
+            <div class="card">
+                <h2>Add Link</h2>
+                <form id="link-form">
+                    <input type="text" id="link-name" placeholder="Link name" required>
+                    <input type="url" id="link-url" placeholder="https://example.com" required>
+                    <button type="submit">Save Link</button>
+                </form>
+            </div>
+            <div class="card">
+                <h2>Your Links</h2>
+                <div id="links-list"></div>
+            </div>
         </div>
     </div>
 
     <script>
-        // Data storage
-        let goals = JSON.parse(localStorage.getItem('goals')) || [];
-        let logs = JSON.parse(localStorage.getItem('logs')) || [];
+        // Data Structure
+        let data = {
+            goals: [],
+            tasks: [],
+            notes: [],
+            links: []
+        };
 
-        // Initialize the app
-        document.addEventListener('DOMContentLoaded', function() {
-            // Set default date for entry date to today
-            const today = new Date();
-            document.getElementById('entry-date').valueAsDate = today;
-            document.getElementById('start-date').valueAsDate = today;
-            
-            // Initialize calendar year dropdown
-            initCalendarYearDropdown();
-            
-            // Load goals into dropdowns
-            updateAllGoalDropdowns();
-            renderGoalsTable();
-            renderStatusTable();
-            renderLogsTable();
-            renderCalendar();
-            
-            // Form event listeners
-            document.getElementById('add-goal-form').addEventListener('submit', addGoal);
-            document.getElementById('daily-entry-form').addEventListener('submit', recordProgress);
-        });
-
-        // Page navigation
-        function showPage(pageId) {
-            document.querySelectorAll('.page').forEach(page => {
-                page.classList.remove('active');
-            });
-            document.getElementById(pageId).classList.add('active');
-            
-            // Refresh specific pages when shown
-            if (pageId === 'goals-list') {
-                renderGoalsTable();
-            } else if (pageId === 'goal-status') {
-                renderStatusTable();
-            } else if (pageId === 'goal-logs') {
-                renderLogsTable();
-            } else if (pageId === 'calendar-view') {
-                renderCalendar();
+        // Load saved data from localStorage
+        function loadData() {
+            const savedData = localStorage.getItem('progressProData');
+            if (savedData) {
+                data = JSON.parse(savedData);
             }
-        }
-
-        // Initialize calendar year dropdown
-        function initCalendarYearDropdown() {
-            const yearSelect = document.getElementById('calendar-year');
-            const currentYear = new Date().getFullYear();
-            
-            for (let year = currentYear - 5; year <= currentYear + 5; year++) {
-                const option = document.createElement('option');
-                option.value = year;
-                option.textContent = year;
-                option.selected = year === currentYear;
-                yearSelect.appendChild(option);
-            }
-        }
-
-        // Update all goal dropdowns in the app
-        function updateAllGoalDropdowns() {
-            updateGoalDropdown('goal-select');
-            updateGoalDropdown('filter-goal');
-            updateGoalDropdown('filter-list-goal');
-            updateGoalDropdown('filter-status-goal');
-            updateGoalDropdown('filter-logs-goal');
-            updateGoalDropdown('filter-calendar-goal');
-        }
-
-        // Update a specific goal dropdown
-        function updateGoalDropdown(selectId) {
-            const select = document.getElementById(selectId);
-            const currentValue = select.value;
-            
-            select.innerHTML = '';
-            
-            // Add default/all option
-            const defaultOption = document.createElement('option');
-            defaultOption.value = '';
-            defaultOption.textContent = selectId === 'goal-select' && goals.length === 0 
-                ? 'No goals available' 
-                : 'All Goals';
-            select.appendChild(defaultOption);
-            
-            // Add goals
-            goals.forEach(goal => {
-                const option = document.createElement('option');
-                option.value = goal.id;
-                option.textContent = goal.name;
-                select.appendChild(option);
-            });
-            
-            // Restore selected value if it still exists
-            if (currentValue && goals.some(g => g.id.toString() === currentValue)) {
-                select.value = currentValue;
-            }
-        }
-
-        // Add a new goal
-        function addGoal(e) {
-            e.preventDefault();
-            
-            const goal = {
-                id: Date.now(),
-                name: document.getElementById('goal-name').value,
-                startDate: document.getElementById('start-date').value,
-                endDate: document.getElementById('end-date').value,
-                target: parseFloat(document.getElementById('target').value),
-                currentProgress: 0,
-                unit: document.getElementById('unit').value,
-                recurrence: document.getElementById('recurrence').value
-            };
-            
-            // Validate end date is after start date
-            if (new Date(goal.endDate) <= new Date(goal.startDate)) {
-                alert('End date must be after start date');
-                return;
-            }
-            
-            goals.push(goal);
-            saveData();
-            
-            // Log the addition
-            addLog('Goal Added', Added goal: ${goal.name});
-            
-            // Reset form
-            e.target.reset();
-            document.getElementById('start-date').valueAsDate = new Date();
-            
-            // Update UI
-            updateAllGoalDropdowns();
-            renderGoalsTable();
-            renderStatusTable();
-            
-            // Show goals list
-            showPage('goals-list');
-        }
-
-        // Record progress for a goal
-        function recordProgress(e) {
-            e.preventDefault();
-            
-            const goalId = parseInt(document.getElementById('goal-select').value);
-            const change = parseFloat(document.getElementById('progress-change').value);
-            const entryDate = document.getElementById('entry-date').value;
-            
-            const goal = goals.find(g => g.id === goalId);
-            if (!goal) return;
-            
-            // Update progress
-            goal.currentProgress += change;
-            
-            // Ensure progress doesn't go negative
-            if (goal.currentProgress < 0) {
-                goal.currentProgress = 0;
-            }
-            
-            // Log the progress
-            addLog('Progress Updated', 
-                   Updated ${goal.name}: ${change > 0 ? '+' : ''}${change} ${goal.unit}, 
-                   entryDate);
-            
-            saveData();
-            
-            // Reset form
-            document.getElementById('progress-change').value = '';
-            document.getElementById('entry-date').valueAsDate = new Date();
-            
-            // Update UI
-            renderGoalsTable();
-            renderStatusTable();
-        }
-
-        // Add a log entry
-        function addLog(action, details, customDate = null) {
-            const timestamp = customDate ? new Date(customDate) : new Date();
-            const goalName = action.includes('Goal') 
-                ? details.split(':')[1].trim() 
-                : details.split(':')[0].trim().replace('Updated ', '');
-            
-            const log = {
-                timestamp: timestamp.toISOString(),
-                displayTime: timestamp.toLocaleString(),
-                goalName: goalName,
-                action: action,
-                details: details
-            };
-            
-            logs.unshift(log);
-            saveData();
-            
-            // Only update logs table if it's currently visible
-            if (document.getElementById('goal-logs').classList.contains('active')) {
-                renderLogsTable();
-            }
-        }
-
-        // Render the goals table
-        function renderGoalsTable() {
-            const tbody = document.querySelector('#goals-table tbody');
-            tbody.innerHTML = '';
-            
-            if (goals.length === 0) {
-                const row = document.createElement('tr');
-                row.innerHTML = '<td colspan="9">No goals added yet</td>';
-                tbody.appendChild(row);
-                return;
-            }
-            
-            const filteredGoals = filterGoalsForTable('filter-list-goal', 'filter-recurrence');
-            
-            filteredGoals.forEach(goal => {
-                const row = document.createElement('tr');
-                const completionPercent = (goal.currentProgress / goal.target) * 100;
-                
-                row.innerHTML = `
-                    <td class="editable" onclick="makeCellEditable(this, ${goal.id}, 'name', 'text')">${goal.name}</td>
-                    <td class="editable" onclick="makeCellEditable(this, ${goal.id}, 'startDate', 'date')">${formatDate(goal.startDate)}</td>
-                    <td class="editable" onclick="makeCellEditable(this, ${goal.id}, 'endDate', 'date')">${formatDate(goal.endDate)}</td>
-                    <td class="editable" onclick="makeCellEditable(this, ${goal.id}, 'target', 'number')">${goal.target}</td>
-                    <td>${goal.currentProgress.toFixed(2)}</td>
-                    <td>
-                        <div>${Math.min(completionPercent, 100).toFixed(1)}%</div>
-                        <div class="progress-bar">
-                            <div class="progress-bar-fill" style="width: ${Math.min(completionPercent, 100)}%"></div>
-                        </div>
-                    </td>
-                    <td class="editable" onclick="makeCellEditable(this, ${goal.id}, 'unit', 'text')">${goal.unit}</td>
-                    <td class="editable" onclick="makeCellEditable(this, ${goal.id}, 'recurrence', 'select')">${capitalizeFirstLetter(goal.recurrence)}</td>
-                    <td><button onclick="deleteGoal(${goal.id})">Delete</button></td>
-                `;
-                
-                tbody.appendChild(row);
-            });
-        }
-
-        // Filter goals for tables
-        function filterGoalsForTable(goalFilterId, recurrenceFilterId = null) {
-            const goalFilter = document.getElementById(goalFilterId).value;
-            const recurrenceFilter = recurrenceFilterId ? document.getElementById(recurrenceFilterId).value : null;
-            
-            return goals.filter(goal => {
-                const matchesGoal = !goalFilter || goal.id.toString() === goalFilter;
-                const matchesRecurrence = !recurrenceFilter || goal.recurrence === recurrenceFilter;
-                return matchesGoal && matchesRecurrence;
-            });
-        }
-
-        // Render the status table
-        function renderStatusTable() {
-            const tbody = document.querySelector('#status-table tbody');
-            tbody.innerHTML = '';
-            
-            if (goals.length === 0) {
-                const row = document.createElement('tr');
-                row.innerHTML = '<td colspan="8">No goals added yet</td>';
-                tbody.appendChild(row);
-                return;
-            }
-            
-            const filteredGoals = filterGoalsForTable('filter-status-goal', 'filter-status-recurrence');
-            
-            filteredGoals.forEach(goal => {
-                const row = document.createElement('tr');
-                const startDate = new Date(goal.startDate);
-                const endDate = new Date(goal.endDate);
-                const today = new Date();
-                
-                // Calculate time values
-                const totalDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
-                const daysElapsed = Math.ceil((today - startDate) / (1000 * 60 * 60 * 24));
-                const daysRemaining = Math.ceil((endDate - today) / (1000 * 60 * 60 * 24));
-                
-                // Calculate speed values
-                const requiredSpeed = goal.target / totalDays;
-                const currentSpeed = goal.currentProgress / Math.max(1, daysElapsed);
-                
-                // Calculate pending
-                const pending = Math.max(0, goal.target - goal.currentProgress);
-                
-                // Determine status (1-3)
-                let status = 1; // Green - on track
-                const progressRatio = goal.currentProgress / goal.target;
-                const timeRatio = daysElapsed / totalDays;
-                
-                if (progressRatio < timeRatio * 0.7) {
-                    status = 3; // Red - behind schedule
-                } else if (progressRatio < timeRatio * 0.9) {
-                    status = 2; // Yellow - needs attention
-                }
-                
-                // Adjust status if goal is completed
-                if (goal.currentProgress >= goal.target) {
-                    status = 1;
-                }
-                
-                // Adjust status if goal is past deadline
-                if (today > endDate && goal.currentProgress < goal.target) {
-                    status = 3;
-                }
-                
-                row.innerHTML = `
-                    <td>${goal.name}</td>
-                    <td>${currentSpeed.toFixed(2)} ${goal.unit}/${goal.recurrence}</td>
-                    <td>${requiredSpeed.toFixed(2)} ${goal.unit}/${goal.recurrence}</td>
-                    <td>${daysRemaining}</td>
-                    <td>${goal.currentProgress.toFixed(2)} ${goal.unit}</td>
-                    <td>${pending.toFixed(2)} ${goal.unit}</td>
-                    <td>${goal.unit}</td>
-                    <td><span class="status-indicator status-${status}" title="${getStatusText(status)}"></span></td>
-                `;
-                
-                tbody.appendChild(row);
-            });
-        }
-
-        // Get status text for tooltip
-        function getStatusText(status) {
-            switch(status) {
-                case 1: return 'On track';
-                case 2: return 'Needs attention';
-                case 3: return 'Behind schedule';
-                default: return '';
-            }
-        }
-
-        // Render the logs table
-        function renderLogsTable() {
-            const tbody = document.querySelector('#logs-table tbody');
-            tbody.innerHTML = '';
-            
-            if (logs.length === 0) {
-                const row = document.createElement('tr');
-                row.innerHTML = '<td colspan="4">No logs yet</td>';
-                tbody.appendChild(row);
-                return;
-            }
-            
-            const goalFilter = document.getElementById('filter-logs-goal').value;
-            const actionFilter = document.getElementById('filter-logs-action').value;
-            const dateFilter = document.getElementById('filter-logs-date').value;
-            
-            const filteredLogs = logs.filter(log => {
-                const matchesGoal = !goalFilter || 
-                    goals.some(g => g.name === log.goalName && g.id.toString() === goalFilter);
-                const matchesAction = !actionFilter || log.action === actionFilter;
-                const matchesDate = !dateFilter || 
-                    new Date(log.timestamp).toISOString().split('T')[0] === dateFilter;
-                
-                return matchesGoal && matchesAction && matchesDate;
-            });
-            
-            if (filteredLogs.length === 0) {
-                const row = document.createElement('tr');
-                row.innerHTML = '<td colspan="4">No logs match the current filters</td>';
-                tbody.appendChild(row);
-                return;
-            }
-            
-            filteredLogs.forEach(log => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${new Date(log.timestamp).toLocaleString()}</td>
-                    <td>${log.goalName}</td>
-                    <td>${log.action}</td>
-                    <td>${log.details}</td>
-                `;
-                tbody.appendChild(row);
-            });
-        }
-
-        // Render the calendar view
-        function renderCalendar() {
-            const container = document.getElementById('calendar-container');
-            container.innerHTML = '';
-            
-            const month = parseInt(document.getElementById('calendar-month').value);
-            const year = parseInt(document.getElementById('calendar-year').value);
-            const goalFilter = document.getElementById('filter-calendar-goal').value;
-            
-            // Get first day of month and how many days in month
-            const firstDay = new Date(year, month, 1);
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
-            
-            // Create calendar header
-            const calendarHeader = document.createElement('div');
-            calendarHeader.style.display = 'grid';
-            calendarHeader.style.gridTemplateColumns = 'repeat(7, 1fr)';
-            calendarHeader.style.textAlign = 'center';
-            calendarHeader.style.fontWeight = 'bold';
-            calendarHeader.style.marginBottom = '10px';
-            
-            ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].forEach(day => {
-                const dayElement = document.createElement('div');
-                dayElement.textContent = day;
-                calendarHeader.appendChild(dayElement);
-            });
-            
-            container.appendChild(calendarHeader);
-            
-            // Create calendar grid
-            const calendarGrid = document.createElement('div');
-            calendarGrid.style.display = 'grid';
-            calendarGrid.style.gridTemplateColumns = 'repeat(7, 1fr)';
-            calendarGrid.style.gap = '5px';
-            
-            // Add empty cells for days before the first day of the month
-            for (let i = 0; i < firstDay.getDay(); i++) {
-                const emptyCell = document.createElement('div');
-                emptyCell.className = 'calendar-day';
-                calendarGrid.appendChild(emptyCell);
-            }
-            
-            // Add cells for each day of the month
-            const today = new Date();
-            const isCurrentMonth = today.getMonth() === month && today.getFullYear() === year;
-            
-            for (let day = 1; day <= daysInMonth; day++) {
-                const dayCell = document.createElement('div');
-                dayCell.className = 'calendar-day';
-                
-                if (isCurrentMonth && day === today.getDate()) {
-                    dayCell.classList.add('today');
-                }
-                
-                const dayHeader = document.createElement('div');
-                dayHeader.className = 'calendar-day-header';
-                dayHeader.textContent = day;
-                dayCell.appendChild(dayHeader);
-                
-                // Filter logs for this day
-                const currentDate = new Date(year, month, day);
-                const dateStr = currentDate.toISOString().split('T')[0];
-                
-                const dayLogs = logs.filter(log => {
-                    const logDate = new Date(log.timestamp).toISOString().split('T')[0];
-                    const matchesDate = logDate === dateStr;
-                    const matchesGoal = !goalFilter || 
-                        goals.some(g => g.name === log.goalName && g.id.toString() === goalFilter);
-                    return matchesDate && matchesGoal;
-                });
-                
-                // Add log entries to the day cell
-                dayLogs.forEach(log => {
-                    const logEntry = document.createElement('div');
-                    logEntry.className = 'calendar-entry';
-                    
-                    let badgeClass = 'badge-primary';
-                    if (log.action.includes('Added')) badgeClass = 'badge-success';
-                    if (log.action.includes('Deleted')) badgeClass = 'badge-danger';
-                    if (log.action.includes('Updated')) badgeClass = 'badge-warning';
-                    
-                    logEntry.innerHTML = `
-                        <span class="badge ${badgeClass}">${log.action.split(' ')[0]}</span>
-                        ${log.details}
-                    `;
-                    dayCell.appendChild(logEntry);
-                });
-                
-                calendarGrid.appendChild(dayCell);
-            }
-            
-            container.appendChild(calendarGrid);
-        }
-
-        // Make a cell editable
-        function makeCellEditable(element, goalId, field, type = 'text') {
-            const goal = goals.find(g => g.id === goalId);
-            if (!goal) return;
-            
-            const currentValue = element.textContent;
-            
-            if (type === 'select') {
-                element.innerHTML = `
-                    <select onblur="updateGoalField(${goalId}, '${field}', this.value)"
-                            onchange="updateGoalField(${goalId}, '${field}', this.value)"
-                            autofocus>
-                        <option value="daily" ${goal.recurrence === 'daily' ? 'selected' : ''}>Daily</option>
-                        <option value="weekly" ${goal.recurrence === 'weekly' ? 'selected' : ''}>Weekly</option>
-                        <option value="monthly" ${goal.recurrence === 'monthly' ? 'selected' : ''}>Monthly</option>
-                        <option value="yearly" ${goal.recurrence === 'yearly' ? 'selected' : ''}>Yearly</option>
-                    </select>
-                `;
-                element.querySelector('select').focus();
-            } else {
-                element.innerHTML = `
-                    <input type="${type}" value="${currentValue}" 
-                        onblur="updateGoalField(${goalId}, '${field}', this.value)"
-                        onkeypress="if(event.keyCode===13) this.blur()"
-                        ${type === 'date' ? 'onchange="updateGoalField(' + goalId + ', \'' + field + '\', this.value)"' : ''}
-                        autofocus>
-                `;
-                element.querySelector('input').focus();
-            }
-        }
-
-        // Update a goal field
-        function updateGoalField(goalId, field, value) {
-            const goal = goals.find(g => g.id === goalId);
-            if (!goal) return;
-            
-            // Special handling for date fields to ensure proper format
-            if (field === 'startDate' || field === 'endDate') {
-                if (!value) return; // Don't allow empty dates
-                
-                // Ensure the date is in YYYY-MM-DD format
-                if (value.includes('/')) {
-                    const parts = value.split('/');
-                    if (parts.length === 3) {
-                        value = ${parts[2]}-${parts[0].padStart(2, '0')}-${parts[1].padStart(2, '0')};
-                    }
-                }
-                
-                // Validate date order if updating start or end date
-                if (field === 'startDate' && new Date(value) > new Date(goal.endDate)) {
-                    alert('Start date cannot be after end date');
-                    renderGoalsTable();
-                    return;
-                }
-                
-                if (field === 'endDate' && new Date(value) < new Date(goal.startDate)) {
-                    alert('End date cannot be before start date');
-                    renderGoalsTable();
-                    return;
-                }
-            }
-            
-            // Convert numeric fields
-            if (field === 'target') {
-                value = parseFloat(value);
-                if (isNaN(value)) {
-                    alert('Please enter a valid number');
-                    renderGoalsTable();
-                    return;
-                }
-            }
-            
-            // Update the field
-            goal[field] = value;
-            saveData();
-            
-            // Log the update
-            addLog('Goal Updated', Updated ${goal.name}'s ${field} to ${value});
-            
-            // Update UI
-            updateAllGoalDropdowns();
-            renderGoalsTable();
-            renderStatusTable();
-        }
-
-        // Delete a goal
-        function deleteGoal(goalId) {
-            if (!confirm('Are you sure you want to delete this goal?')) return;
-            
-            const goalIndex = goals.findIndex(g => g.id === goalId);
-            if (goalIndex === -1) return;
-            
-            const goalName = goals[goalIndex].name;
-            goals.splice(goalIndex, 1);
-            saveData();
-            
-            // Log the deletion
-            addLog('Goal Deleted', Deleted goal: ${goalName});
-            
-            // Update UI
-            updateAllGoalDropdowns();
-            renderGoalsTable();
-            renderStatusTable();
-        }
-
-        // Filter functions
-        function filterGoals() {
-            // This is just a placeholder - actual filtering is done during table rendering
-            console.log('Filtering goals...');
-        }
-
-        function filterGoalsList() {
-            renderGoalsTable();
-        }
-
-        function filterStatusGoals() {
-            renderStatusTable();
-        }
-
-        function filterLogs() {
-            renderLogsTable();
-        }
-
-        // Backup and restore functions
-        function exportData() {
-            const data = {
-                goals: goals,
-                logs: logs,
-                exportedAt: new Date().toISOString()
-            };
-            
-            const dataStr = JSON.stringify(data, null, 2);
-            const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
-            
-            const exportName = 'goal-tracker-export-' + new Date().toISOString().split('T')[0] + '.json';
-            
-            const linkElement = document.createElement('a');
-            linkElement.setAttribute('href', dataUri);
-            linkElement.setAttribute('download', exportName);
-            linkElement.click();
-        }
-
-        function importData() {
-            const fileInput = document.getElementById('import-file');
-            const statusElement = document.getElementById('import-status');
-            
-            if (fileInput.files.length === 0) {
-                statusElement.textContent = 'Please select a file first';
-                statusElement.style.color = 'red';
-                return;
-            }
-            
-            const file = fileInput.files[0];
-            const reader = new FileReader();
-            
-            reader.onload = function(e) {
-                try {
-                    const data = JSON.parse(e.target.result);
-                    
-                    if (!data.goals || !data.logs) {
-                        throw new Error('Invalid file format');
-                    }
-                    
-                    if (!confirm(This will import ${data.goals.length} goals and ${data.logs.length} log entries. Continue?)) {
-                        return;
-                    }
-                    
-                    goals = data.goals;
-                    logs = data.logs;
-                    saveData();
-                    
-                    statusElement.textContent = Successfully imported ${data.goals.length} goals and ${data.logs.length} log entries;
-                    statusElement.style.color = 'green';
-                    
-                    // Update UI
-                    updateAllGoalDropdowns();
-                    renderGoalsTable();
-                    renderStatusTable();
-                    renderLogsTable();
-                    renderCalendar();
-                    
-                    // Clear file input
-                    fileInput.value = '';
-                } catch (error) {
-                    statusElement.textContent = 'Error importing data: ' + error.message;
-                    statusElement.style.color = 'red';
-                    console.error(error);
-                }
-            };
-            
-            reader.readAsText(file);
-        }
-
-        function resetData() {
-            if (!confirm('Are you absolutely sure you want to delete ALL your goals and logs? This cannot be undone.')) {
-                return;
-            }
-            
-            goals = [];
-            logs = [];
-            saveData();
-            
-            // Update UI
-            updateAllGoalDropdowns();
-            renderGoalsTable();
-            renderStatusTable();
-            renderLogsTable();
-            renderCalendar();
-            
-            alert('All data has been reset');
+            renderAll();
         }
 
         // Save data to localStorage
         function saveData() {
-            localStorage.setItem('goals', JSON.stringify(goals));
-            localStorage.setItem('logs', JSON.stringify(logs));
+            localStorage.setItem('progressProData', JSON.stringify(data));
         }
 
-        // Helper functions
-        function formatDate(dateStr) {
-            if (!dateStr) return '';
-            const date = new Date(dateStr);
-            return date.toLocaleDateString();
+        // Tab navigation
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.style.display = 'none';
+            });
+            document.getElementById(tabId).style.display = 'block';
+            
+            // Update active nav link
+            document.querySelectorAll('.nav a').forEach(link => {
+                link.classList.remove('active');
+            });
+            event.target.classList.add('active');
         }
 
-        function capitalizeFirstLetter(string) {
-            return string.charAt(0).toUpperCase() + string.slice(1);
+        // Form handlers
+        document.getElementById('goal-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const goal = {
+                id: Date.now(),
+                name: document.getElementById('goal-name').value,
+                target: parseInt(document.getElementById('goal-target').value),
+                unit: document.getElementById('goal-unit').value,
+                progress: 0,
+                createdAt: new Date().toISOString()
+            };
+            data.goals.push(goal);
+            saveData();
+            this.reset();
+            renderAll();
+        });
+
+        document.getElementById('task-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const task = {
+                id: Date.now(),
+                title: document.getElementById('task-title').value,
+                priority: document.getElementById('task-priority').value,
+                completed: false,
+                createdAt: new Date().toISOString()
+            };
+            data.tasks.push(task);
+            saveData();
+            this.reset();
+            renderAll();
+        });
+
+        document.getElementById('note-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const note = {
+                id: Date.now(),
+                content: document.getElementById('note-content').value,
+                createdAt: new Date().toISOString()
+            };
+            data.notes.push(note);
+            saveData();
+            this.reset();
+            renderAll();
+        });
+
+        document.getElementById('link-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const link = {
+                id: Date.now(),
+                name: document.getElementById('link-name').value,
+                url: document.getElementById('link-url').value,
+                createdAt: new Date().toISOString()
+            };
+            data.links.push(link);
+            saveData();
+            this.reset();
+            renderAll();
+        });
+
+        // Render functions
+        function renderAll() {
+            renderGoals();
+            renderTasks();
+            renderToday();
+            renderNotes();
+            renderLinks();
         }
+
+        function renderGoals() {
+            const container = document.getElementById('goals-list');
+            container.innerHTML = '';
+            
+            data.goals.forEach(goal => {
+                const progressPercent = (goal.progress / goal.target) * 100;
+                
+                const goalEl = document.createElement('div');
+                goalEl.className = 'card';
+                goalEl.innerHTML = `
+                    <h3>${goal.name}</h3>
+                    <p>${goal.progress} / ${goal.target} ${goal.unit} (${Math.min(100, progressPercent).toFixed(1)}%)</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${progressPercent}%"></div>
+                    </div>
+                    <button onclick="updateProgress(${goal.id}, 1)">+1</button>
+                    <button onclick="updateProgress(${goal.id}, -1)">-1</button>
+                    <button onclick="deleteGoal(${goal.id})" style="background: var(--danger)">Delete</button>
+                `;
+                container.appendChild(goalEl);
+            });
+        }
+
+        function updateProgress(goalId, amount) {
+            const goal = data.goals.find(g => g.id === goalId);
+            if (goal) {
+                goal.progress = Math.max(0, goal.progress + amount);
+                saveData();
+                renderAll();
+            }
+        }
+
+        function deleteGoal(goalId) {
+            data.goals = data.goals.filter(g => g.id !== goalId);
+            saveData();
+            renderAll();
+        }
+
+        function renderTasks() {
+            const container = document.getElementById('tasks-list');
+            container.innerHTML = '';
+            
+            data.tasks.forEach(task => {
+                const taskEl = document.createElement('div');
+                taskEl.className = `task-item ${task.completed ? 'completed' : ''}`;
+                taskEl.innerHTML = `
+                    <input type="checkbox" ${task.completed ? 'checked' : ''} 
+                        onchange="toggleTaskCompletion(${task.id})">
+                    <span style="flex-grow:1">${task.title}</span>
+                    <span>${task.priority}</span>
+                    <button onclick="deleteTask(${task.id})" style="background: var(--danger)">Delete</button>
+                `;
+                container.appendChild(taskEl);
+            });
+        }
+
+        function toggleTaskCompletion(taskId) {
+            const task = data.tasks.find(t => t.id === taskId);
+            if (task) {
+                task.completed = !task.completed;
+                saveData();
+                renderAll();
+            }
+        }
+
+        function deleteTask(taskId) {
+            data.tasks = data.tasks.filter(t => t.id !== taskId);
+            saveData();
+            renderAll();
+        }
+
+        function renderToday() {
+            // Today's goals
+            const goalsContainer = document.getElementById('today-goals');
+            goalsContainer.innerHTML = data.goals.length === 0 ? 
+                '<p>No active goals. Add some in the Goals tab!</p>' : 
+                '';
+            
+            data.goals.forEach(goal => {
+                const goalEl = document.createElement('div');
+                goalEl.innerHTML = `
+                    <h4>${goal.name}</h4>
+                    <p>Progress: ${goal.progress}/${goal.target} ${goal.unit}</p>
+                `;
+                goalsContainer.appendChild(goalEl);
+            });
+            
+            // Today's tasks
+            const tasksContainer = document.getElementById('today-tasks');
+            const incompleteTasks = data.tasks.filter(t => !t.completed);
+            
+            tasksContainer.innerHTML = incompleteTasks.length === 0 ? 
+                '<p>No tasks for today. Add some in the Tasks tab!</p>' : 
+                '';
+            
+            incompleteTasks.forEach(task => {
+                const taskEl = document.createElement('div');
+                taskEl.className = 'task-item';
+                taskEl.innerHTML = `
+                    <input type="checkbox" onchange="toggleTaskCompletion(${task.id})">
+                    <span>${task.title}</span>
+                `;
+                tasksContainer.appendChild(taskEl);
+            });
+        }
+
+        function renderNotes() {
+            const container = document.getElementById('notes-list');
+            container.innerHTML = '';
+            
+            data.notes.forEach(note => {
+                const noteEl = document.createElement('div');
+                noteEl.className = 'card';
+                noteEl.innerHTML = `
+                    <p>${note.content}</p>
+                    <small>${new Date(note.createdAt).toLocaleString()}</small>
+                    <button onclick="deleteNote(${note.id})" style="background: var(--danger)">Delete</button>
+                `;
+                container.appendChild(noteEl);
+            });
+        }
+
+        function deleteNote(noteId) {
+            data.notes = data.notes.filter(n => n.id !== noteId);
+            saveData();
+            renderAll();
+        }
+
+        function renderLinks() {
+            const container = document.getElementById('links-list');
+            container.innerHTML = '';
+            
+            data.links.forEach(link => {
+                const linkEl = document.createElement('div');
+                linkEl.className = 'card';
+                linkEl.innerHTML = `
+                    <h3>${link.name}</h3>
+                    <a href="${link.url}" target="_blank">${link.url}</a>
+                    <button onclick="deleteLink(${link.id})" style="background: var(--danger)">Delete</button>
+                `;
+                container.appendChild(linkEl);
+            });
+        }
+
+        function deleteLink(linkId) {
+            data.links = data.links.filter(l => l.id !== linkId);
+            saveData();
+            renderAll();
+        }
+
+        // Initialize
+        loadData();
     </script>
 </body>
 </html>
