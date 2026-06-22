@@ -1,1771 +1,484 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#1a1a2e">
-<title>Life Dashboard</title>
-<style>
-:root {
-  --bg: #0f0f1a;
-  --bg2: #1a1a2e;
-  --bg3: #16213e;
-  --card: #1e1e3a;
-  --card2: #252545;
-  --border: #2e2e5e;
-  --text: #e8e8ff;
-  --text2: #9090b8;
-  --text3: #6060a0;
-  --accent: #6c63ff;
-  --accent2: #a29bfe;
-  --green: #00cec9;
-  --green2: #55efc4;
-  --orange: #fd9644;
-  --red: #e84393;
-  --yellow: #ffeaa7;
-  --pink: #fd79a8;
-  --radius: 14px;
-  --radius-sm: 8px;
-  --shadow: 0 4px 24px rgba(0,0,0,0.4);
-  --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
-  /* Category colors */
-  --c-study: #00b894;
-  --c-break: #636e72;
-  --c-walking: #0984e3;
-  --c-exercise: #e17055;
-  --c-reading: #a29bfe;
-  --c-travel: #fdcb6e;
-  --c-food: #00cec9;
-  --c-sleep: #6c5ce7;
-  --c-other: #b2bec3;
-}
-[data-theme="light"] {
-  --bg: #f0f0ff;
-  --bg2: #e8e8ff;
-  --bg3: #f8f8ff;
-  --card: #ffffff;
-  --card2: #f0f0ff;
-  --border: #d0d0f0;
-  --text: #1a1a3e;
-  --text2: #4a4a7e;
-  --text3: #8080b0;
-  --accent: #6c63ff;
-  --accent2: #5252cc;
-  --shadow: 0 4px 24px rgba(108,99,255,0.12);
-}
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; font-family: var(--font); background: var(--bg); color: var(--text); }
-body { overflow-x: hidden; }
-
-/* ─── SCROLLBAR ─── */
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-
-/* ─── HEADER ─── */
-#header {
-  position: sticky; top: 0; z-index: 100;
-  background: var(--bg2);
-  border-bottom: 1px solid var(--border);
-  padding: 12px 16px 8px;
-  box-shadow: var(--shadow);
-}
-.header-top {
-  display: flex; justify-content: space-between; align-items: center;
-  margin-bottom: 10px;
-}
-.date-time { display: flex; flex-direction: column; }
-#clock { font-size: 2rem; font-weight: 700; color: var(--text); letter-spacing: -1px; line-height: 1; }
-#date-label { font-size: 0.78rem; color: var(--text2); margin-top: 2px; }
-.header-actions { display: flex; gap: 8px; }
-.icon-btn {
-  width: 40px; height: 40px; border-radius: 50%;
-  background: var(--card); border: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.1rem; cursor: pointer; transition: all 0.2s;
-  color: var(--text2);
-}
-.icon-btn:active { transform: scale(0.92); }
-
-/* active task pill */
-#active-task-bar {
-  background: var(--card); border-radius: var(--radius-sm);
-  padding: 8px 12px; display: flex; align-items: center; gap: 10px;
-  border: 1px solid var(--border);
-  margin-bottom: 8px;
-}
-#active-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--green); animation: pulse 1.5s infinite; flex-shrink: 0; }
-@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.6;transform:scale(1.3)} }
-#active-task-name { font-weight: 700; font-size: 0.95rem; }
-#active-task-meta { font-size: 0.78rem; color: var(--text2); margin-left: auto; }
-#active-timer { font-variant-numeric: tabular-nums; color: var(--green); font-weight: 700; font-size: 0.95rem; margin-left: 6px; }
-.no-task { color: var(--text3); font-size: 0.85rem; }
-
-/* stats row */
-.stats-row {
-  display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px;
-  scrollbar-width: none;
-}
-.stats-row::-webkit-scrollbar { display: none; }
-.stat-chip {
-  flex-shrink: 0; background: var(--card); border: 1px solid var(--border);
-  border-radius: 20px; padding: 5px 12px;
-  display: flex; flex-direction: column; align-items: center;
-  min-width: 70px;
-}
-.stat-chip .lbl { font-size: 0.65rem; color: var(--text2); }
-.stat-chip .val { font-size: 0.88rem; font-weight: 700; }
-.stat-chip .val.accent { color: var(--accent2); }
-.stat-chip .val.green { color: var(--green); }
-.stat-chip .val.orange { color: var(--orange); }
-
-/* goal bar */
-#goal-bar-wrap {
-  margin-top: 8px;
-  background: var(--card); border-radius: var(--radius-sm);
-  padding: 8px 12px;
-  border: 1px solid var(--border);
-}
-.goal-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
-.goal-label { font-size: 0.75rem; color: var(--text2); }
-.goal-pct { font-size: 0.85rem; font-weight: 700; color: var(--accent2); }
-.progress-track {
-  height: 6px; background: var(--border); border-radius: 3px; overflow: hidden;
-}
-.progress-fill {
-  height: 100%; background: linear-gradient(90deg, var(--accent), var(--green));
-  border-radius: 3px; transition: width 0.5s ease;
-}
-
-/* ─── MAIN ─── */
-#main { padding: 12px 12px 80px; }
-
-/* ─── SECTIONS ─── */
-.section { margin-bottom: 16px; }
-.section-header {
-  display: flex; justify-content: space-between; align-items: center;
-  margin-bottom: 10px; cursor: pointer; user-select: none;
-}
-.section-title {
-  font-size: 0.8rem; font-weight: 700; text-transform: uppercase;
-  letter-spacing: 0.08em; color: var(--text2);
-  display: flex; align-items: center; gap: 6px;
-}
-.section-title .icon { font-size: 1rem; }
-.collapse-btn { font-size: 0.75rem; color: var(--text3); transition: transform 0.2s; }
-.section.collapsed .section-body { display: none; }
-.section.collapsed .collapse-btn { transform: rotate(-90deg); }
-
-/* ─── DAY NAV ─── */
-.day-nav {
-  display: flex; gap: 6px; align-items: center;
-  background: var(--card); border-radius: var(--radius-sm);
-  padding: 8px; border: 1px solid var(--border);
-  overflow-x: auto; scrollbar-width: none;
-}
-.day-nav::-webkit-scrollbar { display: none; }
-.day-btn {
-  flex-shrink: 0; padding: 6px 14px; border-radius: 20px;
-  border: 1px solid var(--border); background: transparent;
-  color: var(--text2); font-size: 0.8rem; cursor: pointer; transition: all 0.2s;
-  white-space: nowrap;
-}
-.day-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
-.day-btn:active { transform: scale(0.95); }
-#day-date-display {
-  font-weight: 700; font-size: 0.85rem; margin-left: auto; white-space: nowrap;
-  color: var(--accent2);
-}
-
-/* ─── QUICK TASK BUTTONS ─── */
-.quick-grid {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
-}
-.quick-btn {
-  border: none; border-radius: var(--radius); cursor: pointer;
-  padding: 14px 8px; display: flex; flex-direction: column;
-  align-items: center; gap: 5px; transition: all 0.18s;
-  position: relative; overflow: hidden;
-  -webkit-tap-highlight-color: transparent;
-}
-.quick-btn:active { transform: scale(0.93); filter: brightness(1.1); }
-.quick-btn .q-icon { font-size: 1.5rem; }
-.quick-btn .q-name { font-size: 0.78rem; font-weight: 700; color: #fff; }
-.quick-btn.active-task::after {
-  content: '●'; position: absolute; top: 6px; right: 8px;
-  font-size: 0.6rem; color: #fff; opacity: 0.9;
-  animation: pulse 1.5s infinite;
-}
-.quick-btn .q-dur { font-size: 0.68rem; color: rgba(255,255,255,0.75); }
-
-/* ─── TASK TABLE ─── */
-.task-list { display: flex; flex-direction: column; gap: 8px; }
-.task-card {
-  border-radius: var(--radius); border: 1px solid var(--border);
-  background: var(--card); overflow: hidden;
-  transition: box-shadow 0.2s;
-}
-.task-card.dragging { opacity: 0.5; border: 2px dashed var(--accent); }
-.task-card.drag-over { border-color: var(--green); box-shadow: 0 0 0 2px var(--green); }
-.task-top {
-  display: flex; align-items: stretch; min-height: 56px;
-}
-.task-color-bar { width: 5px; flex-shrink: 0; border-radius: 0; }
-.task-main { flex: 1; padding: 10px 10px 8px; }
-.task-name { font-weight: 700; font-size: 0.95rem; margin-bottom: 3px; }
-.task-times { font-size: 0.75rem; color: var(--text2); display: flex; gap: 10px; flex-wrap: wrap; }
-.task-dur { font-size: 0.8rem; font-weight: 700; margin-left: auto; align-self: flex-start; padding-top: 10px; padding-right: 10px; }
-.task-status-badge {
-  display: inline-block; font-size: 0.65rem; font-weight: 700;
-  padding: 2px 7px; border-radius: 10px; margin-top: 4px;
-  text-transform: uppercase; letter-spacing: 0.05em;
-}
-.status-running { background: rgba(0,206,201,0.2); color: var(--green); }
-.status-paused { background: rgba(253,150,68,0.2); color: var(--orange); }
-.status-completed { background: rgba(108,99,255,0.2); color: var(--accent2); }
-.status-cancelled { background: rgba(232,67,147,0.2); color: var(--red); }
-.task-notes { font-size: 0.75rem; color: var(--text2); padding: 0 12px 8px 17px; }
-.task-actions {
-  display: flex; gap: 4px; padding: 6px 10px 8px 17px;
-  border-top: 1px solid var(--border); flex-wrap: wrap;
-}
-.task-action-btn {
-  font-size: 0.7rem; padding: 4px 9px; border-radius: 6px;
-  border: 1px solid var(--border); background: var(--card2);
-  color: var(--text2); cursor: pointer; transition: all 0.15s;
-}
-.task-action-btn:active { background: var(--accent); color: #fff; border-color: var(--accent); }
-.task-action-btn.danger:active { background: var(--red); border-color: var(--red); }
-.task-sr { font-size: 0.65rem; color: var(--text3); font-weight: 700; padding: 2px 0; }
-
-/* empty state */
-.empty-state {
-  text-align: center; padding: 40px 20px; color: var(--text3);
-}
-.empty-state .e-icon { font-size: 3rem; margin-bottom: 10px; }
-.empty-state .e-text { font-size: 0.9rem; }
-
-/* ─── MISSING TIME ─── */
-.missing-time-card {
-  background: var(--card); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 12px 16px;
-}
-.missing-row { display: flex; justify-content: space-between; margin-bottom: 8px; }
-.missing-label { font-size: 0.82rem; color: var(--text2); }
-.missing-value { font-size: 0.82rem; font-weight: 700; }
-.missing-value.warn { color: var(--orange); }
-.missing-value.ok { color: var(--green); }
-.gap-alert {
-  background: rgba(253,150,68,0.1); border: 1px solid rgba(253,150,68,0.3);
-  border-radius: var(--radius-sm); padding: 8px 12px;
-  font-size: 0.78rem; color: var(--orange); margin-top: 8px;
-}
-
-/* ─── DAILY NOTES ─── */
-#daily-notes {
-  width: 100%; min-height: 120px; background: var(--card);
-  border: 1px solid var(--border); border-radius: var(--radius);
-  color: var(--text); font-family: var(--font); font-size: 0.9rem;
-  padding: 12px; resize: vertical; outline: none; line-height: 1.5;
-}
-#daily-notes:focus { border-color: var(--accent); }
-.notes-meta { font-size: 0.72rem; color: var(--text3); margin-top: 5px; text-align: right; }
-
-/* ─── MODALS ─── */
-.modal-overlay {
-  position: fixed; inset: 0; background: rgba(0,0,0,0.65);
-  z-index: 200; display: flex; align-items: flex-end;
-  opacity: 0; pointer-events: none; transition: opacity 0.25s;
-}
-.modal-overlay.open { opacity: 1; pointer-events: all; }
-.modal-sheet {
-  width: 100%; max-height: 90vh; overflow-y: auto;
-  background: var(--bg2); border-radius: 20px 20px 0 0;
-  padding: 20px 16px 40px;
-  transform: translateY(100%); transition: transform 0.3s ease;
-  box-shadow: var(--shadow);
-}
-.modal-overlay.open .modal-sheet { transform: translateY(0); }
-.modal-handle {
-  width: 40px; height: 4px; background: var(--border);
-  border-radius: 2px; margin: 0 auto 20px;
-}
-.modal-title {
-  font-size: 1.1rem; font-weight: 700; margin-bottom: 16px;
-  display: flex; justify-content: space-between; align-items: center;
-}
-.modal-close { cursor: pointer; color: var(--text3); font-size: 1.3rem; }
-
-/* forms */
-.form-group { margin-bottom: 14px; }
-.form-label { font-size: 0.78rem; color: var(--text2); margin-bottom: 6px; display: block; }
-.form-control {
-  width: 100%; padding: 11px 14px; border-radius: var(--radius-sm);
-  border: 1px solid var(--border); background: var(--card);
-  color: var(--text); font-size: 0.9rem; font-family: var(--font); outline: none;
-  transition: border-color 0.2s;
-}
-.form-control:focus { border-color: var(--accent); }
-select.form-control { appearance: none; cursor: pointer; }
-
-.btn {
-  width: 100%; padding: 14px; border-radius: var(--radius);
-  border: none; cursor: pointer; font-size: 0.95rem; font-weight: 700;
-  font-family: var(--font); transition: all 0.18s;
-}
-.btn:active { transform: scale(0.97); }
-.btn-primary { background: var(--accent); color: #fff; }
-.btn-danger { background: var(--red); color: #fff; }
-.btn-secondary { background: var(--card2); color: var(--text); border: 1px solid var(--border); }
-
-.btn-row { display: flex; gap: 8px; }
-.btn-row .btn { flex: 1; }
-
-/* ─── CATEGORIES ─── */
-.category-list { display: flex; flex-direction: column; gap: 8px; }
-.category-item {
-  background: var(--card); border-radius: var(--radius-sm);
-  border: 1px solid var(--border); padding: 10px 14px;
-  display: flex; align-items: center; gap: 10px;
-}
-.cat-dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; }
-.cat-name { flex: 1; font-weight: 600; font-size: 0.9rem; }
-.cat-actions { display: flex; gap: 6px; }
-.cat-btn {
-  padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border);
-  background: var(--card2); color: var(--text2); font-size: 0.72rem; cursor: pointer;
-}
-
-/* ─── TIMELINE ─── */
-.timeline { position: relative; padding-left: 48px; }
-.timeline::before {
-  content: ''; position: absolute; left: 18px; top: 0; bottom: 0;
-  width: 2px; background: var(--border);
-}
-.tl-item {
-  position: relative; margin-bottom: 10px;
-  display: flex; align-items: flex-start; gap: 10px;
-}
-.tl-time {
-  position: absolute; left: -48px; width: 40px;
-  font-size: 0.7rem; color: var(--text3); text-align: right;
-  padding-top: 4px; font-variant-numeric: tabular-nums;
-}
-.tl-dot {
-  position: absolute; left: -24px; top: 4px;
-  width: 10px; height: 10px; border-radius: 50%;
-  border: 2px solid var(--bg); box-shadow: 0 0 0 1px var(--border);
-}
-.tl-content {
-  flex: 1; background: var(--card); border-radius: var(--radius-sm);
-  border: 1px solid var(--border); padding: 8px 12px;
-}
-.tl-name { font-weight: 700; font-size: 0.85rem; }
-.tl-dur { font-size: 0.72rem; color: var(--text2); }
-.tl-gap {
-  background: rgba(253,150,68,0.07); border: 1px dashed rgba(253,150,68,0.3);
-  border-radius: var(--radius-sm); padding: 6px 12px;
-  font-size: 0.72rem; color: var(--orange); flex: 1;
-}
-
-/* ─── CATEGORY STATS ─── */
-.cat-stats { display: flex; flex-direction: column; gap: 8px; }
-.cat-stat-row { display: flex; align-items: center; gap: 10px; }
-.cat-stat-label { font-size: 0.82rem; width: 80px; color: var(--text2); }
-.cat-stat-bar { flex: 1; height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
-.cat-stat-fill { height: 100%; border-radius: 4px; }
-.cat-stat-time { font-size: 0.78rem; font-weight: 700; width: 50px; text-align: right; }
-
-/* ─── FAB ─── */
-#fab {
-  position: fixed; bottom: 24px; right: 16px; z-index: 99;
-  width: 56px; height: 56px; border-radius: 50%;
-  background: var(--accent); border: none; cursor: pointer;
-  font-size: 1.6rem; color: #fff; box-shadow: 0 6px 20px rgba(108,99,255,0.5);
-  display: flex; align-items: center; justify-content: center;
-  transition: all 0.2s;
-}
-#fab:active { transform: scale(0.9); }
-
-/* ─── TOAST ─── */
-#toast {
-  position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
-  background: var(--card2); border: 1px solid var(--border);
-  color: var(--text); padding: 10px 20px; border-radius: 20px;
-  font-size: 0.85rem; z-index: 300;
-  opacity: 0; transition: opacity 0.3s; pointer-events: none;
-  white-space: nowrap; max-width: 90vw;
-}
-#toast.show { opacity: 1; }
-
-/* ─── BACKDROP ─── */
-#confirm-dialog {
-  position: fixed; inset: 0; background: rgba(0,0,0,0.7);
-  z-index: 400; display: flex; align-items: center; justify-content: center;
-  opacity: 0; pointer-events: none; transition: opacity 0.2s;
-}
-#confirm-dialog.open { opacity: 1; pointer-events: all; }
-.confirm-box {
-  background: var(--bg2); border-radius: var(--radius);
-  padding: 24px 20px; width: 90%; max-width: 340px;
-  border: 1px solid var(--border);
-}
-.confirm-box h3 { font-size: 1rem; margin-bottom: 8px; }
-.confirm-box p { font-size: 0.85rem; color: var(--text2); margin-bottom: 20px; }
-
-/* ─── SEARCH ─── */
-#search-bar {
-  position: relative; margin-bottom: 10px;
-}
-#search-input {
-  width: 100%; padding: 10px 14px 10px 36px;
-  border-radius: var(--radius-sm); border: 1px solid var(--border);
-  background: var(--card); color: var(--text); font-size: 0.9rem; outline: none;
-}
-#search-input:focus { border-color: var(--accent); }
-.search-icon {
-  position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
-  color: var(--text3); font-size: 0.9rem; pointer-events: none;
-}
-.filter-row { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
-.filter-chip {
-  padding: 5px 12px; border-radius: 16px; font-size: 0.75rem;
-  border: 1px solid var(--border); background: var(--card);
-  color: var(--text2); cursor: pointer; transition: all 0.15s;
-}
-.filter-chip.active { background: var(--accent); color: #fff; border-color: var(--accent); }
-
-/* ─── EDIT TASK ─── */
-.time-pair { display: flex; gap: 8px; }
-.time-pair .form-group { flex: 1; }
-
-/* ─── REPORT CARDS ─── */
-.report-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.report-card {
-  background: var(--card); border-radius: var(--radius);
-  border: 1px solid var(--border); padding: 14px 12px; text-align: center;
-}
-.report-card .r-val { font-size: 1.4rem; font-weight: 800; }
-.report-card .r-lbl { font-size: 0.72rem; color: var(--text2); margin-top: 3px; }
-
-/* scrollable chips in report */
-.report-scroll { overflow-x: auto; white-space: nowrap; padding-bottom: 4px; }
-
-/* ─── RESPONSIVE ─── */
-@media (min-width: 480px) {
-  .quick-grid { grid-template-columns: repeat(4, 1fr); }
-  .report-grid { grid-template-columns: repeat(3, 1fr); }
-}
-@media (min-width: 700px) {
-  #main { max-width: 700px; margin: 0 auto; }
-  #header { max-width: 700px; margin: 0 auto; }
-  .quick-grid { grid-template-columns: repeat(5, 1fr); }
-}
-
-/* ─── ANIMATIONS ─── */
-@keyframes slideIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
-.task-card { animation: slideIn 0.25s ease; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecture Planner Pro - Quick Start Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        }
+        body {
+            background: #f0f2f5;
+            padding: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+            color: #2d3748;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 24px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .header h1 { font-size: 28px; }
+        .header p { opacity: 0.9; margin-top: 8px; font-size: 16px; }
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+        .card h2 {
+            color: #667eea;
+            font-size: 18px;
+            margin-bottom: 12px;
+            border-bottom: 2px solid #edf2f7;
+            padding-bottom: 8px;
+        }
+        .card h3 {
+            font-size: 15px;
+            color: #4a5568;
+            margin: 12px 0 6px;
+        }
+        .card ul, .card ol {
+            padding-left: 20px;
+            line-height: 1.7;
+        }
+        .card li { margin-bottom: 4px; }
+        .badge {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .badge.green { background: #51cf66; }
+        .badge.red { background: #ff6b6b; }
+        .badge.yellow { background: #ffd93d; color: #2d3748; }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        @media (max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
+        .highlight { background: #f7fafc; padding: 12px 16px; border-radius: 8px; border-left: 4px solid #667eea; margin: 8px 0; }
+        .emoji-big { font-size: 32px; }
+        .step-num {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 28px;
+            font-weight: 700;
+            font-size: 14px;
+            margin-right: 8px;
+        }
+        .footer {
+            text-align: center;
+            color: #718096;
+            font-size: 13px;
+            padding: 20px 0 10px;
+            border-top: 1px solid #e2e8f0;
+            margin-top: 20px;
+        }
+        .footer a { color: #667eea; text-decoration: none; }
+        .footer a:hover { text-decoration: underline; }
+        .key-feature {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid #edf2f7;
+        }
+        .key-feature:last-child { border-bottom: none; }
+        .key-feature .icon { font-size: 24px; min-width: 40px; }
+        .key-feature .desc { flex: 1; }
+        .key-feature .desc strong { display: block; }
+        .key-feature .desc small { color: #718096; font-size: 13px; }
+    </style>
 </head>
-<body data-theme="dark">
+<body>
 
-<!-- ─── HEADER ─── -->
-<div id="header">
-  <div class="header-top">
-    <div class="date-time">
-      <div id="clock">00:00:00</div>
-      <div id="date-label">Loading...</div>
-    </div>
-    <div class="header-actions">
-      <div class="icon-btn" onclick="openModal('settings-modal')" title="Settings">⚙️</div>
-      <div class="icon-btn" onclick="toggleTheme()" id="theme-btn" title="Toggle theme">🌙</div>
-      <div class="icon-btn" onclick="openModal('backup-modal')" title="Backup">💾</div>
-    </div>
-  </div>
-
-  <!-- active task -->
-  <div id="active-task-bar">
-    <div id="active-dot" style="display:none"></div>
-    <span id="active-task-name" class="no-task">No active task</span>
-    <span id="active-task-meta"></span>
-    <span id="active-timer"></span>
-  </div>
-
-  <!-- stat chips -->
-  <div class="stats-row" id="stats-row">
-    <div class="stat-chip">
-      <span class="lbl">Total</span>
-      <span class="val green" id="stat-total">0h 0m</span>
-    </div>
-    <div class="stat-chip">
-      <span class="lbl">Study</span>
-      <span class="val" id="stat-study" style="color:var(--c-study)">0h 0m</span>
-    </div>
-    <div class="stat-chip">
-      <span class="lbl">Break</span>
-      <span class="val" id="stat-break" style="color:var(--c-break)">0h 0m</span>
-    </div>
-    <div class="stat-chip">
-      <span class="lbl">Walk</span>
-      <span class="val" id="stat-walking" style="color:var(--c-walking)">0h 0m</span>
-    </div>
-    <div class="stat-chip">
-      <span class="lbl">Productive</span>
-      <span class="val accent" id="stat-pct">0%</span>
-    </div>
-  </div>
-
-  <!-- goal bar -->
-  <div id="goal-bar-wrap">
-    <div class="goal-row">
-      <span class="goal-label">Daily Goal: <span id="goal-target">10h</span></span>
-      <span class="goal-pct" id="goal-pct">0%</span>
-    </div>
-    <div class="progress-track">
-      <div class="progress-fill" id="progress-fill" style="width:0%"></div>
-    </div>
-    <div class="goal-row" style="margin-top:4px;margin-bottom:0">
-      <span class="goal-label">Done: <span id="goal-done">0h 0m</span></span>
-      <span class="goal-label">Left: <span id="goal-left">10h 0m</span></span>
-    </div>
-  </div>
+<div class="header">
+    <h1>📚 Lecture Planner Pro</h1>
+    <p>Your Complete Study Management System — Quick Start Guide</p>
 </div>
 
-<!-- ─── MAIN ─── -->
-<div id="main">
-
-  <!-- Day Navigation -->
-  <div class="section">
-    <div class="day-nav">
-      <button class="day-btn" onclick="navDay(-1)">← Prev</button>
-      <button class="day-btn" onclick="navDay(0)">Today</button>
-      <button class="day-btn" onclick="navDay(1)">Next →</button>
-      <input type="date" id="day-picker" class="day-btn" style="border:none;background:transparent;color:var(--text2);font-size:0.8rem;" onchange="pickDay(this.value)">
-      <span id="day-date-display"></span>
+<!-- ===== SECTION 1: WHAT IS IT ===== -->
+<div class="card">
+    <h2>🎯 What is Lecture Planner Pro?</h2>
+    <p style="font-size: 16px; line-height: 1.6; margin-bottom: 10px;">
+        <strong>A smart, mobile-friendly study management app</strong> that automatically organizes your course lectures into daily schedules based on your study speed. 
+        It helps you track what you <strong>should</strong> be doing (allocated) versus what you <strong>actually</strong> did (done), so you always know your exact status.
+    </p>
+    <div class="highlight">
+        <strong>💡 Core Purpose:</strong> <em>"Stop wondering what to study today — let the app tell you, track your progress, and show you where you're falling behind or ahead."</em>
     </div>
-  </div>
-
-  <!-- Quick Tasks -->
-  <div class="section" id="sec-quick">
-    <div class="section-header" onclick="toggleSection('sec-quick')">
-      <div class="section-title"><span class="icon">⚡</span> Quick Start</div>
-      <span class="collapse-btn">▾</span>
-    </div>
-    <div class="section-body">
-      <div class="quick-grid" id="quick-grid"></div>
-    </div>
-  </div>
-
-  <!-- Tasks -->
-  <div class="section" id="sec-tasks">
-    <div class="section-header" onclick="toggleSection('sec-tasks')">
-      <div class="section-title"><span class="icon">📋</span> Tasks</div>
-      <span class="collapse-btn">▾</span>
-    </div>
-    <div class="section-body">
-      <!-- search -->
-      <div id="search-bar">
-        <span class="search-icon">🔍</span>
-        <input id="search-input" type="text" placeholder="Search tasks..." oninput="renderTasks()">
-      </div>
-      <div class="filter-row" id="filter-row"></div>
-      <div class="task-list" id="task-list"></div>
-    </div>
-  </div>
-
-  <!-- Timeline -->
-  <div class="section" id="sec-timeline">
-    <div class="section-header" onclick="toggleSection('sec-timeline')">
-      <div class="section-title"><span class="icon">📅</span> Timeline</div>
-      <span class="collapse-btn">▾</span>
-    </div>
-    <div class="section-body">
-      <div class="timeline" id="timeline-view"></div>
-    </div>
-  </div>
-
-  <!-- Category Stats -->
-  <div class="section" id="sec-catstats">
-    <div class="section-header" onclick="toggleSection('sec-catstats')">
-      <div class="section-title"><span class="icon">📊</span> Category Breakdown</div>
-      <span class="collapse-btn">▾</span>
-    </div>
-    <div class="section-body">
-      <div class="cat-stats" id="cat-stats"></div>
-    </div>
-  </div>
-
-  <!-- Missing Time -->
-  <div class="section" id="sec-missing">
-    <div class="section-header" onclick="toggleSection('sec-missing')">
-      <div class="section-title"><span class="icon">⏱️</span> Time Coverage</div>
-      <span class="collapse-btn">▾</span>
-    </div>
-    <div class="section-body">
-      <div class="missing-time-card" id="missing-time-card"></div>
-    </div>
-  </div>
-
-  <!-- Daily Notes -->
-  <div class="section" id="sec-notes">
-    <div class="section-header" onclick="toggleSection('sec-notes')">
-      <div class="section-title"><span class="icon">📝</span> Daily Notes</div>
-      <span class="collapse-btn">▾</span>
-    </div>
-    <div class="section-body">
-      <textarea id="daily-notes" placeholder="Write your reflections, ideas, observations…" oninput="saveNotes()"></textarea>
-      <div class="notes-meta" id="notes-meta"></div>
-    </div>
-  </div>
-
-  <!-- Reports -->
-  <div class="section" id="sec-reports">
-    <div class="section-header" onclick="toggleSection('sec-reports')">
-      <div class="section-title"><span class="icon">📈</span> Reports</div>
-      <span class="collapse-btn">▾</span>
-    </div>
-    <div class="section-body">
-      <div class="filter-row">
-        <span class="filter-chip active" onclick="setReport('today',this)">Today</span>
-        <span class="filter-chip" onclick="setReport('week',this)">This Week</span>
-        <span class="filter-chip" onclick="setReport('month',this)">This Month</span>
-      </div>
-      <div class="report-grid" id="report-grid"></div>
-    </div>
-  </div>
-
 </div>
 
-<!-- FAB -->
-<button id="fab" onclick="openModal('add-task-modal')" title="Add task">＋</button>
-
-<!-- ─── TOAST ─── -->
-<div id="toast"></div>
-
-<!-- ─── CONFIRM DIALOG ─── -->
-<div id="confirm-dialog">
-  <div class="confirm-box">
-    <h3 id="confirm-title">Delete task?</h3>
-    <p id="confirm-msg">This cannot be undone.</p>
-    <div class="btn-row">
-      <button class="btn btn-secondary" onclick="closeConfirm()">Cancel</button>
-      <button class="btn btn-danger" id="confirm-ok">Delete</button>
-    </div>
-  </div>
-</div>
-
-<!-- ─── ADD/EDIT TASK MODAL ─── -->
-<div class="modal-overlay" id="add-task-modal">
-  <div class="modal-sheet">
-    <div class="modal-handle"></div>
-    <div class="modal-title">
-      <span id="task-modal-title">Add Task</span>
-      <span class="modal-close" onclick="closeModal('add-task-modal')">✕</span>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Category</label>
-      <select id="task-cat" class="form-control" onchange="updateCatColor()"></select>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Notes (optional)</label>
-      <input type="text" id="task-notes" class="form-control" placeholder="Any notes…">
-    </div>
-    <div class="time-pair">
-      <div class="form-group">
-        <label class="form-label">Start Time</label>
-        <input type="time" id="task-start" class="form-control">
-      </div>
-      <div class="form-group">
-        <label class="form-label">End Time</label>
-        <input type="time" id="task-end" class="form-control" placeholder="(running)">
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Status</label>
-      <select id="task-status" class="form-control">
-        <option value="running">Running</option>
-        <option value="completed">Completed</option>
-        <option value="paused">Paused</option>
-        <option value="cancelled">Cancelled</option>
-      </select>
-    </div>
-    <button class="btn btn-primary" onclick="saveTask()">Save Task</button>
-  </div>
-</div>
-
-<!-- ─── CATEGORY MODAL ─── -->
-<div class="modal-overlay" id="cat-modal">
-  <div class="modal-sheet">
-    <div class="modal-handle"></div>
-    <div class="modal-title">
-      <span>Categories</span>
-      <span class="modal-close" onclick="closeModal('cat-modal')">✕</span>
-    </div>
-    <div class="category-list" id="category-list"></div>
-    <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
-      <div class="form-group">
-        <label class="form-label">Add / Edit Category</label>
-        <input type="text" id="cat-name-input" class="form-control" placeholder="Category name">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Icon</label>
-        <input type="text" id="cat-icon-input" class="form-control" placeholder="Emoji icon e.g. 📚">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Color</label>
-        <input type="color" id="cat-color-input" class="form-control" value="#6c63ff" style="height:44px;cursor:pointer">
-      </div>
-      <input type="hidden" id="cat-edit-id">
-      <div class="btn-row">
-        <button class="btn btn-secondary" onclick="cancelCatEdit()">Cancel</button>
-        <button class="btn btn-primary" onclick="saveCat()">Save</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ─── SETTINGS MODAL ─── -->
-<div class="modal-overlay" id="settings-modal">
-  <div class="modal-sheet">
-    <div class="modal-handle"></div>
-    <div class="modal-title">
-      <span>Settings</span>
-      <span class="modal-close" onclick="closeModal('settings-modal')">✕</span>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Daily Goal (hours)</label>
-      <input type="number" id="goal-hours-input" class="form-control" min="1" max="24" value="10" onchange="saveSetting('goalHours',this.value)">
-    </div>
-    <div class="form-group">
-      <label class="form-label">Productive Categories</label>
-      <div id="productive-cats" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;"></div>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Day Start Hour</label>
-      <input type="number" id="day-start-input" class="form-control" min="0" max="12" value="6" onchange="saveSetting('dayStart',this.value)">
-    </div>
-    <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
-      <button class="btn btn-secondary" onclick="openModal('cat-modal');closeModal('settings-modal')">Manage Categories</button>
-    </div>
-  </div>
-</div>
-
-<!-- ─── BACKUP MODAL ─── -->
-<div class="modal-overlay" id="backup-modal">
-  <div class="modal-sheet">
-    <div class="modal-handle"></div>
-    <div class="modal-title">
-      <span>Backup & Restore</span>
-      <span class="modal-close" onclick="closeModal('backup-modal')">✕</span>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Export</label>
-      <div class="btn-row" style="flex-wrap:wrap;gap:8px;">
-        <button class="btn btn-secondary" style="flex:1;min-width:120px" onclick="exportData('today','json')">Today JSON</button>
-        <button class="btn btn-secondary" style="flex:1;min-width:120px" onclick="exportData('all','json')">All Data JSON</button>
-        <button class="btn btn-secondary" style="flex:1;min-width:120px" onclick="exportData('today','csv')">Today CSV</button>
-        <button class="btn btn-secondary" style="flex:1;min-width:120px" onclick="exportData('all','csv')">All Data CSV</button>
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Import</label>
-      <input type="file" id="import-file" accept=".json,.csv" class="form-control" onchange="importData(this)">
-    </div>
-    <div class="form-group">
-      <label class="form-label">Danger Zone</label>
-      <button class="btn btn-danger" onclick="confirmClearAll()">Clear All Data</button>
-    </div>
-  </div>
-</div>
-
-<script>
-'use strict';
-// ════════════════════════════════
-//  STATE
-// ════════════════════════════════
-const DEFAULT_CATS = [
-  { id:'study',   name:'Study',    icon:'📚', color:'#00b894' },
-  { id:'break',   name:'Break',    icon:'☕', color:'#636e72' },
-  { id:'walking', name:'Walking',  icon:'🚶', color:'#0984e3' },
-  { id:'exercise',name:'Exercise', icon:'💪', color:'#e17055' },
-  { id:'reading', name:'Reading',  icon:'📖', color:'#a29bfe' },
-  { id:'travel',  name:'Travel',   icon:'✈️', color:'#fdcb6e' },
-  { id:'food',    name:'Food',     icon:'🍽️', color:'#00cec9' },
-  { id:'sleep',   name:'Sleep',    icon:'😴', color:'#6c5ce7' },
-  { id:'other',   name:'Other',    icon:'⭕', color:'#b2bec3' },
-];
-
-let state = {
-  tasks: {},           // { 'YYYY-MM-DD': [ {...task} ] }
-  notes: {},           // { 'YYYY-MM-DD': 'text' }
-  categories: [],
-  settings: { goalHours: 10, productiveCats: ['study','reading'], dayStart: 6, theme: 'dark' },
-  viewDate: todayKey(),
-  activeTask: null,    // { date, index }
-  editTaskId: null,
-  dragSrcIndex: null,
-  reportMode: 'today',
-  undoStack: [],
-};
-
-// ════════════════════════════════
-//  LOCAL STORAGE
-// ════════════════════════════════
-function save() {
-  try { localStorage.setItem('ld_state', JSON.stringify(state)); } catch(e){}
-}
-function load() {
-  try {
-    const raw = localStorage.getItem('ld_state');
-    if (raw) {
-      const s = JSON.parse(raw);
-      // merge to protect new fields
-      state.tasks     = s.tasks     || {};
-      state.notes     = s.notes     || {};
-      state.categories= s.categories|| [];
-      state.settings  = {...state.settings, ...(s.settings||{})};
-      state.activeTask= s.activeTask|| null;
-    }
-  } catch(e){}
-  if (!state.categories.length) state.categories = JSON.parse(JSON.stringify(DEFAULT_CATS));
-}
-
-// ════════════════════════════════
-//  HELPERS
-// ════════════════════════════════
-function todayKey() {
-  return new Date().toISOString().slice(0,10);
-}
-function dateKey(d) {
-  // d is Date
-  return d.toISOString().slice(0,10);
-}
-function fmtTime(mins) {
-  if (mins < 0) mins = 0;
-  const h = Math.floor(mins/60), m = Math.floor(mins%60);
-  return h>0 ? `${h}h ${m}m` : `${m}m`;
-}
-function fmtSecs(s) {
-  if (s<0) s=0;
-  const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),ss=Math.floor(s%60);
-  return `${pad(h)}:${pad(m)}:${pad(ss)}`;
-}
-function pad(n){ return String(n).padStart(2,'0'); }
-function nowStr() {
-  const n=new Date(); return `${pad(n.getHours())}:${pad(n.getMinutes())}`;
-}
-function timeToMins(t) {
-  if (!t) return null;
-  const [h,m]=t.split(':').map(Number); return h*60+m;
-}
-function minsToTimeStr(m) {
-  return `${pad(Math.floor(m/60))}:${pad(m%60)}`;
-}
-function taskDuration(task) {
-  if (!task.start) return 0;
-  const sm = timeToMins(task.start);
-  if (sm===null) return 0;
-  let em;
-  if (task.end) { em = timeToMins(task.end); }
-  else if (task.status==='running') { const n=new Date(); em=n.getHours()*60+n.getMinutes()+n.getSeconds()/60; }
-  else return 0;
-  return Math.max(0, em - sm);
-}
-function catById(id) {
-  return state.categories.find(c=>c.id===id) || { name: id, icon:'⭕', color:'#b2bec3' };
-}
-function getDayTasks(key) {
-  return (state.tasks[key]||[]).filter(t=>t.status!=='cancelled');
-}
-function getActiveCat() {
-  if (!state.activeTask) return null;
-  const t = state.tasks[state.activeTask.date]?.[state.activeTask.index];
-  return t ? catById(t.category) : null;
-}
-function pushUndo(action) {
-  state.undoStack.push(action);
-  if (state.undoStack.length > 50) state.undoStack.shift();
-}
-function formatDisplayDate(key) {
-  const d = new Date(key + 'T12:00:00');
-  return d.toLocaleDateString('en-US', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
-}
-
-// ════════════════════════════════
-//  CLOCK
-// ════════════════════════════════
-function tick() {
-  const n = new Date();
-  document.getElementById('clock').textContent =
-    `${pad(n.getHours())}:${pad(n.getMinutes())}:${pad(n.getSeconds())}`;
-  document.getElementById('date-label').textContent =
-    n.toLocaleDateString('en-US', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
-  updateActiveTimer();
-}
-
-let timerInterval = null;
-function startClock() {
-  tick();
-  timerInterval = setInterval(tick, 1000);
-}
-
-function updateActiveTimer() {
-  const bar = document.getElementById('active-task-bar');
-  const dot = document.getElementById('active-dot');
-  const nameEl = document.getElementById('active-task-name');
-  const metaEl = document.getElementById('active-task-meta');
-  const timerEl = document.getElementById('active-timer');
-
-  if (!state.activeTask) {
-    dot.style.display='none';
-    nameEl.className='no-task';
-    nameEl.textContent='No active task';
-    metaEl.textContent='';
-    timerEl.textContent='';
-    return;
-  }
-  const tasks = state.tasks[state.activeTask.date];
-  if (!tasks) return;
-  const t = tasks[state.activeTask.index];
-  if (!t || t.status!=='running') {
-    state.activeTask=null; save();
-    updateActiveTimer(); return;
-  }
-  const cat = catById(t.category);
-  dot.style.display='block';
-  dot.style.background=cat.color;
-  nameEl.className='';
-  nameEl.style.color=cat.color;
-  nameEl.textContent=`${cat.icon} ${cat.name}`;
-  metaEl.textContent=`Started ${t.start}`;
-
-  // elapsed secs
-  const sm = timeToMins(t.start);
-  const now = new Date();
-  const em = now.getHours()*60 + now.getMinutes() + now.getSeconds()/60;
-  const secs = Math.max(0, (em-sm)*60);
-  timerEl.textContent = fmtSecs(secs);
-
-  // update stats every tick
-  updateStats();
-}
-
-// ════════════════════════════════
-//  STATS
-// ════════════════════════════════
-function updateStats() {
-  const tasks = getDayTasks(state.viewDate);
-  const catMins = {};
-  let total = 0;
-  tasks.forEach(t=>{
-    const d = taskDuration(t);
-    catMins[t.category] = (catMins[t.category]||0)+d;
-    total += d;
-  });
-
-  document.getElementById('stat-total').textContent = fmtTime(total);
-
-  // per-cat chips (update known ones)
-  ['study','break','walking'].forEach(id=>{
-    const el = document.getElementById('stat-'+id);
-    if (el) el.textContent = fmtTime(catMins[id]||0);
-  });
-
-  // productivity
-  const prodCats = state.settings.productiveCats||['study','reading'];
-  const prodMins = prodCats.reduce((s,c)=>s+(catMins[c]||0),0);
-  const pct = total>0 ? Math.round(prodMins/total*100) : 0;
-  document.getElementById('stat-pct').textContent = pct+'%';
-
-  // goal
-  const goalMins = (state.settings.goalHours||10)*60;
-  const done = prodMins;
-  const left = Math.max(0, goalMins-done);
-  const gpct = Math.min(100, Math.round(done/goalMins*100));
-  document.getElementById('goal-pct').textContent = gpct+'%';
-  document.getElementById('goal-target').textContent = (state.settings.goalHours||10)+'h';
-  document.getElementById('goal-done').textContent = fmtTime(done);
-  document.getElementById('goal-left').textContent = fmtTime(left);
-  document.getElementById('progress-fill').style.width = gpct+'%';
-}
-
-// ════════════════════════════════
-//  QUICK TASK BUTTONS
-// ════════════════════════════════
-function renderQuickGrid() {
-  const grid = document.getElementById('quick-grid');
-  grid.innerHTML = '';
-  const tasks = getDayTasks(state.viewDate);
-
-  state.categories.forEach(cat => {
-    const btn = document.createElement('button');
-    btn.className = 'quick-btn';
-    btn.style.background = cat.color + 'dd';
-    btn.style.boxShadow = `0 4px 12px ${cat.color}44`;
-
-    // check if this cat is running
-    let isActive = false, runTime = '';
-    if (state.activeTask) {
-      const at = state.tasks[state.activeTask.date]?.[state.activeTask.index];
-      if (at && at.category===cat.id && at.status==='running') {
-        isActive = true;
-        btn.classList.add('active-task');
-      }
-    }
-
-    // today total for this cat
-    const catMins = tasks.filter(t=>t.category===cat.id).reduce((s,t)=>s+taskDuration(t),0);
-    const timeStr = catMins>0 ? fmtTime(catMins) : '';
-
-    btn.innerHTML = `<span class="q-icon">${cat.icon}</span><span class="q-name">${cat.name}</span>${timeStr?`<span class="q-dur">${timeStr}</span>`:''}`;
-    btn.onclick = () => startQuickTask(cat.id);
-    grid.appendChild(btn);
-  });
-}
-
-function startQuickTask(catId) {
-  const now = nowStr();
-  const key = state.viewDate;
-
-  // end current running task
-  if (state.activeTask) {
-    const prevTasks = state.tasks[state.activeTask.date];
-    if (prevTasks) {
-      const prev = prevTasks[state.activeTask.index];
-      if (prev && prev.status==='running') {
-        prev.end = now;
-        prev.status = 'completed';
-      }
-    }
-  }
-
-  // start new task
-  if (!state.tasks[key]) state.tasks[key] = [];
-  const task = {
-    id: Date.now(),
-    category: catId,
-    start: now,
-    end: null,
-    status: 'running',
-    notes: '',
-    created: Date.now()
-  };
-  state.tasks[key].unshift(task);
-  state.activeTask = { date: key, index: 0 };
-
-  // fix indices (we unshifted, so existing active might be off)
-  // just mark by id
-  state.activeTask = { date: key, id: task.id };
-
-  save();
-  toast(`▶ ${catById(catId).icon} ${catById(catId).name} started`);
-  render();
-}
-
-// resolve activeTask by id
-function resolveActiveTask() {
-  if (!state.activeTask) return null;
-  const tasks = state.tasks[state.activeTask.date];
-  if (!tasks) return null;
-  const idx = tasks.findIndex(t=>t.id===state.activeTask.id);
-  if (idx===-1) { state.activeTask=null; return null; }
-  state.activeTask.index = idx;
-  return tasks[idx];
-}
-
-// ════════════════════════════════
-//  TASK RENDER
-// ════════════════════════════════
-function renderTasks() {
-  const list = document.getElementById('task-list');
-  let tasks = (state.tasks[state.viewDate]||[]);
-
-  // search
-  const q = (document.getElementById('search-input').value||'').toLowerCase().trim();
-  if (q) tasks = tasks.filter(t=>{
-    const cat = catById(t.category);
-    return cat.name.toLowerCase().includes(q)||(t.notes||'').toLowerCase().includes(q);
-  });
-
-  // filter chip
-  const activeFilter = document.querySelector('#filter-row .filter-chip.active');
-  const filterVal = activeFilter ? activeFilter.dataset.filter : 'all';
-  if (filterVal && filterVal!=='all') {
-    tasks = tasks.filter(t=>t.category===filterVal||t.status===filterVal);
-  }
-
-  if (!tasks.length) {
-    list.innerHTML = `<div class="empty-state"><div class="e-icon">📋</div><div class="e-text">${q?'No tasks match your search':'No tasks yet — tap a quick button or ＋ to add one'}</div></div>`;
-    return;
-  }
-
-  list.innerHTML = '';
-  tasks.forEach((task, idx) => {
-    const realIdx = (state.tasks[state.viewDate]||[]).indexOf(task);
-    const cat = catById(task.category);
-    const dur = taskDuration(task);
-    const card = document.createElement('div');
-    card.className = 'task-card';
-    card.draggable = true;
-    card.dataset.idx = realIdx;
-    card.style.opacity = task.status==='cancelled'?'0.5':'1';
-
-    const statusLabel = {running:'Running',paused:'Paused',completed:'Completed',cancelled:'Cancelled'};
-    const statusClass = 'status-'+task.status;
-
-    let notesHtml = task.notes ? `<div class="task-notes">📝 ${escHtml(task.notes)}</div>` : '';
-
-    card.innerHTML = `
-      <div class="task-top">
-        <div class="task-color-bar" style="background:${cat.color}"></div>
-        <div class="task-main">
-          <div class="task-sr">#${idx+1}</div>
-          <div class="task-name">${cat.icon} ${cat.name}</div>
-          <div class="task-times">
-            <span>▶ ${task.start||'—'}</span>
-            ${task.end?`<span>■ ${task.end}</span>`:''}
-          </div>
-          <span class="task-status-badge ${statusClass}">${statusLabel[task.status]||task.status}</span>
+<!-- ===== SECTION 2: KEY BENEFITS ===== -->
+<div class="card">
+    <h2>✅ Why Is This Useful?</h2>
+    <div class="grid-2">
+        <div>
+            <strong>📌 For Students</strong>
+            <ul>
+                <li>Know <strong>exactly</strong> what to study each day</li>
+                <li>See your <strong>completion trend</strong> across days</li>
+                <li>Track <strong>when you actually completed</strong> vs when planned</li>
+                <li>Identify <strong>weak spots</strong> and improve</li>
+            </ul>
         </div>
-        <div class="task-dur" style="color:${cat.color}">${dur?fmtTime(dur):task.status==='running'?'…':'—'}</div>
-      </div>
-      ${notesHtml}
-      <div class="task-actions">
-        <button class="task-action-btn" onclick="openEditTask(${realIdx})">✏️ Edit</button>
-        ${task.status==='running'
-          ? `<button class="task-action-btn" onclick="pauseTask(${realIdx})">⏸ Pause</button>
-             <button class="task-action-btn" onclick="endTask(${realIdx})">■ End</button>`
-          : task.status==='paused'
-          ? `<button class="task-action-btn" onclick="resumeTask(${realIdx})">▶ Resume</button>`
-          : ''}
-        <button class="task-action-btn" onclick="duplicateTask(${realIdx})">⧉ Dup</button>
-        <button class="task-action-btn" onclick="moveTask(${realIdx},'up')">↑</button>
-        <button class="task-action-btn" onclick="moveTask(${realIdx},'down')">↓</button>
-        <button class="task-action-btn danger" onclick="confirmDelete(${realIdx})">🗑</button>
-      </div>`;
+        <div>
+            <strong>📌 For Professionals</strong>
+            <ul>
+                <li>Organize <strong>training modules</strong> or courses</li>
+                <li>Track <strong>learning progress</strong> over time</li>
+                <li>Share <strong>progress reports</strong> with managers</li>
+                <li>Maintain <strong>daily learning habits</strong></li>
+            </ul>
+        </div>
+    </div>
+    <div style="margin-top: 12px; background: #ebf8ff; padding: 12px 16px; border-radius: 8px;">
+        <strong>🎯 The Big Picture:</strong> Instead of guessing what to study, the app <strong>calculates</strong> your daily schedule. Instead of wondering if you're on track, the <strong>battery gauges</strong> show your exact progress. Instead of forgetting what you moved around, the app <strong>tracks copies</strong> and shows you the <strong>real picture</strong> of allocated vs done.
+    </div>
+</div>
 
-    // drag events
-    card.addEventListener('dragstart', e=>{ state.dragSrcIndex=realIdx; card.classList.add('dragging'); });
-    card.addEventListener('dragend',   e=>{ card.classList.remove('dragging'); });
-    card.addEventListener('dragover',  e=>{ e.preventDefault(); card.classList.add('drag-over'); });
-    card.addEventListener('dragleave', e=>{ card.classList.remove('drag-over'); });
-    card.addEventListener('drop',      e=>{
-      e.preventDefault(); card.classList.remove('drag-over');
-      const src = state.dragSrcIndex;
-      const dst = realIdx;
-      if (src===dst) return;
-      const arr = state.tasks[state.viewDate];
-      const [item] = arr.splice(src,1);
-      arr.splice(dst,0,item);
-      // fix active
-      if (state.activeTask && state.activeTask.date===state.viewDate) {
-        const newIdx = arr.findIndex(t=>t.id===state.activeTask.id);
-        if (newIdx!==-1) state.activeTask.index = newIdx;
-      }
-      save(); render();
-    });
+<!-- ===== SECTION 3: HOW IT WORKS ===== -->
+<div class="card">
+    <h2>⚙️ How It Works</h2>
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin: 10px 0;">
+        <div style="background: #f7fafc; padding: 14px; border-radius: 8px; text-align: center;">
+            <div style="font-size: 28px;">📤</div>
+            <strong>1. Upload</strong>
+            <small style="display:block; color:#718096;">Add lectures with durations</small>
+        </div>
+        <div style="background: #f7fafc; padding: 14px; border-radius: 8px; text-align: center;">
+            <div style="font-size: 28px;">⚡</div>
+            <strong>2. Set Speed</strong>
+            <small style="display:block; color:#718096;">How many mins/day you study</small>
+        </div>
+        <div style="background: #f7fafc; padding: 14px; border-radius: 8px; text-align: center;">
+            <div style="font-size: 28px;">📅</div>
+            <strong>3. Schedule</strong>
+            <small style="display:block; color:#718096;">Auto-generated daily plan</small>
+        </div>
+    </div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
+        <div style="background: #f7fafc; padding: 14px; border-radius: 8px; text-align: center;">
+            <div style="font-size: 28px;">✅</div>
+            <strong>4. Track</strong>
+            <small style="display:block; color:#718096;">Mark complete as you study</small>
+        </div>
+        <div style="background: #f7fafc; padding: 14px; border-radius: 8px; text-align: center;">
+            <div style="font-size: 28px;">📊</div>
+            <strong>5. Analyze</strong>
+            <small style="display:block; color:#718096;">See progress & trends</small>
+        </div>
+        <div style="background: #f7fafc; padding: 14px; border-radius: 8px; text-align: center;">
+            <div style="font-size: 28px;">🔄</div>
+            <strong>6. Adjust</strong>
+            <small style="display:block; color:#718096;">Copy lectures, change speeds, reset</small>
+        </div>
+    </div>
+    <div style="margin-top: 12px; padding: 12px 16px; background: #fef3c7; border-radius: 8px; border-left: 4px solid #ffd93d;">
+        <strong>🧠 The Magic:</strong> The app <strong>automatically</strong> groups lectures into daily chunks based on your speed. Large lectures span multiple days (shown as "continuing"), small ones combine. When you copy a lecture to another date, it <strong>tracks</strong> it so you know what was moved and where.
+    </div>
+</div>
 
-    list.appendChild(card);
-  });
-}
+<!-- ===== SECTION 4: AUTOMATION ===== -->
+<div class="card">
+    <h2>🤖 What Automation Does It Have?</h2>
+    <div class="key-feature">
+        <div class="icon">📅</div>
+        <div class="desc">
+            <strong>Auto-Schedule Generation</strong>
+            <small>Upload lectures → set speed → app calculates daily plan automatically</small>
+        </div>
+    </div>
+    <div class="key-feature">
+        <div class="icon">💾</div>
+        <div class="desc">
+            <strong>Auto-Save</strong>
+            <small>Every change saves instantly to localStorage. No manual save needed. Refresh or close — your data is safe.</small>
+        </div>
+    </div>
+    <div class="key-feature">
+        <div class="icon">⏰</div>
+        <div class="desc">
+            <strong>Auto-Export at 12 PM Daily</strong>
+            <small>Every day at noon, the app automatically exports a backup JSON file to your downloads folder.</small>
+        </div>
+    </div>
+    <div class="key-feature">
+        <div class="icon">📋</div>
+        <div class="desc">
+            <strong>Auto-Copy Tracking</strong>
+            <small>When you copy a lecture to another date, the app automatically shows "Copied from" and "Copied to" with hours — so you always know what was moved.</small>
+        </div>
+    </div>
+    <div class="key-feature">
+        <div class="icon">📌</div>
+        <div class="desc">
+            <strong>Auto-Done Date</strong>
+            <small>When you tick a lecture as complete, the done date auto-sets to the allocated date (you can still edit it manually).</small>
+        </div>
+    </div>
+    <div class="key-feature">
+        <div class="icon">🔄</div>
+        <div class="desc">
+            <strong>Auto-Renumbering</strong>
+            <small>Delete a lecture → remaining lectures renumber automatically.</small>
+        </div>
+    </div>
+</div>
 
-function renderFilterChips() {
-  const row = document.getElementById('filter-row');
-  row.innerHTML = '';
-  const add = (label, filter, isActive) => {
-    const chip = document.createElement('span');
-    chip.className = 'filter-chip'+(isActive?' active':'');
-    chip.textContent = label;
-    chip.dataset.filter = filter;
-    chip.onclick = () => {
-      row.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
-      chip.classList.add('active');
-      renderTasks();
-    };
-    row.appendChild(chip);
-  };
-  add('All','all',true);
-  state.categories.forEach(c=>add(c.icon+' '+c.name, c.id, false));
-}
+<!-- ===== SECTION 5: HOW TO USE - STEP BY STEP ===== -->
+<div class="card">
+    <h2>📖 How to Use — Step by Step</h2>
+    
+    <h3>🚀 Getting Started (First Time)</h3>
+    <ol>
+        <li><span class="step-num">1</span> <strong>Upload Your Course:</strong> Go to <strong>Upload</strong> tab → enter course name → paste lectures in format <code>1 Lecture_Name 45</code> → click <strong>Upload</strong></li>
+        <li><span class="step-num">2</span> <strong>Or Test with Dummy:</strong> Click <strong>🎲 Dummy Data</strong> to add 2 sample courses instantly</li>
+        <li><span class="step-num">3</span> <strong>Set Your Study Speed:</strong> Go to <strong>Edit</strong> tab → select your course → set <strong>Speed</strong> (e.g., 120 mins/day) and <strong>Start Date</strong></li>
+        <li><span class="step-num">4</span> <strong>Your schedule is now ready!</strong> Go to <strong>Timetable</strong> to see your daily plan</li>
+    </ol>
 
-// ════════════════════════════════
-//  TASK ACTIONS
-// ════════════════════════════════
-function endTask(idx) {
-  const tasks = state.tasks[state.viewDate];
-  if (!tasks || !tasks[idx]) return;
-  tasks[idx].end = nowStr();
-  tasks[idx].status = 'completed';
-  if (state.activeTask && state.activeTask.date===state.viewDate && state.activeTask.index===idx) {
-    state.activeTask = null;
-  }
-  save(); render();
-}
-function pauseTask(idx) {
-  const tasks = state.tasks[state.viewDate];
-  if (!tasks || !tasks[idx]) return;
-  tasks[idx].status='paused';
-  if (state.activeTask && state.activeTask.date===state.viewDate && state.activeTask.index===idx) {
-    state.activeTask=null;
-  }
-  save(); render();
-}
-function resumeTask(idx) {
-  // end any running
-  if (state.activeTask) {
-    const at = state.tasks[state.activeTask.date]?.[state.activeTask.index];
-    if (at && at.status==='running') { at.end=nowStr(); at.status='completed'; }
-    state.activeTask=null;
-  }
-  const tasks = state.tasks[state.viewDate];
-  if (!tasks||!tasks[idx]) return;
-  tasks[idx].status='running';
-  tasks[idx].end=null;
-  state.activeTask={date:state.viewDate, id:tasks[idx].id, index:idx};
-  save(); render();
-}
-function duplicateTask(idx) {
-  const tasks = state.tasks[state.viewDate];
-  if (!tasks||!tasks[idx]) return;
-  const t = {...tasks[idx], id:Date.now(), status:'completed', created:Date.now()};
-  tasks.splice(idx,0,t);
-  save(); render(); toast('Task duplicated');
-}
-function moveTask(idx, dir) {
-  const tasks = state.tasks[state.viewDate];
-  if (!tasks) return;
-  const swapIdx = dir==='up' ? idx-1 : idx+1;
-  if (swapIdx<0 || swapIdx>=tasks.length) return;
-  [tasks[idx],tasks[swapIdx]] = [tasks[swapIdx],tasks[idx]];
-  // fix active index
-  if (state.activeTask && state.activeTask.date===state.viewDate) {
-    const newIdx = tasks.findIndex(t=>t.id===state.activeTask.id);
-    if (newIdx!==-1) state.activeTask.index=newIdx;
-  }
-  save(); render();
-}
+    <h3>📅 Daily Workflow (Every Day)</h3>
+    <ol>
+        <li><span class="step-num">1</span> <strong>Check Dashboard:</strong> See your <strong>5-battery trend</strong> → shows completion for 2 previous days, today, and 2 next days</li>
+        <li><span class="step-num">2</span> <strong>View Today's Schedule:</strong> Go to <strong>Timetable</strong> → click today's date → see what lectures are assigned</li>
+        <li><span class="step-num">3</span> <strong>Study & Mark Complete:</strong> Check the box for each lecture you complete → row turns <span style="color:#51cf66;">green</span> ✅</li>
+        <li><span class="step-num">4</span> <strong>Use Batch Actions:</strong> Click <strong>"✅ Tick All"</strong> to mark all lectures on a date complete, or <strong>"⭕ Untick All"</strong> to reset</li>
+        <li><span class="step-num">5</span> <strong>Set Done Date for All:</strong> Click <strong>"📅 Set Done Date"</strong> to set the same done date for all completed lectures on that date</li>
+        <li><span class="step-num">6</span> <strong>Track Progress:</strong> Dashboard updates in real-time — battery fills up as you complete more</li>
+    </ol>
 
-let confirmCallback = null;
-function confirmDelete(idx) {
-  document.getElementById('confirm-title').textContent='Delete task?';
-  document.getElementById('confirm-msg').textContent='This action cannot be undone.';
-  document.getElementById('confirm-dialog').classList.add('open');
-  confirmCallback = () => {
-    const tasks = state.tasks[state.viewDate];
-    if (!tasks) return;
-    pushUndo({type:'delete',date:state.viewDate,idx,task:{...tasks[idx]}});
-    tasks.splice(idx,1);
-    if (state.activeTask && state.activeTask.date===state.viewDate) {
-      const newIdx = tasks.findIndex(t=>t.id===state.activeTask.id);
-      if (newIdx===-1) state.activeTask=null;
-      else state.activeTask.index=newIdx;
-    }
-    save(); render(); toast('Task deleted');
-  };
-}
-function closeConfirm() {
-  document.getElementById('confirm-dialog').classList.remove('open');
-  confirmCallback=null;
-}
-document.getElementById('confirm-ok').onclick=()=>{
-  if(confirmCallback){confirmCallback();confirmCallback=null;}
-  closeConfirm();
-};
+    <h3>🔄 When Things Change (Copying, Rescheduling, Resetting)</h3>
+    <ol>
+        <li><span class="step-num">1</span> <strong>Need to Copy a Lecture to Another Day?</strong> Click <strong>"← Copy"</strong> or <strong>"Copy →"</strong> on any lecture → creates a copy on the target date (original remains)</li>
+        <li><span class="step-num">2</span> <strong>Want to Remove Copy Tracking?</strong> Click <strong>🧹</strong> (Clear Copy Stamp) → removes all "Copied from/to" tags</li>
+        <li><span class="step-num">3</span> <strong>Need to Change Speed for One Day?</strong> Click any date in Timetable → enter custom speed → schedule recalculates instantly</li>
+        <li><span class="step-num">4</span> <strong>Want to Start Fresh?</strong> Go to <strong>Edit</strong> → click <strong>"🔄 Reset Course"</strong> → clears all progress (ticks, copies, done dates) — course data remains</li>
+        <li><span class="step-num">5</span> <strong>Need to Rename a Course?</strong> Go to <strong>Upload</strong> → click <strong>✏️</strong> next to course name → enter new name → updates everywhere</li>
+    </ol>
 
-// ════════════════════════════════
-//  EDIT TASK MODAL
-// ════════════════════════════════
-function openEditTask(idx) {
-  state.editTaskId = { date: state.viewDate, idx };
-  const task = (state.tasks[state.viewDate]||[])[idx];
-  if (!task) return;
-  document.getElementById('task-modal-title').textContent='Edit Task';
-  populateCatSelect();
-  document.getElementById('task-cat').value = task.category;
-  document.getElementById('task-notes').value = task.notes||'';
-  document.getElementById('task-start').value = task.start||'';
-  document.getElementById('task-end').value = task.end||'';
-  document.getElementById('task-status').value = task.status||'completed';
-  openModal('add-task-modal');
-}
-function openAddTask() {
-  state.editTaskId = null;
-  document.getElementById('task-modal-title').textContent='Add Task';
-  populateCatSelect();
-  document.getElementById('task-cat').value = state.categories[0]?.id||'other';
-  document.getElementById('task-notes').value = '';
-  document.getElementById('task-start').value = nowStr();
-  document.getElementById('task-end').value = '';
-  document.getElementById('task-status').value = 'completed';
-  openModal('add-task-modal');
-}
-document.getElementById('fab').onclick = openAddTask;
+    <h3>📊 Analyzing Your Progress</h3>
+    <ol>
+        <li><span class="step-num">1</span> <strong>Dashboard:</strong> See 5-day battery trend at a glance</li>
+        <li><span class="step-num">2</span> <strong>History Tab:</strong> See <span style="color:#667eea;">allocated dates</span> (when you should have done it) vs <span style="color:#51cf66;">done dates</span> (when you actually did it)
+            <br>Rows color-code: 🟢 Green = Done early, 🔴 Red = Done late, 🔵 Blue = On time
+        </li>
+        <li><span class="step-num">3</span> <strong>Expected vs Actual Hours:</strong> History shows total expected hours vs actual hours completed → see your efficiency</li>
+        <li><span class="step-num">4</span> <strong>Battery Grid per Date:</strong> History shows mini batteries for each date in your selected range</li>
+    </ol>
+</div>
 
-function populateCatSelect() {
-  const sel = document.getElementById('task-cat');
-  sel.innerHTML = state.categories.map(c=>`<option value="${c.id}">${c.icon} ${c.name}</option>`).join('');
-}
-function updateCatColor() {/* visual only */ }
+<!-- ===== SECTION 6: WHEN TO USE WHAT ===== -->
+<div class="card">
+    <h2>🗓️ When to Use What (Quick Reference)</h2>
+    <div class="grid-2">
+        <div>
+            <strong>📌 Dashboard</strong>
+            <ul>
+                <li><strong>Use when:</strong> You want a quick status check</li>
+                <li><strong>Shows:</strong> 5-day completion trend, total stats</li>
+                <li><strong>Benefit:</strong> See if you're ahead or behind</li>
+            </ul>
+        </div>
+        <div>
+            <strong>📌 Upload</strong>
+            <ul>
+                <li><strong>Use when:</strong> Adding a new course</li>
+                <li><strong>Shows:</strong> Saved courses, rename option</li>
+                <li><strong>Benefit:</strong> Add any course in seconds</li>
+            </ul>
+        </div>
+        <div>
+            <strong>📌 Timetable</strong>
+            <ul>
+                <li><strong>Use when:</strong> Daily studying, copying lectures</li>
+                <li><strong>Shows:</strong> Calendar with lectures, done dates</li>
+                <li><strong>Benefit:</strong> Know exactly what to study today</li>
+            </ul>
+        </div>
+        <div>
+            <strong>📌 Edit</strong>
+            <ul>
+                <li><strong>Use when:</strong> Changing speeds, editing lectures</li>
+                <li><strong>Shows:</strong> Full lecture list, speed controls</li>
+                <li><strong>Benefit:</strong> Modify anything about your course</li>
+            </ul>
+        </div>
+        <div style="grid-column: 1 / -1;">
+            <strong>📊 History</strong>
+            <ul>
+                <li><strong>Use when:</strong> Analyzing your performance</li>
+                <li><strong>Shows:</strong> Allocated vs done dates, expected vs actual hours</li>
+                <li><strong>Benefit:</strong> See the real picture — what you planned vs what you actually did</li>
+            </ul>
+        </div>
+    </div>
+</div>
 
-function saveTask() {
-  const cat = document.getElementById('task-cat').value;
-  const notes = document.getElementById('task-notes').value.trim();
-  const start = document.getElementById('task-start').value;
-  const end   = document.getElementById('task-end').value;
-  const status= document.getElementById('task-status').value;
-  if (!start) { toast('Start time required'); return; }
+<!-- ===== SECTION 7: WHAT EACH FEATURE DOES ===== -->
+<div class="card">
+    <h2>🔍 What Each Feature Does</h2>
+    <div class="key-feature">
+        <div class="icon">⭐</div>
+        <div class="desc"><strong>Current Focus Course</strong><small>Select a course once → it auto-appears in all dropdowns. ⭐ indicates your focus.</small></div>
+    </div>
+    <div class="key-feature">
+        <div class="icon">🔋</div>
+        <div class="desc"><strong>5-Battery Display</strong><small>Shows completion for 2 previous days, today, and 2 next days. Click any battery to navigate.</small></div>
+    </div>
+    <div class="key-feature">
+        <div class="icon">💗</div>
+        <div class="desc"><strong>Sunday Highlight</strong><small>Sundays appear in pink/light red on the calendar — easy visual identification.</small></div>
+    </div>
+    <div class="key-feature">
+        <div class="icon">📋</div>
+        <div class="desc"><strong>Copy Tracking with Hours</strong><small>Shows "Copied to [date] (X hrs)" and "Copied from [date] (X hrs)" — know exactly what was moved.</small></div>
+    </div>
+    <div class="key-feature">
+        <div class="icon">📌</div>
+        <div class="desc"><strong>Allocated vs Done Dates</strong><small>Allocated = planned date (purple), Done = actual date (green). See the gap between planning and execution.</small></div>
+    </div>
+    <div class="key-feature">
+        <div class="icon">🧹</div>
+        <div class="desc"><strong>Clear Copy Stamp</strong><small>Remove all copy tracking from a lecture when you no longer need to track where it came from.</small></div>
+    </div>
+    <div class="key-feature">
+        <div class="icon">📅</div>
+        <div class="desc"><strong>Set Done Date for All</strong><small>Set the same done date for all completed lectures on a date — saves time.</small></div>
+    </div>
+    <div class="key-feature">
+        <div class="icon">🔄</div>
+        <div class="desc"><strong>Reset Course</strong><small>Clear all progress (ticks, copies, done dates) while keeping your course data — start fresh without re-uploading.</small></div>
+    </div>
+    <div class="key-feature">
+        <div class="icon">⚡</div>
+        <div class="desc"><strong>Date-Specific Speed</strong><small>Override speed for any date (e.g., 180 mins on Sunday, 60 mins on busy days). ⚡ indicator shows custom speed.</small></div>
+    </div>
+    <div class="key-feature">
+        <div class="icon">📤</div>
+        <div class="desc"><strong>Export/Import</strong><small>Export full JSON backup anytime. Import by selecting saved file (no paste needed). Auto-export daily at 12 PM.</small></div>
+    </div>
+    <div class="key-feature">
+        <div class="icon">✏️</div>
+        <div class="desc"><strong>Rename Course</strong><small>Change course name anytime — updates all references automatically.</small></div>
+    </div>
+</div>
 
-  if (state.editTaskId) {
-    const { date, idx } = state.editTaskId;
-    const task = (state.tasks[date]||[])[idx];
-    if (task) {
-      task.category=cat; task.notes=notes; task.start=start;
-      task.end=end||null; task.status=status;
-    }
-  } else {
-    if (!state.tasks[state.viewDate]) state.tasks[state.viewDate]=[];
-    const task = { id:Date.now(), category:cat, notes, start, end:end||null, status, created:Date.now() };
-    state.tasks[state.viewDate].unshift(task);
-    if (status==='running') {
-      state.activeTask={date:state.viewDate,id:task.id,index:0};
-    }
-  }
-  save(); closeModal('add-task-modal'); render();
-  toast(state.editTaskId ? 'Task updated' : 'Task added');
-  state.editTaskId=null;
-}
+<!-- ===== SECTION 8: HOW TO BECOME FOCUSED ===== -->
+<div class="card">
+    <h2>🎯 How to Use This App to Become Focused</h2>
+    <div style="background: #f0fff4; padding: 16px; border-radius: 8px; border-left: 4px solid #51cf66; margin-bottom: 12px;">
+        <strong>✅ The Focus Formula:</strong>
+        <ol style="margin-top: 8px;">
+            <li><strong>Set your goal:</strong> Upload your course and set your daily speed</li>
+            <li><strong>Let the app plan:</strong> It automatically creates your daily schedule</li>
+            <li><strong>Follow the plan:</strong> Each day, go to Timetable and do what's assigned</li>
+            <li><strong>Track honestly:</strong> Mark complete only when you actually studied it</li>
+            <li><strong>Review weekly:</strong> Check History to see allocated vs done — identify patterns</li>
+            <li><strong>Adjust:</strong> If you're consistently behind, reduce speed. If ahead, increase it</li>
+        </ol>
+    </div>
+    <div class="highlight">
+        <strong>🧠 The Mental Model:</strong> "I don't need to figure out what to study today — the app tells me. I just need to show up and do it. Then I can see exactly where I stand."
+    </div>
+    <div style="margin-top: 12px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
+        <div style="background: #ebf8ff; padding: 12px; border-radius: 8px; text-align: center;">
+            <div style="font-size: 24px;">📅</div>
+            <strong>Daily</strong>
+            <small style="display:block; color:#718096;">Check Timetable → Study → Mark Complete → See progress</small>
+        </div>
+        <div style="background: #fef3c7; padding: 12px; border-radius: 8px; text-align: center;">
+            <div style="font-size: 24px;">📊</div>
+            <strong>Weekly</strong>
+            <small style="display:block; color:#718096;">Review History → See allocated vs done → Adjust speed</small>
+        </div>
+        <div style="background: #f0fff4; padding: 12px; border-radius: 8px; text-align: center;">
+            <div style="font-size: 24px;">🎯</div>
+            <strong>Monthly</strong>
+            <small style="display:block; color:#718096;">Analyze patterns → Identify weak spots → Plan improvements</small>
+        </div>
+    </div>
+</div>
 
-// ════════════════════════════════
-//  CATEGORIES
-// ════════════════════════════════
-function renderCategories() {
-  const list = document.getElementById('category-list');
-  list.innerHTML = '';
-  state.categories.forEach((cat,i)=>{
-    const item = document.createElement('div');
-    item.className='category-item';
-    item.innerHTML=`
-      <div class="cat-dot" style="background:${cat.color}"></div>
-      <span class="cat-name">${cat.icon} ${cat.name}</span>
-      <div class="cat-actions">
-        <button class="cat-btn" onclick="editCat('${cat.id}')">Edit</button>
-        <button class="cat-btn" onclick="deleteCat('${cat.id}')">Del</button>
-      </div>`;
-    list.appendChild(item);
-  });
-}
-function editCat(id) {
-  const cat = catById(id);
-  document.getElementById('cat-name-input').value=cat.name;
-  document.getElementById('cat-icon-input').value=cat.icon;
-  document.getElementById('cat-color-input').value=cat.color;
-  document.getElementById('cat-edit-id').value=id;
-}
-function deleteCat(id) {
-  if (state.categories.length<=1){toast('Need at least one category');return;}
-  state.categories=state.categories.filter(c=>c.id!==id);
-  save(); renderCategories(); renderQuickGrid();
-}
-function saveCat() {
-  const name  = document.getElementById('cat-name-input').value.trim();
-  const icon  = document.getElementById('cat-icon-input').value.trim()||'⭕';
-  const color = document.getElementById('cat-color-input').value;
-  const editId= document.getElementById('cat-edit-id').value;
-  if (!name) { toast('Category name required'); return; }
-  if (editId) {
-    const cat=state.categories.find(c=>c.id===editId);
-    if (cat){cat.name=name;cat.icon=icon;cat.color=color;}
-  } else {
-    const id='cat_'+Date.now();
-    state.categories.push({id,name,icon,color});
-  }
-  cancelCatEdit();
-  save(); renderCategories(); renderQuickGrid(); renderFilterChips();
-}
-function cancelCatEdit() {
-  document.getElementById('cat-name-input').value='';
-  document.getElementById('cat-icon-input').value='';
-  document.getElementById('cat-color-input').value='#6c63ff';
-  document.getElementById('cat-edit-id').value='';
-}
+<!-- ===== SECTION 9: PRO TIPS ===== -->
+<div class="card">
+    <h2>💡 Pro Tips</h2>
+    <ul>
+        <li><strong>Use the Focus Course:</strong> Select your main course once — it auto-appears in all dropdowns (⭐ indicator). No repetitive selections!</li>
+        <li><strong>Batch Update Done Dates:</strong> If you studied an entire day's lectures on a different date, use "Set Done Date for All" to update everything at once.</li>
+        <li><strong>Copy for Extra Practice:</strong> Use "Copy →" to duplicate a lecture to the next day for additional review. The original remains.</li>
+        <li><strong>Clear Copy Stamps:</strong> When you no longer need to track where a lecture came from, click 🧹 to clean up the tags.</li>
+        <li><strong>Sunday = Pink:</strong> Sundays are highlighted in pink — plan your weekends differently.</li>
+        <li><strong>Custom Speeds:</strong> Set 180 mins on Sundays, 60 mins on busy days — the schedule adjusts automatically.</li>
+        <li><strong>Reset When Needed:</strong> If you want to start fresh without re-uploading, use "Reset Course" — keeps your lectures, clears progress.</li>
+        <li><strong>Export Often:</strong> Auto-export runs at 12 PM daily, but you can also manual export anytime with Ctrl+S.</li>
+        <li><strong>History = Your Reality Check:</strong> Allocated vs done dates show the truth — use it to adjust your planning.</li>
+    </ul>
+</div>
 
-// ════════════════════════════════
-//  TIMELINE
-// ════════════════════════════════
-function renderTimeline() {
-  const el = document.getElementById('timeline-view');
-  const tasks = [...(state.tasks[state.viewDate]||[])].filter(t=>t.start).sort((a,b)=>a.start.localeCompare(b.start));
-  if (!tasks.length) { el.innerHTML='<div class="empty-state"><div class="e-text">No tasks to show</div></div>'; return; }
+<!-- ===== SECTION 10: SUMMARY ===== -->
+<div class="card">
+    <h2>📌 Quick Summary</h2>
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; text-align: center;">
+        <div style="background: #667eea; color: white; padding: 12px; border-radius: 8px;">
+            <div style="font-size: 24px;">📤</div>
+            <strong>Upload</strong>
+            <small style="display:block; opacity:0.9;">Add your course</small>
+        </div>
+        <div style="background: #51cf66; color: white; padding: 12px; border-radius: 8px;">
+            <div style="font-size: 24px;">⚡</div>
+            <strong>Set Speed</strong>
+            <small style="display:block; opacity:0.9;">Define your pace</small>
+        </div>
+        <div style="background: #ffd93d; color: #2d3748; padding: 12px; border-radius: 8px;">
+            <div style="font-size: 24px;">📅</div>
+            <strong>Schedule</strong>
+            <small style="display:block; opacity:0.9;">Auto-generated plan</small>
+        </div>
+        <div style="background: #ff6b6b; color: white; padding: 12px; border-radius: 8px;">
+            <div style="font-size: 24px;">📊</div>
+            <strong>Analyze</strong>
+            <small style="display:block; opacity:0.9;">Track & improve</small>
+        </div>
+    </div>
+    <div style="margin-top: 16px; text-align: center; padding: 12px; background: #f7fafc; border-radius: 8px;">
+        <strong>🎯 Bottom Line:</strong> <em>"Upload → Set Speed → Let App Plan → Study → Track → Analyze → Improve"</em>
+        <br><small style="color: #718096;">The app does the scheduling. You do the studying. Together, you stay on track.</small>
+    </div>
+</div>
 
-  el.innerHTML='';
-  const dayStartMins = (state.settings.dayStart||6)*60;
-  let lastEnd = dayStartMins;
+<!-- ===== FOOTER ===== -->
+<div class="footer">
+    <p>📚 Lecture Planner Pro — Built for focused learning, powered by smart automation.</p>
+    <p style="margin-top: 4px;">
+        <span class="badge">Auto-Save</span>
+        <span class="badge green">Auto-Export 12 PM</span>
+        <span class="badge yellow">Auto-Schedule</span>
+        <span class="badge red">Auto-Tracking</span>
+    </p>
+    <p style="margin-top: 8px; font-size: 12px;">
+        <strong>Keyboard Shortcut:</strong> <kbd style="background:#edf2f7; padding:2px 8px; border-radius:4px;">Ctrl+S</kbd> to export backup anytime
+    </p>
+</div>
 
-  tasks.forEach(task=>{
-    const cat = catById(task.category);
-    const sm = timeToMins(task.start);
-    const em = task.end ? timeToMins(task.end) : null;
-    const dur = taskDuration(task);
-
-    // gap
-    if (sm > lastEnd + 2) {
-      const gapItem = document.createElement('div');
-      gapItem.className='tl-item';
-      gapItem.innerHTML=`
-        <div class="tl-time">${minsToTimeStr(lastEnd)}</div>
-        <div class="tl-dot" style="background:var(--border)"></div>
-        <div class="tl-gap">⏳ Gap: ${fmtTime(sm-lastEnd)}</div>`;
-      el.appendChild(gapItem);
-    }
-
-    const item = document.createElement('div');
-    item.className='tl-item';
-    item.innerHTML=`
-      <div class="tl-time">${task.start}</div>
-      <div class="tl-dot" style="background:${cat.color}"></div>
-      <div class="tl-content" style="border-left:3px solid ${cat.color}">
-        <div class="tl-name">${cat.icon} ${cat.name}</div>
-        <div class="tl-dur">${dur?fmtTime(dur):'running…'}${task.notes?` · ${task.notes}`:''}</div>
-      </div>`;
-    el.appendChild(item);
-    if (em) lastEnd = em;
-  });
-}
-
-// ════════════════════════════════
-//  CAT STATS
-// ════════════════════════════════
-function renderCatStats() {
-  const el = document.getElementById('cat-stats');
-  const tasks = getDayTasks(state.viewDate);
-  let total = 0;
-  const catMins = {};
-  tasks.forEach(t=>{ const d=taskDuration(t); catMins[t.category]=(catMins[t.category]||0)+d; total+=d; });
-  if (!total) { el.innerHTML='<div class="empty-state"><div class="e-text">No data yet</div></div>'; return; }
-
-  el.innerHTML='';
-  const sorted = Object.entries(catMins).sort((a,b)=>b[1]-a[1]);
-  sorted.forEach(([id,mins])=>{
-    const cat=catById(id);
-    const pct=Math.round(mins/total*100);
-    const row=document.createElement('div');
-    row.className='cat-stat-row';
-    row.innerHTML=`
-      <div class="cat-stat-label">${cat.icon} ${cat.name}</div>
-      <div class="cat-stat-bar"><div class="cat-stat-fill" style="width:${pct}%;background:${cat.color}"></div></div>
-      <div class="cat-stat-time" style="color:${cat.color}">${fmtTime(mins)}</div>`;
-    el.appendChild(row);
-  });
-}
-
-// ════════════════════════════════
-//  MISSING TIME
-// ════════════════════════════════
-function renderMissingTime() {
-  const el = document.getElementById('missing-time-card');
-  const tasks = getDayTasks(state.viewDate).filter(t=>t.start);
-  const dayStart = (state.settings.dayStart||6)*60;
-  const nowMins = new Date().getHours()*60 + new Date().getMinutes();
-  const dayLen = Math.max(0, nowMins - dayStart);
-
-  let tracked = 0;
-  let gaps = [];
-  const sorted=[...tasks].sort((a,b)=>a.start.localeCompare(b.start));
-  let lastEnd = dayStart;
-  sorted.forEach(t=>{
-    const sm=timeToMins(t.start);
-    const em=t.end?timeToMins(t.end):nowMins;
-    if (sm > lastEnd+2) gaps.push({from:minsToTimeStr(lastEnd),to:minsToTimeStr(sm),dur:sm-lastEnd});
-    tracked += Math.max(0,em-sm);
-    if (em>lastEnd) lastEnd=em;
-  });
-  const missing = Math.max(0, dayLen-tracked);
-  const pct = dayLen>0 ? Math.round(tracked/dayLen*100) : 0;
-
-  let html=`
-    <div class="missing-row"><span class="missing-label">Day so far</span><span class="missing-value">${fmtTime(dayLen)}</span></div>
-    <div class="missing-row"><span class="missing-label">Tracked</span><span class="missing-value ok">${fmtTime(tracked)}</span></div>
-    <div class="missing-row"><span class="missing-label">Untracked</span><span class="missing-value${missing>60?' warn':''}">${fmtTime(missing)}</span></div>
-    <div class="missing-row"><span class="missing-label">Coverage</span><span class="missing-value" style="color:var(--accent2)">${pct}%</span></div>
-    <div class="progress-track" style="margin-top:6px"><div class="progress-fill" style="width:${pct}%"></div></div>`;
-
-  if (gaps.length) {
-    const bigGaps = gaps.filter(g=>g.dur>30);
-    if (bigGaps.length) {
-      html+=`<div class="gap-alert">⚠️ Gaps: ${bigGaps.map(g=>`${g.from}–${g.to} (${fmtTime(g.dur)})`).join(', ')}</div>`;
-    }
-  }
-  el.innerHTML=html;
-}
-
-// ════════════════════════════════
-//  REPORTS
-// ════════════════════════════════
-function setReport(mode, el) {
-  state.reportMode=mode;
-  document.querySelectorAll('#sec-reports .filter-chip').forEach(c=>c.classList.remove('active'));
-  el.classList.add('active');
-  renderReports();
-}
-function renderReports() {
-  const grid = document.getElementById('report-grid');
-  const today = todayKey();
-  let keys = [];
-  if (state.reportMode==='today') {
-    keys=[today];
-  } else if (state.reportMode==='week') {
-    for(let i=6;i>=0;i--){
-      const d=new Date(); d.setDate(d.getDate()-i);
-      keys.push(dateKey(d));
-    }
-  } else {
-    for(let i=29;i>=0;i--){
-      const d=new Date(); d.setDate(d.getDate()-i);
-      keys.push(dateKey(d));
-    }
-  }
-
-  const catMins={};
-  let total=0, prodMins=0;
-  const prodCats=state.settings.productiveCats||['study','reading'];
-  keys.forEach(k=>{
-    getDayTasks(k).forEach(t=>{
-      const d=taskDuration(t);
-      catMins[t.category]=(catMins[t.category]||0)+d;
-      total+=d;
-      if(prodCats.includes(t.category)) prodMins+=d;
-    });
-  });
-  const pct=total>0?Math.round(prodMins/total*100):0;
-
-  grid.innerHTML=`
-    <div class="report-card"><div class="r-val" style="color:var(--green)">${fmtTime(total)}</div><div class="r-lbl">Total Time</div></div>
-    <div class="report-card"><div class="r-val" style="color:var(--accent2)">${pct}%</div><div class="r-lbl">Productivity</div></div>
-    ${state.categories.map(c=>{
-      const m=catMins[c.id]||0;
-      if(!m) return '';
-      return `<div class="report-card"><div class="r-val" style="color:${c.color}">${fmtTime(m)}</div><div class="r-lbl">${c.icon} ${c.name}</div></div>`;
-    }).join('')}`;
-}
-
-// ════════════════════════════════
-//  NOTES
-// ════════════════════════════════
-function loadNotes() {
-  const ta = document.getElementById('daily-notes');
-  ta.value = state.notes[state.viewDate]||'';
-  updateNotesMeta();
-}
-function saveNotes() {
-  state.notes[state.viewDate] = document.getElementById('daily-notes').value;
-  save(); updateNotesMeta();
-}
-function updateNotesMeta() {
-  const meta = document.getElementById('notes-meta');
-  const len = (document.getElementById('daily-notes').value||'').length;
-  meta.textContent = len>0 ? `${len} chars · auto-saved` : '';
-}
-
-// ════════════════════════════════
-//  DAY NAVIGATION
-// ════════════════════════════════
-function navDay(dir) {
-  if (dir===0) { state.viewDate=todayKey(); }
-  else {
-    const d = new Date(state.viewDate+'T12:00:00');
-    d.setDate(d.getDate()+dir);
-    state.viewDate=dateKey(d);
-  }
-  document.getElementById('day-date-display').textContent = state.viewDate===todayKey()?'Today':state.viewDate;
-  document.getElementById('day-picker').value=state.viewDate;
-  render();
-}
-function pickDay(val) {
-  if (!val) return;
-  state.viewDate=val;
-  document.getElementById('day-date-display').textContent = val===todayKey()?'Today':val;
-  render();
-}
-
-// ════════════════════════════════
-//  SETTINGS
-// ════════════════════════════════
-function loadSettings() {
-  document.getElementById('goal-hours-input').value=state.settings.goalHours||10;
-  document.getElementById('day-start-input').value=state.settings.dayStart||6;
-  renderProductiveCats();
-}
-function saveSetting(key,val) {
-  state.settings[key]=isNaN(val)?val:Number(val);
-  save(); render();
-}
-function renderProductiveCats() {
-  const el=document.getElementById('productive-cats');
-  el.innerHTML='';
-  state.categories.forEach(cat=>{
-    const chip=document.createElement('span');
-    chip.className='filter-chip'+(state.settings.productiveCats?.includes(cat.id)?' active':'');
-    chip.textContent=cat.icon+' '+cat.name;
-    chip.onclick=()=>{
-      const pc=state.settings.productiveCats||[];
-      const i=pc.indexOf(cat.id);
-      if(i===-1) pc.push(cat.id); else pc.splice(i,1);
-      state.settings.productiveCats=[...pc];
-      save(); renderProductiveCats(); updateStats();
-    };
-    el.appendChild(chip);
-  });
-}
-
-// ════════════════════════════════
-//  THEME
-// ════════════════════════════════
-function toggleTheme() {
-  const current = document.body.dataset.theme;
-  const next = current==='dark'?'light':'dark';
-  document.body.dataset.theme=next;
-  document.getElementById('theme-btn').textContent=next==='dark'?'🌙':'☀️';
-  state.settings.theme=next;
-  save();
-}
-function applyTheme() {
-  const t=state.settings.theme||'dark';
-  document.body.dataset.theme=t;
-  document.getElementById('theme-btn').textContent=t==='dark'?'🌙':'☀️';
-}
-
-// ════════════════════════════════
-//  BACKUP
-// ════════════════════════════════
-function exportData(range, format) {
-  let tasks={};
-  if (range==='today') {
-    tasks={[state.viewDate]:state.tasks[state.viewDate]||[]};
-  } else {
-    tasks=state.tasks;
-  }
-
-  if (format==='json') {
-    const data={tasks,notes:state.notes,categories:state.categories,settings:state.settings,exported:new Date().toISOString()};
-    download(JSON.stringify(data,null,2),'life-dashboard-'+range+'.json','application/json');
-  } else {
-    let csv='Date,Category,Start,End,Duration(mins),Status,Notes\n';
-    Object.entries(tasks).forEach(([date,arr])=>{
-      (arr||[]).forEach(t=>{
-        const cat=catById(t.category);
-        csv+=`${date},${cat.name},${t.start||''},${t.end||''},${Math.round(taskDuration(t))},${t.status},${(t.notes||'').replace(/,/g,';')}\n`;
-      });
-    });
-    download(csv,'life-dashboard-'+range+'.csv','text/csv');
-  }
-  toast('Exported!');
-}
-function download(content,filename,mime) {
-  const a=document.createElement('a');
-  a.href='data:'+mime+';charset=utf-8,'+encodeURIComponent(content);
-  a.download=filename; a.click();
-}
-function importData(input) {
-  const file=input.files[0];
-  if (!file) return;
-  const reader=new FileReader();
-  reader.onload=e=>{
-    try {
-      const data=JSON.parse(e.target.result);
-      if (data.tasks) state.tasks={...state.tasks,...data.tasks};
-      if (data.notes) state.notes={...state.notes,...data.notes};
-      if (data.categories) state.categories=data.categories;
-      if (data.settings) state.settings={...state.settings,...data.settings};
-      save(); render(); toast('Imported successfully!');
-    } catch(err) { toast('Import failed: invalid file'); }
-  };
-  reader.readAsText(file);
-  input.value='';
-}
-function confirmClearAll() {
-  document.getElementById('confirm-title').textContent='Clear all data?';
-  document.getElementById('confirm-msg').textContent='This will permanently delete all tasks, notes, and settings.';
-  document.getElementById('confirm-dialog').classList.add('open');
-  confirmCallback=()=>{
-    localStorage.clear();
-    location.reload();
-  };
-}
-
-// ════════════════════════════════
-//  MODALS
-// ════════════════════════════════
-function openModal(id) {
-  document.getElementById(id).classList.add('open');
-  if (id==='cat-modal') renderCategories();
-  if (id==='settings-modal') loadSettings();
-}
-function closeModal(id) {
-  document.getElementById(id).classList.remove('open');
-}
-// close on backdrop click
-document.querySelectorAll('.modal-overlay').forEach(m=>{
-  m.addEventListener('click',e=>{
-    if(e.target===m) closeModal(m.id);
-  });
-});
-
-// ════════════════════════════════
-//  SECTIONS (COLLAPSE)
-// ════════════════════════════════
-function toggleSection(id) {
-  document.getElementById(id).classList.toggle('collapsed');
-}
-
-// ════════════════════════════════
-//  TOAST
-// ════════════════════════════════
-let toastTimer=null;
-function toast(msg) {
-  const el=document.getElementById('toast');
-  el.textContent=msg;
-  el.classList.add('show');
-  if(toastTimer) clearTimeout(toastTimer);
-  toastTimer=setTimeout(()=>el.classList.remove('show'),2400);
-}
-
-// ════════════════════════════════
-//  UTILS
-// ════════════════════════════════
-function escHtml(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-// ════════════════════════════════
-//  MASTER RENDER
-// ════════════════════════════════
-function render() {
-  resolveActiveTask();
-  renderQuickGrid();
-  renderFilterChips();
-  renderTasks();
-  renderTimeline();
-  renderCatStats();
-  renderMissingTime();
-  renderReports();
-  loadNotes();
-  updateStats();
-  document.getElementById('day-date-display').textContent = state.viewDate===todayKey()?'Today':state.viewDate;
-  document.getElementById('day-picker').value=state.viewDate;
-}
-
-// ════════════════════════════════
-//  INIT
-// ════════════════════════════════
-(function init() {
-  load();
-  applyTheme();
-  startClock();
-  render();
-  // init day display
-  document.getElementById('day-date-display').textContent='Today';
-  document.getElementById('day-picker').value=todayKey();
-})();
-</script>
 </body>
 </html>
