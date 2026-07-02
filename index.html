@@ -17,10 +17,11 @@
         body {
             background: #0b0e14;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            padding: 6px 4px 12px;
+            padding: 10px 8px 16px;
             min-height: 100vh;
             color: #eaeef2;
-            font-size: 14px;
+            font-size: 16px;
+            line-height: 1.5;
         }
 
         /* ===== TOP BAR ===== */
@@ -30,16 +31,16 @@
             align-items: center;
             justify-content: space-between;
             background: #1e2632;
-            padding: 5px 8px;
-            border-radius: 14px;
-            margin-bottom: 6px;
-            gap: 3px 6px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            padding: 8px 12px;
+            border-radius: 16px;
+            margin-bottom: 10px;
+            gap: 6px 10px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
         }
 
         .top-bar .today {
             font-weight: 600;
-            font-size: 0.8rem;
+            font-size: 1rem;
             color: #b9d0ff;
         }
         .top-bar .today span {
@@ -50,7 +51,7 @@
         .top-bar .controls {
             display: flex;
             align-items: center;
-            gap: 3px;
+            gap: 5px;
             flex-wrap: wrap;
         }
 
@@ -58,17 +59,19 @@
             background: #2f3b4b;
             border: none;
             color: #dce3ec;
-            padding: 2px 8px;
+            padding: 6px 14px;
             border-radius: 30px;
             font-weight: 600;
-            font-size: 0.55rem;
+            font-size: 0.75rem;
             cursor: pointer;
             transition: background 0.15s, transform 0.1s;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
             display: inline-flex;
             align-items: center;
-            gap: 2px;
-            min-height: 22px;
+            justify-content: center;
+            gap: 4px;
+            min-height: 32px;
+            min-width: 36px;
             white-space: nowrap;
         }
 
@@ -93,20 +96,21 @@
             background: #5a2a2a;
         }
         .top-bar .controls button.today-btn {
-            background: #4a6a4a;
+            background: #2a5a7a;
             color: white;
+            padding: 6px 16px;
         }
 
         .top-bar .week-label {
             font-weight: 600;
             color: #9bb3d9;
-            font-size: 0.6rem;
-            min-width: 70px;
+            font-size: 0.8rem;
+            min-width: 90px;
             text-align: center;
         }
 
         .top-bar .save-indicator {
-            font-size: 0.5rem;
+            font-size: 0.7rem;
             color: #51cf66;
             opacity: 0;
             transition: opacity 0.3s;
@@ -118,8 +122,8 @@
         /* ===== TAB NAVIGATION ===== */
         .tab-nav {
             display: flex;
-            gap: 4px;
-            margin-bottom: 6px;
+            gap: 6px;
+            margin-bottom: 10px;
         }
 
         .tab-nav button {
@@ -127,19 +131,20 @@
             background: #1e2632;
             border: none;
             color: #8a9bb0;
-            padding: 4px 6px;
-            border-radius: 10px;
-            font-size: 0.65rem;
+            padding: 10px 8px;
+            border-radius: 12px;
+            font-size: 0.9rem;
             font-weight: 600;
             cursor: pointer;
             transition: background 0.2s, color 0.2s;
-            min-height: 28px;
+            min-height: 40px;
         }
 
         .tab-nav button.active {
             background: #4a5c7a;
             color: white;
         }
+
         .tab-nav button:active {
             transform: scale(0.95);
         }
@@ -156,18 +161,18 @@
         .table-wrap {
             overflow-x: auto;
             overflow-y: auto;
-            max-height: 460px;
-            border-radius: 12px;
+            max-height: 520px;
+            border-radius: 14px;
             background: #141c26;
-            padding: 2px;
+            padding: 4px;
             box-shadow: inset 0 0 0 1px #2a3442, 0 6px 18px rgba(0, 0, 0, 0.6);
             scroll-behavior: smooth;
             -webkit-overflow-scrolling: touch;
         }
 
         .table-wrap::-webkit-scrollbar {
-            width: 3px;
-            height: 3px;
+            width: 4px;
+            height: 4px;
         }
         .table-wrap::-webkit-scrollbar-thumb {
             background: #3f5068;
@@ -181,41 +186,41 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.6rem;
-            min-width: 580px;
+            font-size: 0.75rem;
+            min-width: 620px;
         }
 
         th {
             background: #1e2937;
             color: #d0def0;
             font-weight: 600;
-            font-size: 0.55rem;
-            padding: 3px 1px 2px;
+            font-size: 0.7rem;
+            padding: 6px 4px 4px;
             border-bottom: 2px solid #2f3d4f;
             position: sticky;
             top: 0;
             z-index: 5;
             white-space: nowrap;
-            min-width: 44px;
+            min-width: 52px;
         }
 
         th .date {
             display: block;
-            font-size: 0.7rem;
+            font-size: 0.9rem;
             font-weight: 700;
             color: #eef4ff;
         }
         th .day {
-            font-size: 0.5rem;
+            font-size: 0.65rem;
             font-weight: 400;
             color: #9bb3d9;
         }
         th .total {
             display: block;
-            font-size: 0.55rem;
+            font-size: 0.7rem;
             font-weight: 600;
             color: #8bc34a;
-            margin-top: 1px;
+            margin-top: 2px;
         }
         th .total.today-total {
             color: #ffd93d;
@@ -225,8 +230,8 @@
             padding: 0;
             border: 1px solid #26303e;
             width: 14.28%;
-            min-width: 34px;
-            height: 28px;
+            min-width: 42px;
+            height: 36px;
             text-align: center;
             vertical-align: middle;
             background: #1b2532;
@@ -242,33 +247,33 @@
             justify-content: center;
             width: 100%;
             height: 100%;
-            font-size: 0.45rem;
+            font-size: 0.6rem;
             font-weight: 500;
-            padding: 1px;
-            line-height: 1.2;
+            padding: 2px;
+            line-height: 1.3;
             overflow: hidden;
         }
 
         td .cell-content .cell-value {
             font-weight: 700;
-            font-size: 0.5rem;
+            font-size: 0.7rem;
         }
         td .cell-content .cell-note {
-            font-size: 0.35rem;
+            font-size: 0.5rem;
             color: #ffe484;
             max-width: 100%;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            background: rgba(255, 255, 200, 0.1);
-            padding: 0 2px;
+            background: rgba(255, 255, 200, 0.12);
+            padding: 0 4px;
             border-radius: 8px;
-            line-height: 1.2;
+            line-height: 1.4;
         }
         td .cell-content .cell-time {
-            font-size: 0.35rem;
+            font-size: 0.45rem;
             color: #8a9bb0;
-            line-height: 1.1;
+            line-height: 1.2;
         }
 
         /* ===== ROW COLOR PATTERN ===== */
@@ -308,281 +313,6 @@
             background: #8a6a1a !important;
         }
 
-        /* ===== ADD ROWS BUTTON ===== */
-        .add-rows-btn {
-            width: 100%;
-            background: #2a3a4a;
-            border: 2px dashed #4a5a6a;
-            border-radius: 10px;
-            padding: 6px;
-            color: #8a9bb0;
-            font-size: 0.65rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-            margin-top: 4px;
-        }
-        .add-rows-btn:hover {
-            background: #3a4a5a;
-        }
-        .add-rows-btn:active {
-            transform: scale(0.98);
-        }
-
-        /* ============================================================
-           BALLOON PROGRESS TRACKER
-           ============================================================ */
-
-        .balloon-section {
-            background: #141c26;
-            border-radius: 12px;
-            padding: 10px 8px;
-            border: 1px solid #2a3442;
-            margin-bottom: 8px;
-            transition: border-color 0.3s, box-shadow 0.3s;
-        }
-
-        .balloon-section.focused {
-            border-color: #ffd93d;
-            box-shadow: 0 0 20px rgba(255, 217, 61, 0.15);
-        }
-
-        .balloon-section .section-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 4px;
-            flex-wrap: wrap;
-            gap: 4px;
-        }
-
-        .balloon-section .section-header .heading-input {
-            background: #101a24;
-            border: 1px solid #334154;
-            border-radius: 8px;
-            padding: 2px 6px;
-            color: #eaeef2;
-            font-size: 0.75rem;
-            font-weight: 700;
-            min-width: 80px;
-            flex: 1;
-        }
-
-        .balloon-section .section-header .heading-input:focus {
-            outline: 2px solid #6a8bc0;
-            border-color: transparent;
-        }
-
-        .balloon-section .section-header .controls-row {
-            display: flex;
-            align-items: center;
-            gap: 3px;
-            flex-wrap: wrap;
-        }
-
-        .balloon-section .section-header .controls-row label {
-            font-size: 0.5rem;
-            color: #8a9bb0;
-        }
-
-        .balloon-section .section-header .controls-row input[type="number"] {
-            background: #101a24;
-            border: 1px solid #334154;
-            border-radius: 6px;
-            padding: 1px 4px;
-            color: #eaeef2;
-            font-size: 0.55rem;
-            width: 40px;
-        }
-
-        .balloon-section .section-header .controls-row input[type="number"]:focus {
-            outline: 2px solid #6a8bc0;
-            border-color: transparent;
-        }
-
-        .balloon-section .section-header .controls-row button {
-            background: #2f3b4b;
-            border: none;
-            color: #dce3ec;
-            padding: 1px 8px;
-            border-radius: 30px;
-            font-weight: 600;
-            font-size: 0.5rem;
-            cursor: pointer;
-            min-height: 18px;
-            transition: background 0.15s;
-        }
-
-        .balloon-section .section-header .controls-row button:active {
-            transform: scale(0.95);
-        }
-        .balloon-section .section-header .controls-row button.primary-btn {
-            background: #4a6a8a;
-            color: white;
-        }
-        .balloon-section .section-header .controls-row button.danger-btn {
-            background: #5a2a2a;
-        }
-        .balloon-section .section-header .controls-row button.focus-btn {
-            background: #6a5a2a;
-            color: white;
-            font-size: 0.6rem;
-            min-width: 28px;
-        }
-        .balloon-section .section-header .controls-row button.focus-btn.active-focus {
-            background: #ffd93d;
-            color: #1a1a2e;
-        }
-        .balloon-section .section-header .controls-row button.note-btn {
-            background: #4a4a6a;
-            color: white;
-            font-size: 0.6rem;
-        }
-        .balloon-section .section-header .controls-row button.note-btn.has-note {
-            background: #6a4a8a;
-        }
-
-        .balloon-section .section-note {
-            font-size: 0.55rem;
-            color: #b9d0ff;
-            background: #101a24;
-            border-radius: 6px;
-            padding: 4px 8px;
-            margin-bottom: 4px;
-            border-left: 3px solid #667eea;
-            display: none;
-        }
-
-        .balloon-section .section-note.visible {
-            display: block;
-        }
-
-        .balloon-section .section-note .note-text {
-            word-wrap: break-word;
-        }
-
-        .balloon-section .section-note .note-edit-btn {
-            background: transparent;
-            border: none;
-            color: #8a9bb0;
-            cursor: pointer;
-            font-size: 0.5rem;
-            margin-left: 4px;
-        }
-
-        .balloon-section .section-note .note-edit-btn:hover {
-            color: #eaeef2;
-        }
-
-        /* Balloon Grid */
-        .balloon-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 4px;
-            padding: 4px 0;
-            min-height: 30px;
-        }
-
-        .balloon-item {
-            display: inline-flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-width: 36px;
-            height: 36px;
-            padding: 0 8px;
-            border-radius: 50%;
-            background: #2e7d32;
-            color: white;
-            font-size: 0.6rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: background 0.2s, transform 0.1s;
-            border: 2px solid transparent;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-            position: relative;
-        }
-
-        .balloon-item:active {
-            transform: scale(0.9);
-        }
-
-        .balloon-item.completed {
-            background: #6a3a3a;
-            border-color: #ff6b6b;
-            opacity: 0.85;
-        }
-
-        .balloon-item .balloon-number {
-            font-weight: 700;
-            font-size: 0.6rem;
-        }
-
-        .balloon-item .balloon-timestamp {
-            font-size: 0.3rem;
-            color: rgba(255, 255, 255, 0.6);
-            line-height: 1;
-            margin-top: 1px;
-        }
-
-        .balloon-item.completed .balloon-number {
-            text-decoration: line-through;
-        }
-
-        .balloon-item.completed::after {
-            content: '✓';
-            position: absolute;
-            top: -4px;
-            right: -4px;
-            font-size: 0.5rem;
-            color: #51cf66;
-        }
-
-        .balloon-empty {
-            color: #8a9bb0;
-            font-size: 0.6rem;
-            padding: 6px 0;
-            font-style: italic;
-        }
-
-        /* ===== PAGINATION ===== */
-        .pagination-controls {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 6px 0;
-            margin-top: 4px;
-        }
-
-        .pagination-controls button {
-            background: #2f3b4b;
-            border: none;
-            color: #dce3ec;
-            padding: 2px 12px;
-            border-radius: 30px;
-            font-weight: 600;
-            font-size: 0.55rem;
-            cursor: pointer;
-            min-height: 22px;
-            transition: background 0.15s;
-        }
-
-        .pagination-controls button:active {
-            transform: scale(0.95);
-        }
-        .pagination-controls button:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-        }
-
-        .pagination-controls .page-info {
-            font-size: 0.6rem;
-            color: #8a9bb0;
-            min-width: 60px;
-            text-align: center;
-        }
-
         /* ===== FOCUS OVERLAYS ===== */
         .focus-overlay {
             position: fixed;
@@ -594,7 +324,7 @@
             z-index: 999;
             display: none;
             flex-direction: column;
-            padding: 8px 6px;
+            padding: 12px 10px;
             overflow-y: auto;
         }
         .focus-overlay.active {
@@ -605,55 +335,52 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 6px;
+            margin-bottom: 10px;
             flex-wrap: wrap;
-            gap: 3px;
+            gap: 6px;
         }
 
         .focus-overlay .focus-header .title {
-            font-size: 0.8rem;
+            font-size: 1rem;
             font-weight: 700;
             color: #b9d0ff;
         }
-
-        .focus-overlay .focus-header .title .focused-heading {
-            color: #ffd93d;
-        }
-
-        .focus-overlay .focus-header .date-range {
-            font-size: 0.6rem;
-            color: #8a9bb0;
-        }
-
         .focus-overlay .focus-header button {
             background: #2f3b4b;
             border: none;
             color: white;
-            padding: 2px 10px;
+            padding: 6px 16px;
             border-radius: 30px;
             font-weight: 600;
-            font-size: 0.6rem;
+            font-size: 0.8rem;
             cursor: pointer;
+            min-height: 36px;
+        }
+        .focus-overlay .focus-header .focus-heading {
+            font-size: 0.9rem;
+            color: #ffd93d;
+            background: rgba(255, 217, 61, 0.15);
+            padding: 4px 16px;
+            border-radius: 30px;
         }
 
         .focus-overlay .focus-table-wrap {
             overflow-y: auto;
             flex: 1;
-            border-radius: 10px;
+            border-radius: 12px;
             background: #141c26;
-            padding: 2px;
+            padding: 4px;
         }
-
         .focus-overlay .focus-table-wrap table {
             min-width: auto;
             width: 100%;
         }
         .focus-overlay .focus-table-wrap td {
-            height: 28px;
-            min-width: 30px;
+            height: 36px;
+            min-width: 38px;
         }
         .focus-overlay .focus-table-wrap th {
-            min-width: 30px;
+            min-width: 38px;
         }
 
         /* ===== MODAL ===== */
@@ -664,12 +391,12 @@
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(3px);
+            backdrop-filter: blur(4px);
             z-index: 2000;
             display: none;
             align-items: center;
             justify-content: center;
-            padding: 12px;
+            padding: 16px;
         }
         .modal-backdrop.active {
             display: flex;
@@ -677,34 +404,33 @@
 
         .modal-box {
             background: #1f2a38;
-            border-radius: 18px;
-            padding: 14px 12px;
-            max-width: 320px;
+            border-radius: 20px;
+            padding: 20px 16px;
+            max-width: 340px;
             width: 100%;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
             border: 1px solid #3d4d62;
         }
 
         .modal-box .modal-title {
-            font-size: 0.75rem;
+            font-size: 1rem;
             font-weight: 600;
             color: #b9d0ff;
-            margin-bottom: 4px;
+            margin-bottom: 8px;
         }
 
         .modal-box textarea {
             width: 100%;
             background: #101a24;
             border: 1px solid #334154;
-            border-radius: 10px;
-            padding: 6px 8px;
+            border-radius: 12px;
+            padding: 10px 12px;
             color: #eaeef2;
-            font-size: 0.75rem;
-            min-height: 50px;
+            font-size: 0.9rem;
+            min-height: 70px;
             resize: vertical;
             font-family: inherit;
         }
-
         .modal-box textarea:focus {
             outline: 2px solid #6a8bc0;
             border-color: transparent;
@@ -712,23 +438,24 @@
 
         .modal-box .modal-actions {
             display: flex;
-            gap: 3px;
-            margin-top: 6px;
+            gap: 6px;
+            margin-top: 10px;
             flex-wrap: wrap;
         }
 
         .modal-box .modal-actions button {
             flex: 1;
-            min-width: 40px;
-            padding: 5px 6px;
+            min-width: 60px;
+            padding: 8px 12px;
             border: none;
             border-radius: 30px;
             font-weight: 600;
-            font-size: 0.6rem;
+            font-size: 0.8rem;
             background: #2f3b4b;
             color: #dce3ec;
             cursor: pointer;
             transition: background 0.15s;
+            min-height: 36px;
         }
         .modal-box .modal-actions button.primary {
             background: #4a6a8a;
@@ -740,19 +467,20 @@
 
         .modal-box .quick-tags {
             display: flex;
-            gap: 3px;
+            gap: 5px;
             flex-wrap: wrap;
-            margin-top: 4px;
+            margin-top: 6px;
         }
         .modal-box .quick-tags button {
             background: #2a3a4a;
             border: none;
             border-radius: 30px;
-            padding: 2px 8px;
-            font-size: 0.55rem;
+            padding: 4px 14px;
+            font-size: 0.75rem;
             color: #c8d8ee;
             cursor: pointer;
             font-weight: 500;
+            min-height: 30px;
         }
         .modal-box .quick-tags button:active {
             background: #4a5a6a;
@@ -761,16 +489,16 @@
         /* ===== TOAST ===== */
         .toast {
             position: fixed;
-            bottom: 70px;
+            bottom: 80px;
             left: 50%;
             transform: translateX(-50%);
             background: #1e2632;
             color: #eaeef2;
-            padding: 6px 14px;
+            padding: 10px 24px;
             border-radius: 30px;
-            font-size: 0.7rem;
+            font-size: 0.9rem;
             font-weight: 600;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.6);
             z-index: 3000;
             opacity: 0;
             transition: opacity 0.3s, transform 0.3s;
@@ -795,7 +523,7 @@
         }
         .celebration-particle {
             position: absolute;
-            font-size: 1.2rem;
+            font-size: 1.8rem;
             animation: floatUp 1.8s ease-out forwards;
         }
         @keyframes floatUp {
@@ -807,6 +535,233 @@
                 transform: translateY(-200px) scale(0.3) rotate(360deg);
                 opacity: 0;
             }
+        }
+
+        /* ============================================================
+           BALLOON PROGRESS TRACKER
+           ============================================================ */
+
+        .balloon-section {
+            background: #141c26;
+            border-radius: 14px;
+            padding: 14px 12px;
+            border: 2px solid #2a3442;
+            margin-bottom: 10px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .balloon-section.focused {
+            border-color: #ffd93d;
+            box-shadow: 0 0 24px rgba(255, 217, 61, 0.15);
+        }
+
+        .balloon-section .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .balloon-section .section-header .heading-input {
+            background: #101a24;
+            border: 1px solid #334154;
+            border-radius: 10px;
+            padding: 6px 10px;
+            color: #eaeef2;
+            font-size: 0.9rem;
+            font-weight: 700;
+            min-width: 100px;
+            flex: 1;
+            min-height: 36px;
+        }
+
+        .balloon-section .section-header .heading-input:focus {
+            outline: 2px solid #6a8bc0;
+            border-color: transparent;
+        }
+
+        .balloon-section .section-header .controls-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .balloon-section .section-header .controls-row label {
+            font-size: 0.7rem;
+            color: #8a9bb0;
+        }
+
+        .balloon-section .section-header .controls-row input {
+            background: #101a24;
+            border: 1px solid #334154;
+            border-radius: 8px;
+            padding: 4px 8px;
+            color: #eaeef2;
+            font-size: 0.8rem;
+            width: 60px;
+            min-height: 32px;
+        }
+
+        .balloon-section .section-header .controls-row input:focus {
+            outline: 2px solid #6a8bc0;
+            border-color: transparent;
+        }
+
+        .balloon-section .section-header .controls-row button {
+            background: #2f3b4b;
+            border: none;
+            color: #dce3ec;
+            padding: 4px 14px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.75rem;
+            cursor: pointer;
+            min-height: 32px;
+            transition: background 0.15s;
+        }
+
+        .balloon-section .section-header .controls-row button:active {
+            transform: scale(0.95);
+        }
+        .balloon-section .section-header .controls-row button.primary-btn {
+            background: #4a6a8a;
+            color: white;
+        }
+        .balloon-section .section-header .controls-row button.danger-btn {
+            background: #5a2a2a;
+        }
+        .balloon-section .section-header .controls-row button.focus-btn {
+            background: #2a4a3a;
+        }
+        .balloon-section .section-header .controls-row button.focus-btn.active-focus {
+            background: #ffd93d;
+            color: #1a1a2e;
+        }
+        .balloon-section .section-header .controls-row button.note-btn {
+            background: #4a3a6a;
+        }
+        .balloon-section .section-header .controls-row button.note-btn.has-note {
+            background: #8a6a3a;
+        }
+
+        /* Balloon Grid */
+        .balloon-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            padding: 6px 0;
+            min-height: 40px;
+        }
+
+        .balloon-item {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 40px;
+            height: 40px;
+            padding: 0 12px;
+            border-radius: 50%;
+            background: #2e7d32;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s, border-color 0.2s;
+            border: 2px solid transparent;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            position: relative;
+            flex-direction: column;
+            gap: 1px;
+        }
+
+        .balloon-item:active {
+            transform: scale(0.9);
+        }
+
+        .balloon-item.completed {
+            background: #6a3a3a;
+            border-color: #ff6b6b;
+            opacity: 0.85;
+        }
+
+        .balloon-item .balloon-number {
+            font-weight: 700;
+            font-size: 0.75rem;
+            line-height: 1;
+        }
+
+        .balloon-item .balloon-timestamp {
+            font-size: 0.4rem;
+            color: #8a9bb0;
+            line-height: 1;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .balloon-item.completed .balloon-timestamp {
+            color: #51cf66;
+        }
+
+        .balloon-empty {
+            color: #8a9bb0;
+            font-size: 0.8rem;
+            padding: 8px 0;
+            font-style: italic;
+        }
+
+        /* Section Note Display */
+        .section-note-display {
+            font-size: 0.75rem;
+            color: #ffe484;
+            background: rgba(255, 228, 132, 0.08);
+            padding: 6px 12px;
+            border-radius: 10px;
+            margin-top: 6px;
+            border-left: 3px solid #ffe484;
+            word-break: break-word;
+        }
+
+        /* ===== HEADING PAGINATION ===== */
+        .heading-pagination {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 10px 0;
+            margin-bottom: 8px;
+        }
+
+        .heading-pagination button {
+            background: #2f3b4b;
+            border: none;
+            color: #dce3ec;
+            padding: 6px 18px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            min-height: 36px;
+            transition: background 0.15s;
+        }
+
+        .heading-pagination button:active {
+            transform: scale(0.95);
+        }
+        .heading-pagination button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .heading-pagination .page-info {
+            font-size: 0.8rem;
+            color: #8a9bb0;
+            min-width: 80px;
+            text-align: center;
         }
 
         /* ===== UTILITIES ===== */
@@ -835,114 +790,132 @@
         .mt-6 {
             margin-top: 6px;
         }
-        .mb-6 {
-            margin-bottom: 6px;
-        }
 
         /* ===== RESPONSIVE ===== */
         @media (max-width: 600px) {
             td {
-                min-width: 28px;
-                height: 24px;
+                min-width: 34px;
+                height: 32px;
             }
             th {
-                min-width: 30px;
-                font-size: 0.45rem;
-                padding: 2px 1px;
+                min-width: 38px;
+                font-size: 0.6rem;
+                padding: 4px 2px;
             }
             th .date {
-                font-size: 0.6rem;
+                font-size: 0.75rem;
             }
             th .total {
-                font-size: 0.45rem;
+                font-size: 0.6rem;
             }
             .top-bar .today {
-                font-size: 0.7rem;
+                font-size: 0.85rem;
             }
             .top-bar .controls button {
-                font-size: 0.5rem;
-                padding: 1px 5px;
-                min-height: 18px;
+                font-size: 0.65rem;
+                padding: 4px 10px;
+                min-height: 28px;
             }
             .table-wrap {
-                max-height: 340px;
+                max-height: 400px;
             }
             .focus-overlay .focus-table-wrap td {
-                height: 22px;
-                min-width: 24px;
+                height: 28px;
+                min-width: 30px;
             }
             td .cell-content {
-                font-size: 0.4rem;
+                font-size: 0.5rem;
             }
             td .cell-content .cell-note {
-                font-size: 0.3rem;
+                font-size: 0.4rem;
             }
             td .cell-content .cell-time {
-                font-size: 0.3rem;
+                font-size: 0.35rem;
             }
             .top-bar .week-label {
-                font-size: 0.5rem;
-                min-width: 55px;
+                font-size: 0.7rem;
+                min-width: 70px;
             }
             .balloon-item {
-                min-width: 30px;
-                height: 30px;
-                font-size: 0.5rem;
-                padding: 0 6px;
+                min-width: 34px;
+                height: 34px;
+                font-size: 0.65rem;
+                padding: 0 8px;
             }
             .balloon-item .balloon-timestamp {
-                font-size: 0.25rem;
+                font-size: 0.3rem;
             }
             .balloon-section .section-header .heading-input {
-                font-size: 0.65rem;
-                min-width: 60px;
-            }
-            .balloon-section .section-header .controls-row button {
-                font-size: 0.45rem;
-                padding: 1px 6px;
-            }
-            .balloon-section .section-note {
-                font-size: 0.5rem;
+                font-size: 0.8rem;
+                min-width: 80px;
             }
         }
 
         @media (max-width: 400px) {
             td {
-                min-width: 22px;
-                height: 20px;
+                min-width: 28px;
+                height: 28px;
             }
             th {
-                min-width: 24px;
-                font-size: 0.4rem;
-            }
-            th .date {
+                min-width: 30px;
                 font-size: 0.5rem;
             }
+            th .date {
+                font-size: 0.65rem;
+            }
             .top-bar .controls button {
-                font-size: 0.45rem;
-                padding: 1px 4px;
-                min-height: 16px;
+                font-size: 0.55rem;
+                padding: 3px 8px;
+                min-height: 24px;
             }
             .table-wrap {
-                max-height: 280px;
+                max-height: 340px;
             }
             td .cell-content .cell-note {
-                font-size: 0.25rem;
+                font-size: 0.3rem;
             }
             td .cell-content .cell-time {
-                font-size: 0.25rem;
+                font-size: 0.3rem;
             }
             .balloon-item {
-                min-width: 26px;
-                height: 26px;
-                font-size: 0.45rem;
-                padding: 0 4px;
+                min-width: 28px;
+                height: 28px;
+                font-size: 0.55rem;
+                padding: 0 6px;
+            }
+            .balloon-item .balloon-timestamp {
+                font-size: 0.25rem;
             }
         }
 
         /* file input hidden */
         #fileInput {
             display: none;
+        }
+
+        /* Add rows button */
+        .add-rows-btn {
+            width: 100%;
+            background: #2a3a4a;
+            border: 2px dashed #4a5a6a;
+            border-radius: 14px;
+            padding: 12px;
+            color: #8a9bb0;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s;
+            margin-top: 6px;
+            min-height: 48px;
+        }
+
+        .add-rows-btn:hover {
+            background: #2a3a5a;
+            border-color: #6a8ab0;
+        }
+
+        .add-rows-btn:active {
+            transform: scale(0.98);
         }
     </style>
 </head>
@@ -958,10 +931,10 @@
     <div class="top-bar">
         <div class="today">📅 <span id="todayDisplay"></span></div>
         <div class="controls">
-            <button id="todayBtn" class="today-btn" title="Go to today">📅 Today</button>
             <button id="prevWeekBtn">◀</button>
             <span class="week-label" id="weekLabel">Week 1</span>
             <button id="nextWeekBtn">▶</button>
+            <button id="todayBtn" class="today-btn" title="Go to today">📍 Today</button>
             <button id="upRowBtn" title="Previous 20 rows">⬆</button>
             <button id="downRowBtn" title="Next 20 rows">⬇</button>
             <button id="focusBtn" class="focus-btn">🔍 Focus</button>
@@ -996,41 +969,22 @@
     <!-- TAB 2: BALLOON PROGRESS TRACKER -->
     <!-- ============================================================ -->
     <div class="tab-content" id="tab-balloons">
+        <div class="heading-pagination" id="headingPagination">
+            <button id="headingPrevBtn">◀</button>
+            <span class="page-info" id="headingPageInfo">Page 1 of 1</span>
+            <button id="headingNextBtn">▶</button>
+        </div>
         <div id="balloonContainer">
             <!-- Balloon sections will be rendered here -->
         </div>
-
-        <!-- Pagination Controls -->
-        <div class="pagination-controls" id="balloonPagination">
-            <button id="balloonPrevPage">◀</button>
-            <span class="page-info" id="balloonPageInfo">Page 1 of 1</span>
-            <button id="balloonNextPage">▶</button>
-        </div>
-
-        <!-- Add New Section Button -->
-        <button id="addBalloonSectionBtn" style="
-            width: 100%;
-            background: #2a3a4a;
-            border: 2px dashed #4a5a6a;
-            border-radius: 12px;
-            padding: 10px;
-            color: #8a9bb0;
-            font-size: 0.8rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-            margin-top: 4px;
-        ">➕ Add New Balloon Section</button>
+        <button id="addBalloonSectionBtn" class="add-rows-btn" style="margin-top:6px;">➕ Add New Balloon Section</button>
     </div>
 
     <!-- ===== FOCUS OVERLAY (Today) ===== -->
     <div class="focus-overlay" id="focusOverlay">
         <div class="focus-header">
-            <div class="title">
-                📅 <span id="focusTodayDisplay"></span>
-                <span class="focused-heading" id="focusHeadingDisplay"></span>
-            </div>
-            <div class="date-range" id="focusDateRange"></div>
+            <div class="title">📅 <span id="focusTodayDisplay"></span></div>
+            <span class="focus-heading" id="focusHeadingDisplay">⭐ No heading focused</span>
             <button id="closeFocusBtn">✕ Close</button>
         </div>
         <div class="focus-table-wrap">
@@ -1059,50 +1013,52 @@
         </div>
     </div>
 
+    <!-- ===== MODAL FOR BALLOON SETTINGS ===== -->
+    <div class="modal-backdrop" id="balloonModal">
+        <div class="modal-box">
+            <div class="modal-title">🎈 Add Balloons</div>
+            <div style="margin-bottom: 8px;">
+                <label style="font-size: 0.8rem; color: #8a9bb0; display: block; margin-bottom: 4px;">Number of balloons:</label>
+                <input type="number" id="balloonCountInput" value="5" min="1" max="100" style="
+                    width: 100%;
+                    background: #101a24;
+                    border: 1px solid #334154;
+                    border-radius: 10px;
+                    padding: 8px 12px;
+                    color: #eaeef2;
+                    font-size: 0.9rem;
+                    min-height: 40px;
+                " />
+            </div>
+            <div style="margin-bottom: 10px;">
+                <label style="font-size: 0.8rem; color: #8a9bb0; display: block; margin-bottom: 4px;">Starting number:</label>
+                <input type="number" id="balloonStartInput" value="1" min="0" max="999" style="
+                    width: 100%;
+                    background: #101a24;
+                    border: 1px solid #334154;
+                    border-radius: 10px;
+                    padding: 8px 12px;
+                    color: #eaeef2;
+                    font-size: 0.9rem;
+                    min-height: 40px;
+                " />
+            </div>
+            <div class="modal-actions">
+                <button id="balloonModalAddBtn" class="primary">🎈 Add</button>
+                <button id="balloonModalCancelBtn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
     <!-- ===== MODAL FOR SECTION NOTE ===== -->
     <div class="modal-backdrop" id="sectionNoteModal">
         <div class="modal-box">
             <div class="modal-title">📝 Section Note</div>
             <textarea id="sectionNoteInput" placeholder="Write a note for this section…"></textarea>
             <div class="modal-actions">
-                <button id="sectionNoteSaveBtn" class="primary">💾 Save Note</button>
+                <button id="sectionNoteSaveBtn" class="primary">💾 Save</button>
                 <button id="sectionNoteClearBtn" class="danger">🗑️ Clear</button>
                 <button id="sectionNoteCancelBtn">Cancel</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ===== MODAL FOR BALLOON SETTINGS ===== -->
-    <div class="modal-backdrop" id="balloonModal">
-        <div class="modal-box">
-            <div class="modal-title">🎈 Add Balloons</div>
-            <div style="margin-bottom: 6px;">
-                <label style="font-size: 0.7rem; color: #8a9bb0; display: block; margin-bottom: 2px;">Number of balloons:</label>
-                <input type="number" id="balloonCountInput" value="5" min="1" max="100" style="
-                    width: 100%;
-                    background: #101a24;
-                    border: 1px solid #334154;
-                    border-radius: 8px;
-                    padding: 6px 8px;
-                    color: #eaeef2;
-                    font-size: 0.8rem;
-                " />
-            </div>
-            <div style="margin-bottom: 8px;">
-                <label style="font-size: 0.7rem; color: #8a9bb0; display: block; margin-bottom: 2px;">Starting number:</label>
-                <input type="number" id="balloonStartInput" value="1" min="0" max="999" style="
-                    width: 100%;
-                    background: #101a24;
-                    border: 1px solid #334154;
-                    border-radius: 8px;
-                    padding: 6px 8px;
-                    color: #eaeef2;
-                    font-size: 0.8rem;
-                " />
-            </div>
-            <div class="modal-actions">
-                <button id="balloonModalAddBtn" class="primary">🎈 Add</button>
-                <button id="balloonModalCancelBtn">Cancel</button>
             </div>
         </div>
     </div>
@@ -1116,21 +1072,24 @@
         const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
         const ROWS_VISIBLE = 20;
         let TOTAL_ROWS = 40;
-        let rowOffset = 0;
+
+        // ===== STATE =====
+        let cellData = [];
         let weekOffset = 0;
+        let rowOffset = 0;
         let focusMode = false;
-        let focus3Mode = false;
         let toastTimeout = null;
         let celebrationTimeout = null;
         let saveTimeout = null;
 
-        // ===== STATE =====
-        let cellData = [];
+        // ===== BALLOON STATE =====
         let balloonSections = [];
         let balloonIdCounter = 1;
-        let focusedSectionId = null;
-        let balloonPage = 0;
-        const BALLOONS_PER_PAGE = 5;
+        let currentBalloonSectionId = null;
+        let currentSectionNoteId = null;
+        let focusedHeadingId = null;
+        let headingPage = 0;
+        const HEADINGS_PER_PAGE = 5;
 
         // ===== DOM REFS =====
         const saveIndicator = document.getElementById('saveIndicator');
@@ -1146,7 +1105,7 @@
             clearTimeout(toastTimeout);
             toastTimeout = setTimeout(() => {
                 el.classList.remove('show');
-            }, 2200);
+            }, 2500);
         }
 
         // ============================================================
@@ -1176,7 +1135,7 @@
                 el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
                 el.style.left = (5 + Math.random() * 90) + '%';
                 el.style.top = (10 + Math.random() * 70) + '%';
-                el.style.fontSize = (0.8 + Math.random() * 1.2) + 'rem';
+                el.style.fontSize = (1.2 + Math.random() * 1.5) + 'rem';
                 el.style.animationDuration = (1.2 + Math.random() * 0.8) + 's';
                 el.style.animationDelay = (Math.random() * 0.4) + 's';
                 container.appendChild(el);
@@ -1187,7 +1146,32 @@
                 container.innerHTML = '';
             }, 2500);
 
-            showToast('🎉 All balloons completed!', 'success');
+            showToast('🎉 1 hour completed! Keep going!', 'success');
+        }
+
+        function triggerBalloonCelebration() {
+            const container = document.getElementById('celebrationContainer');
+            const emojis = ['🎈', '🎉', '🎊', '⭐', '🌟', '✨', '🏆', '💪'];
+            const count = 10 + Math.floor(Math.random() * 10);
+
+            for (let i = 0; i < count; i++) {
+                const el = document.createElement('div');
+                el.className = 'celebration-particle';
+                el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                el.style.left = (5 + Math.random() * 90) + '%';
+                el.style.top = (10 + Math.random() * 70) + '%';
+                el.style.fontSize = (1.5 + Math.random() * 1.8) + 'rem';
+                el.style.animationDuration = (1.5 + Math.random() * 1) + 's';
+                el.style.animationDelay = (Math.random() * 0.5) + 's';
+                container.appendChild(el);
+            }
+
+            clearTimeout(celebrationTimeout);
+            celebrationTimeout = setTimeout(() => {
+                container.innerHTML = '';
+            }, 3000);
+
+            showToast('🎉 All balloons completed! Amazing!', 'success');
         }
 
         // ============================================================
@@ -1218,6 +1202,11 @@
             return d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
         }
 
+        function formatDateTime(d) {
+            return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ' ' +
+                d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        }
+
         function getWeekDays(offset) {
             const today = new Date();
             const base = getWeekStart(today);
@@ -1233,7 +1222,7 @@
 
         function getTotalForDay(colIndex) {
             let total = 0;
-            for (let r = 0; r < TOTAL_ROWS; r++) {
+            for (let r = 0; r < cellData.length; r++) {
                 const v = cellData[r]?.[colIndex]?.value || 0;
                 total += v;
             }
@@ -1301,6 +1290,11 @@
             return total;
         }
 
+        function getFocusedHeading() {
+            if (!focusedHeadingId) return null;
+            return balloonSections.find(s => s.id === focusedHeadingId) || null;
+        }
+
         // ============================================================
         // DATA PERSISTENCE
         // ============================================================
@@ -1311,11 +1305,11 @@
                     cells: cellData,
                     weekOffset: weekOffset,
                     rowOffset: rowOffset,
-                    totalRows: TOTAL_ROWS,
                     balloonSections: balloonSections,
                     balloonIdCounter: balloonIdCounter,
-                    focusedSectionId: focusedSectionId,
-                    balloonPage: balloonPage
+                    focusedHeadingId: focusedHeadingId,
+                    headingPage: headingPage,
+                    TOTAL_ROWS: TOTAL_ROWS
                 };
                 localStorage.setItem('timeTrackerData', JSON.stringify(data));
                 flashSaveIndicator();
@@ -1329,8 +1323,8 @@
                     const parsed = JSON.parse(raw);
                     if (parsed.cells && Array.isArray(parsed.cells)) {
                         cellData = parsed.cells;
-                        TOTAL_ROWS = parsed.totalRows || 40;
-                        for (let r = 0; r < TOTAL_ROWS; r++) {
+                        // Ensure each row has 7 columns
+                        for (let r = 0; r < cellData.length; r++) {
                             if (!cellData[r]) cellData[r] = [];
                             for (let c = 0; c < 7; c++) {
                                 if (!cellData[r][c]) cellData[r][c] = { value: 0, note: '', time: '' };
@@ -1343,8 +1337,9 @@
                     if (parsed.rowOffset !== undefined) rowOffset = parsed.rowOffset;
                     if (parsed.balloonSections) balloonSections = parsed.balloonSections;
                     if (parsed.balloonIdCounter) balloonIdCounter = parsed.balloonIdCounter;
-                    if (parsed.focusedSectionId !== undefined) focusedSectionId = parsed.focusedSectionId;
-                    if (parsed.balloonPage !== undefined) balloonPage = parsed.balloonPage;
+                    if (parsed.focusedHeadingId !== undefined) focusedHeadingId = parsed.focusedHeadingId;
+                    if (parsed.headingPage !== undefined) headingPage = parsed.headingPage;
+                    if (parsed.TOTAL_ROWS) TOTAL_ROWS = parsed.TOTAL_ROWS;
                 } else {
                     initData();
                 }
@@ -1387,7 +1382,400 @@
         });
 
         // ============================================================
-        // TIME TRACKER - RENDER MAIN
+        // ROW MANAGEMENT
+        // ============================================================
+
+        function addRows() {
+            const newRows = 20;
+            const startRow = cellData.length;
+            for (let r = 0; r < newRows; r++) {
+                cellData.push([]);
+                for (let c = 0; c < 7; c++) {
+                    cellData[startRow + r][c] = { value: 0, note: '', time: '' };
+                }
+            }
+            TOTAL_ROWS = cellData.length;
+            autoSave();
+            renderMain();
+            showToast(`➕ Added ${newRows} rows (${TOTAL_ROWS * 5} minutes total)`);
+        }
+
+        document.getElementById('addRowsBtn').addEventListener('click', addRows);
+
+        // ============================================================
+        // TODAY BUTTON
+        // ============================================================
+
+        document.getElementById('todayBtn').addEventListener('click', function() {
+            if (focusMode) {
+                focusMode = false;
+                document.getElementById('focusOverlay').classList.remove('active');
+                updateFocusButtons();
+            }
+            weekOffset = 0;
+            // Find the row that contains today's time
+            const today = new Date();
+            const todayMinutes = today.getHours() * 60 + today.getMinutes();
+            const rowIndex = Math.floor(todayMinutes / 5);
+            // Clamp to valid range
+            const maxRow = Math.max(0, cellData.length - ROWS_VISIBLE);
+            rowOffset = Math.min(Math.floor(rowIndex / ROWS_VISIBLE), Math.floor(maxRow / ROWS_VISIBLE));
+            renderMain();
+            showToast('📍 Jumped to today');
+            
+            // Scroll to today's column in the table
+            setTimeout(() => {
+                const todayStr = formatDate(today);
+                const days = getWeekDays(0);
+                let colIndex = -1;
+                days.forEach((d, idx) => {
+                    if (formatDate(d) === todayStr) colIndex = idx;
+                });
+                if (colIndex !== -1) {
+                    const tableWrap = document.getElementById('tableWrap');
+                    const ths = document.querySelectorAll('#tableHead th');
+                    if (ths.length > colIndex + 1) {
+                        const targetTh = ths[colIndex + 1];
+                        if (targetTh) {
+                            targetTh.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+                        }
+                    }
+                }
+            }, 150);
+        });
+
+        // ============================================================
+        // BALLOON PROGRESS TRACKER
+        // ============================================================
+
+        function renderBalloons() {
+            const container = document.getElementById('balloonContainer');
+
+            // Filter sections for current page
+            const startIdx = headingPage * HEADINGS_PER_PAGE;
+            const endIdx = Math.min(startIdx + HEADINGS_PER_PAGE, balloonSections.length);
+            const pageSections = balloonSections.slice(startIdx, endIdx);
+
+            // Update pagination
+            const totalPages = Math.max(1, Math.ceil(balloonSections.length / HEADINGS_PER_PAGE));
+            document.getElementById('headingPageInfo').textContent =
+                `Page ${headingPage + 1} of ${totalPages}`;
+            document.getElementById('headingPrevBtn').disabled = headingPage === 0;
+            document.getElementById('headingNextBtn').disabled = headingPage >= totalPages - 1;
+
+            if (balloonSections.length === 0) {
+                container.innerHTML = `
+                    <div class="balloon-section" style="text-align:center;padding:24px 12px;">
+                        <div style="font-size:2rem;margin-bottom:12px;">🎈</div>
+                        <div style="color:#8a9bb0;font-size:1rem;">No balloon sections yet.</div>
+                        <div style="color:#6a7a8a;font-size:0.85rem;margin-top:6px;">Click "Add New Balloon Section" below to start.</div>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            pageSections.forEach((section) => {
+                const completedCount = section.balloons.filter(b => b.completed).length;
+                const totalCount = section.balloons.length;
+                const progressPct = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+                const isFocused = focusedHeadingId === section.id;
+
+                let balloonsHTML = '';
+                if (section.balloons.length === 0) {
+                    balloonsHTML =
+                    `<div class="balloon-empty">No balloons yet. Click "Add Balloons" to add some.</div>`;
+                } else {
+                    section.balloons.forEach(balloon => {
+                        const completedClass = balloon.completed ? 'completed' : '';
+                        const timestamp = balloon.completed && balloon.completedTime ?
+                            `<span class="balloon-timestamp">${balloon.completedTime}</span>` : '';
+                        balloonsHTML += `
+                            <div class="balloon-item ${completedClass}" 
+                                 data-section-id="${section.id}" 
+                                 data-balloon-id="${balloon.id}"
+                                 onclick="toggleBalloon(${section.id}, ${balloon.id})">
+                                <span class="balloon-number">${balloon.number}</span>
+                                ${timestamp}
+                            </div>
+                        `;
+                    });
+                }
+
+                const noteDisplay = section.note ? 
+                    `<div class="section-note-display">📝 ${section.note}</div>` : '';
+
+                html += `
+                    <div class="balloon-section ${isFocused ? 'focused' : ''}" data-section-id="${section.id}">
+                        <div class="section-header">
+                            <input type="text" class="heading-input" value="${section.heading}" 
+                                   onchange="updateBalloonHeading(${section.id}, this.value)" 
+                                   placeholder="Enter heading..." />
+                            <div class="controls-row">
+                                <button class="${isFocused ? 'focus-btn active-focus' : 'focus-btn'}" 
+                                        onclick="toggleFocusHeading(${section.id})" 
+                                        title="${isFocused ? 'Remove focus' : 'Focus on this heading'}">
+                                    ${isFocused ? '⭐' : '☆'}
+                                </button>
+                                <button class="note-btn ${section.note ? 'has-note' : ''}" 
+                                        onclick="openSectionNoteModal(${section.id})" 
+                                        title="Add/Edit section note">
+                                    📝
+                                </button>
+                                <label>Start:</label>
+                                <input type="number" id="startNum_${section.id}" value="${section.startNumber || 1}" 
+                                       min="0" max="999" style="width:60px;"
+                                       onchange="updateBalloonStartNumber(${section.id}, this.value)" />
+                                <button class="primary-btn" onclick="openBalloonModal(${section.id})">🎈 Add</button>
+                                <button class="danger-btn" onclick="deleteBalloonSection(${section.id})">🗑️</button>
+                            </div>
+                        </div>
+                        <div style="font-size:0.7rem;color:#8a9bb0;margin-bottom:6px;">
+                            Progress: ${completedCount}/${totalCount} (${progressPct}%)
+                            <span style="display:inline-block;width:80px;height:6px;background:#2a3442;border-radius:6px;vertical-align:middle;margin-left:6px;">
+                                <span style="display:block;height:100%;width:${progressPct}%;background:#51cf66;border-radius:6px;"></span>
+                            </span>
+                        </div>
+                        ${noteDisplay}
+                        <div class="balloon-grid">
+                            ${balloonsHTML}
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function addBalloonSection() {
+            const newSection = {
+                id: Date.now() + Math.random() * 1000,
+                heading: 'New Section ' + (balloonSections.length + 1),
+                startNumber: 1,
+                balloons: [],
+                note: ''
+            };
+            balloonSections.push(newSection);
+            // Go to last page
+            const totalPages = Math.ceil(balloonSections.length / HEADINGS_PER_PAGE);
+            headingPage = totalPages - 1;
+            autoSave();
+            renderBalloons();
+            showToast('✅ New balloon section added');
+        }
+
+        function deleteBalloonSection(sectionId) {
+            if (!confirm('Delete this entire section and all its balloons?')) return;
+            if (focusedHeadingId === sectionId) {
+                focusedHeadingId = null;
+            }
+            balloonSections = balloonSections.filter(s => s.id !== sectionId);
+            // Adjust page if needed
+            const totalPages = Math.ceil(balloonSections.length / HEADINGS_PER_PAGE);
+            if (headingPage >= totalPages) headingPage = Math.max(0, totalPages - 1);
+            autoSave();
+            renderBalloons();
+            showToast('🗑️ Section deleted');
+        }
+
+        function updateBalloonHeading(sectionId, newHeading) {
+            const section = balloonSections.find(s => s.id === sectionId);
+            if (section) {
+                section.heading = newHeading || 'Untitled';
+                autoSave();
+            }
+        }
+
+        function updateBalloonStartNumber(sectionId, value) {
+            const section = balloonSections.find(s => s.id === sectionId);
+            if (section) {
+                const newStart = parseInt(value) || 1;
+                section.startNumber = newStart;
+                // Renumber all balloons in this section
+                section.balloons.forEach((balloon, idx) => {
+                    balloon.number = newStart + idx;
+                });
+                autoSave();
+                renderBalloons();
+            }
+        }
+
+        function toggleBalloon(sectionId, balloonId) {
+            const section = balloonSections.find(s => s.id === sectionId);
+            if (!section) return;
+            const balloon = section.balloons.find(b => b.id === balloonId);
+            if (!balloon) return;
+            balloon.completed = !balloon.completed;
+            if (balloon.completed) {
+                balloon.completedTime = formatDateTime(new Date());
+            } else {
+                balloon.completedTime = '';
+            }
+            autoSave();
+            renderBalloons();
+
+            // Celebration when all balloons in a section are completed
+            const completedCount = section.balloons.filter(b => b.completed).length;
+            if (completedCount === section.balloons.length && section.balloons.length > 0) {
+                triggerBalloonCelebration();
+            }
+        }
+
+        function toggleFocusHeading(sectionId) {
+            if (focusedHeadingId === sectionId) {
+                focusedHeadingId = null;
+                showToast('☆ Focus removed');
+            } else {
+                focusedHeadingId = sectionId;
+                const section = balloonSections.find(s => s.id === sectionId);
+                if (section) {
+                    showToast(`⭐ Focused on "${section.heading}"`);
+                }
+                // Go to page containing this section
+                const idx = balloonSections.findIndex(s => s.id === sectionId);
+                if (idx !== -1) {
+                    headingPage = Math.floor(idx / HEADINGS_PER_PAGE);
+                }
+            }
+            autoSave();
+            renderBalloons();
+            updateFocusHeadingDisplay();
+        }
+
+        function updateFocusHeadingDisplay() {
+            const display = document.getElementById('focusHeadingDisplay');
+            if (focusedHeadingId) {
+                const section = balloonSections.find(s => s.id === focusedHeadingId);
+                display.textContent = section ? `⭐ ${section.heading}` : '⭐ No heading focused';
+            } else {
+                display.textContent = '⭐ No heading focused';
+            }
+        }
+
+        // ===== SECTION NOTE MODAL =====
+
+        function openSectionNoteModal(sectionId) {
+            currentSectionNoteId = sectionId;
+            const section = balloonSections.find(s => s.id === sectionId);
+            if (section) {
+                document.getElementById('sectionNoteInput').value = section.note || '';
+                document.getElementById('sectionNoteModal').classList.add('active');
+            }
+        }
+
+        document.getElementById('sectionNoteSaveBtn').addEventListener('click', function() {
+            const section = balloonSections.find(s => s.id === currentSectionNoteId);
+            if (section) {
+                section.note = document.getElementById('sectionNoteInput').value.trim();
+                autoSave();
+                renderBalloons();
+                showToast('📝 Section note saved');
+            }
+            document.getElementById('sectionNoteModal').classList.remove('active');
+            currentSectionNoteId = null;
+        });
+
+        document.getElementById('sectionNoteClearBtn').addEventListener('click', function() {
+            const section = balloonSections.find(s => s.id === currentSectionNoteId);
+            if (section) {
+                section.note = '';
+                autoSave();
+                renderBalloons();
+                showToast('🗑️ Section note cleared');
+            }
+            document.getElementById('sectionNoteModal').classList.remove('active');
+            currentSectionNoteId = null;
+        });
+
+        document.getElementById('sectionNoteCancelBtn').addEventListener('click', function() {
+            document.getElementById('sectionNoteModal').classList.remove('active');
+            currentSectionNoteId = null;
+        });
+
+        document.getElementById('sectionNoteModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('active');
+                currentSectionNoteId = null;
+            }
+        });
+
+        // ===== BALLOON MODAL =====
+
+        function openBalloonModal(sectionId) {
+            currentBalloonSectionId = sectionId;
+            document.getElementById('balloonCountInput').value = 5;
+            document.getElementById('balloonStartInput').value = 1;
+            document.getElementById('balloonModal').classList.add('active');
+        }
+
+        document.getElementById('balloonModalAddBtn').addEventListener('click', function() {
+            const sectionId = currentBalloonSectionId;
+            const count = parseInt(document.getElementById('balloonCountInput').value) || 5;
+            const startNum = parseInt(document.getElementById('balloonStartInput').value) || 1;
+
+            const section = balloonSections.find(s => s.id === sectionId);
+            if (!section) {
+                showToast('❌ Section not found', 'error');
+                document.getElementById('balloonModal').classList.remove('active');
+                return;
+            }
+
+            section.startNumber = startNum;
+
+            // Get current max number in section
+            let currentMax = 0;
+            section.balloons.forEach(b => {
+                if (b.number > currentMax) currentMax = b.number;
+            });
+
+            let nextNum = Math.max(startNum, currentMax + 1);
+
+            for (let i = 0; i < count; i++) {
+                section.balloons.push({
+                    id: balloonIdCounter++,
+                    number: nextNum + i,
+                    completed: false,
+                    completedTime: ''
+                });
+            }
+
+            autoSave();
+            renderBalloons();
+            document.getElementById('balloonModal').classList.remove('active');
+            showToast(`🎈 Added ${count} balloons starting from ${nextNum}`);
+        });
+
+        document.getElementById('balloonModalCancelBtn').addEventListener('click', function() {
+            document.getElementById('balloonModal').classList.remove('active');
+        });
+
+        document.getElementById('balloonModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('active');
+            }
+        });
+
+        document.getElementById('addBalloonSectionBtn').addEventListener('click', addBalloonSection);
+
+        // ===== HEADING PAGINATION =====
+
+        document.getElementById('headingPrevBtn').addEventListener('click', function() {
+            if (headingPage > 0) {
+                headingPage--;
+                renderBalloons();
+            }
+        });
+
+        document.getElementById('headingNextBtn').addEventListener('click', function() {
+            const totalPages = Math.ceil(balloonSections.length / HEADINGS_PER_PAGE);
+            if (headingPage < totalPages - 1) {
+                headingPage++;
+                renderBalloons();
+            }
+        });
+
+        // ============================================================
+        // RENDER MAIN (Time Tracker)
         // ============================================================
 
         function renderMain() {
@@ -1398,7 +1786,7 @@
 
             // Header
             const thead = document.getElementById('tableHead');
-            let headerHTML = '<tr><th style="min-width:22px;">#</th>';
+            let headerHTML = '<tr><th style="min-width:28px;">#</th>';
             days.forEach((d, idx) => {
                 const dateStr = formatDate(d);
                 const isToday = dateStr === today;
@@ -1419,10 +1807,10 @@
             // Body
             const tbody = document.getElementById('tableBody');
             const startRow = rowOffset * ROWS_VISIBLE;
-            const endRow = Math.min(startRow + ROWS_VISIBLE, TOTAL_ROWS);
+            const endRow = Math.min(startRow + ROWS_VISIBLE, cellData.length);
 
-            if (startRow >= TOTAL_ROWS) {
-                rowOffset = Math.max(0, Math.floor((TOTAL_ROWS - 1) / ROWS_VISIBLE));
+            if (startRow >= cellData.length) {
+                rowOffset = Math.max(0, Math.floor((cellData.length - 1) / ROWS_VISIBLE));
                 renderMain();
                 return;
             }
@@ -1433,7 +1821,7 @@
                 const rowLabel = (r * 5) + '–' + ((r + 1) * 5) + 'm';
                 bodyHTML += `<tr>`;
                 bodyHTML += `
-                        <td style="font-size:0.45rem;color:#8a9bb0;text-align:center;background:#111b24;min-width:22px;">
+                        <td style="font-size:0.6rem;color:#8a9bb0;text-align:center;background:#111b24;min-width:28px;font-weight:600;">
                             ${rowLabel}
                         </td>
                     `;
@@ -1469,49 +1857,73 @@
 
             attachCellEvents('mainTable');
             updateFocusButtons();
+            updateFocusHeadingDisplay();
             autoSave();
         }
 
         // ============================================================
-        // ADD ROWS
+        // FOCUS (Today)
         // ============================================================
 
-        document.getElementById('addRowsBtn').addEventListener('click', function() {
-            const newRows = 20;
-            for (let r = 0; r < newRows; r++) {
-                const idx = TOTAL_ROWS + r;
-                cellData[idx] = [];
-                for (let c = 0; c < 7; c++) {
-                    cellData[idx][c] = { value: 0, note: '', time: '' };
-                }
-            }
-            TOTAL_ROWS += newRows;
-            autoSave();
-            renderMain();
-            showToast(`➕ Added ${newRows} rows (Total: ${TOTAL_ROWS} rows)`);
-        });
-
-        // ============================================================
-        // TODAY BUTTON
-        // ============================================================
-
-        document.getElementById('todayBtn').addEventListener('click', function() {
+        function renderFocus() {
             const today = new Date();
             const todayStr = formatDate(today);
-            const days = getWeekDays(weekOffset);
-            // Check if today is in the current week
-            const inCurrentWeek = days.some(d => formatDate(d) === todayStr);
-            if (!inCurrentWeek) {
-                // Find the week that contains today
-                const base = getWeekStart(today);
-                const offset = Math.floor((today - base) / (7 * 24 * 60 * 60 * 1000));
-                weekOffset = offset;
+            const days = getWeekDays(0);
+            let colIndex = -1;
+            days.forEach((d, idx) => {
+                if (formatDate(d) === todayStr) colIndex = idx;
+            });
+            if (colIndex === -1) colIndex = 0;
+
+            updatePreviousTotals();
+
+            const thead = document.getElementById('focusHead');
+            const d = days[colIndex];
+            const total = getTotalForDay(colIndex);
+            let headerHTML = `
+                    <tr>
+                        <th style="min-width:28px;">#</th>
+                        <th style="border-bottom:3px solid #6a8bc0;">
+                            <span class="date">${d.getDate()}</span>
+                            <span class="day">${DAYS[d.getDay()]}</span>
+                            <span class="total">${formatTotal(total)}</span>
+                        </th>
+                    </tr>
+                `;
+            thead.innerHTML = headerHTML;
+
+            const tbody = document.getElementById('focusBody');
+            let bodyHTML = '';
+            for (let r = 0; r < cellData.length; r++) {
+                const rowClass = getRowClass(r);
+                const rowLabel = (r * 5) + '–' + ((r + 1) * 5) + 'm';
+                const cell = getCell(r, colIndex);
+                const value = cell.value || 0;
+                const note = cell.note || '';
+                const time = cell.time || '';
+                const cellClass = getCellClass(value, !!note);
+                const displayValue = value > 0 ? value + 'm' : '';
+                const noteDisplay = note ? `<span class="cell-note">${note}</span>` : '';
+                const timeDisplay = time ? `<span class="cell-time">${time}</span>` : '';
+                bodyHTML += `
+                        <tr>
+                            <td style="font-size:0.6rem;color:#8a9bb0;text-align:center;background:#111b24;font-weight:600;">${rowLabel}</td>
+                            <td class="${rowClass} ${cellClass}" data-row="${r}" data-col="${colIndex}">
+                                <div class="cell-content">
+                                    <span class="cell-value">${displayValue}</span>
+                                    ${noteDisplay}
+                                    ${timeDisplay}
+                                </div>
+                            </td>
+                        </tr>
+                    `;
             }
-            // Set the date to today
-            appData.dashboardDate = todayStr;
-            renderMain();
-            showToast('📅 Jumped to today');
-        });
+            tbody.innerHTML = bodyHTML;
+
+            document.getElementById('focusTodayDisplay').textContent = formatDisplayDate(d);
+            updateFocusHeadingDisplay();
+            attachCellEvents('focusTable');
+        }
 
         // ============================================================
         // CELL EVENTS
@@ -1667,81 +2079,194 @@
         });
 
         // ============================================================
-        // FOCUS MODE
+        // EXPORT / IMPORT
         // ============================================================
 
-        function renderFocus() {
-            const today = new Date();
-            const todayStr = formatDate(today);
-            const days = getWeekDays(0);
-            let colIndex = -1;
-            days.forEach((d, idx) => {
-                if (formatDate(d) === todayStr) colIndex = idx;
+        function exportCSV() {
+            const days = getWeekDays(weekOffset);
+            let csv = 'Row,';
+            days.forEach(d => {
+                csv += formatDate(d) + ' (' + DAYS[d.getDay()] + '),';
             });
-            if (colIndex === -1) colIndex = 0;
+            csv += 'Total\n';
 
-            // Get focused heading
-            let focusedHeading = '';
-            if (focusedSectionId !== null) {
-                const section = balloonSections.find(s => s.id === focusedSectionId);
-                if (section) focusedHeading = section.heading;
+            for (let r = 0; r < cellData.length; r++) {
+                const rowLabel = (r * 5) + '-' + ((r + 1) * 5) + 'm';
+                csv += rowLabel + ',';
+                let rowTotal = 0;
+                for (let c = 0; c < 7; c++) {
+                    const cell = getCell(r, c);
+                    const val = cell.value || 0;
+                    const note = cell.note || '';
+                    const time = cell.time || '';
+                    csv += val + (note ? '[' + note + ']' : '') + (time ? '(' + time + ')' : '') + ',';
+                    rowTotal += val;
+                }
+                csv += rowTotal + '\n';
             }
 
-            document.getElementById('focusHeadingDisplay').textContent = focusedHeading ? '🎯 ' + focusedHeading : '';
-
-            // Show yesterday, today, tomorrow dates
-            const yesterday = new Date(today);
-            yesterday.setDate(yesterday.getDate() - 1);
-            const tomorrow = new Date(today);
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            document.getElementById('focusDateRange').textContent =
-                `${formatDisplayDate(yesterday)} | ${formatDisplayDate(today)} | ${formatDisplayDate(tomorrow)}`;
-
-            updatePreviousTotals();
-
-            const thead = document.getElementById('focusHead');
-            let headerHTML = `
-                    <tr>
-                        <th style="min-width:22px;">#</th>
-                        <th style="border-bottom:3px solid #6a8bc0;">
-                            <span class="date">${today.getDate()}</span>
-                            <span class="day">${DAYS[today.getDay()]}</span>
-                            <span class="total">${formatTotal(getTotalForDay(colIndex))}</span>
-                        </th>
-                    </tr>
-                `;
-            thead.innerHTML = headerHTML;
-
-            const tbody = document.getElementById('focusBody');
-            let bodyHTML = '';
-            for (let r = 0; r < TOTAL_ROWS; r++) {
-                const rowClass = getRowClass(r);
-                const rowLabel = (r * 5) + '–' + ((r + 1) * 5) + 'm';
-                const cell = getCell(r, colIndex);
-                const value = cell.value || 0;
-                const note = cell.note || '';
-                const time = cell.time || '';
-                const cellClass = getCellClass(value, !!note);
-                const displayValue = value > 0 ? value + 'm' : '';
-                const noteDisplay = note ? `<span class="cell-note">${note}</span>` : '';
-                const timeDisplay = time ? `<span class="cell-time">${time}</span>` : '';
-                bodyHTML += `
-                        <tr>
-                            <td style="font-size:0.45rem;color:#8a9bb0;text-align:center;background:#111b24;">${rowLabel}</td>
-                            <td class="${rowClass} ${cellClass}" data-row="${r}" data-col="${colIndex}">
-                                <div class="cell-content">
-                                    <span class="cell-value">${displayValue}</span>
-                                    ${noteDisplay}
-                                    ${timeDisplay}
-                                </div>
-                            </td>
-                        </tr>
-                    `;
+            csv += 'Total,';
+            let grandTotal = 0;
+            for (let c = 0; c < 7; c++) {
+                const total = getTotalForDay(c);
+                csv += total + ',';
+                grandTotal += total;
             }
-            tbody.innerHTML = bodyHTML;
+            csv += grandTotal + '\n';
 
-            document.getElementById('focusTodayDisplay').textContent = formatDisplayDate(today);
-            attachCellEvents('focusTable');
+            // Add balloon data
+            csv += '\n--- BALLOON DATA ---\n';
+            balloonSections.forEach(section => {
+                csv += '\nSection: ' + section.heading + '\n';
+                csv += 'Start Number: ' + (section.startNumber || 1) + '\n';
+                if (section.note) {
+                    csv += 'Note: ' + section.note + '\n';
+                }
+                section.balloons.forEach(b => {
+                    csv += 'Balloon ' + b.number + ',' + (b.completed ? 'Completed' : 'Pending') +
+                        (b.completedTime ? ',' + b.completedTime : '') + '\n';
+                });
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'time_tracker_week_' + formatDate(days[0]) + '.csv';
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('📤 Data exported');
+        }
+
+        function importCSV(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const text = e.target.result;
+                    const lines = text.split('\n').filter(l => l.trim());
+                    if (lines.length < 3) {
+                        showToast('❌ Invalid file format', 'error');
+                        return;
+                    }
+
+                    // Parse main table
+                    const header = lines[0].split(',').filter(h => h.trim());
+                    const dateCols = [];
+                    let rowIndex = 0;
+                    for (let i = 0; i < header.length; i++) {
+                        const h = header[i].trim();
+                        if (h && !h.includes('Row') && !h.includes('Total')) {
+                            dateCols.push(i);
+                        }
+                        if (h.includes('Row')) rowIndex = i;
+                    }
+
+                    // Determine total rows from data
+                    let maxRow = 0;
+                    for (let i = 1; i < lines.length - 1; i++) {
+                        const cols = lines[i].split(',').map(c => c.trim());
+                        const rowNum = parseInt(cols[rowIndex]?.split('-')[0]) / 5 || 0;
+                        if (!isNaN(rowNum) && rowNum >= maxRow) maxRow = rowNum + 1;
+                    }
+                    maxRow = Math.max(maxRow, 40);
+                    if (maxRow > cellData.length) {
+                        for (let r = cellData.length; r < maxRow; r++) {
+                            cellData.push([]);
+                            for (let c = 0; c < 7; c++) {
+                                cellData[r][c] = { value: 0, note: '', time: '' };
+                            }
+                        }
+                        TOTAL_ROWS = cellData.length;
+                    }
+
+                    for (let i = 1; i < lines.length - 1; i++) {
+                        const cols = lines[i].split(',').map(c => c.trim());
+                        const rowNum = parseInt(cols[rowIndex]?.split('-')[0]) / 5 || 0;
+                        if (isNaN(rowNum) || rowNum < 0 || rowNum >= cellData.length) continue;
+
+                        for (let c = 0; c < Math.min(dateCols.length, 7); c++) {
+                            const colIdx = c;
+                            const val = parseInt(cols[dateCols[c]]);
+                            if (!isNaN(val) && val > 0) {
+                                const cell = getCell(rowNum, colIdx);
+                                cell.value = val;
+                                const noteMatch = cols[dateCols[c]].match(/\[(.*?)\]/);
+                                if (noteMatch) cell.note = noteMatch[1];
+                                const timeMatch = cols[dateCols[c]].match(/\((.*?)\)/);
+                                if (timeMatch) cell.time = timeMatch[1];
+                            }
+                        }
+                    }
+
+                    // Parse balloon data if present
+                    const balloonSection = lines.findIndex(l => l.includes('--- BALLOON DATA ---'));
+                    if (balloonSection !== -1) {
+                        let currentSection = null;
+                        for (let i = balloonSection + 1; i < lines.length; i++) {
+                            const line = lines[i].trim();
+                            if (!line) continue;
+                            if (line.startsWith('Section:')) {
+                                const heading = line.replace('Section:', '').trim();
+                                currentSection = { heading, startNumber: 1, balloons: [], note: '' };
+                                balloonSections.push(currentSection);
+                            } else if (line.startsWith('Start Number:')) {
+                                if (currentSection) {
+                                    currentSection.startNumber = parseInt(line.replace('Start Number:', '').trim()) || 1;
+                                }
+                            } else if (line.startsWith('Note:')) {
+                                if (currentSection) {
+                                    currentSection.note = line.replace('Note:', '').trim();
+                                }
+                            } else if (line.includes(',')) {
+                                const parts = line.split(',');
+                                if (parts.length >= 2 && currentSection) {
+                                    const num = parseInt(parts[0].replace('Balloon', '').trim());
+                                    const completed = parts[1].trim() === 'Completed';
+                                    const time = parts.length > 2 ? parts[2].trim() : '';
+                                    if (!isNaN(num)) {
+                                        currentSection.balloons.push({
+                                            id: balloonIdCounter++,
+                                            number: num,
+                                            completed: completed,
+                                            completedTime: time || ''
+                                        });
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    autoSave();
+                    renderAll();
+                    showToast('📥 Data imported');
+                } catch (err) {
+                    showToast('❌ Import failed', 'error');
+                }
+            };
+            reader.readAsText(file);
+            document.getElementById('fileInput').value = '';
+        }
+
+        // ============================================================
+        // CLEAR ALL DATA
+        // ============================================================
+
+        function clearAllData() {
+            if (confirm('⚠️ Delete ALL time tracking data?')) {
+                if (confirm('⚠️ This cannot be undone!')) {
+                    TOTAL_ROWS = 40;
+                    initData();
+                    weekOffset = 0;
+                    rowOffset = 0;
+                    balloonSections = [];
+                    balloonIdCounter = 1;
+                    focusedHeadingId = null;
+                    headingPage = 0;
+                    autoSave();
+                    renderAll();
+                    showToast('🗑️ All data cleared');
+                }
+            }
         }
 
         // ============================================================
@@ -1770,7 +2295,7 @@
 
         document.getElementById('downRowBtn').addEventListener('click', function() {
             if (focusMode) return;
-            if ((rowOffset + 1) * ROWS_VISIBLE < TOTAL_ROWS) {
+            if ((rowOffset + 1) * ROWS_VISIBLE < cellData.length) {
                 rowOffset++;
                 renderMain();
             }
@@ -1781,8 +2306,7 @@
         // ============================================================
 
         function updateFocusButtons() {
-            const btn = document.getElementById('focusBtn');
-            btn.classList.toggle('active', focusMode);
+            document.getElementById('focusBtn').classList.toggle('active', focusMode);
         }
 
         function renderAll() {
@@ -1801,11 +2325,16 @@
             if (focusMode) {
                 document.getElementById('focusOverlay').classList.add('active');
                 renderFocus();
-                showToast('🔍 Focus mode enabled');
+                // Show focused heading if any
+                const focused = getFocusedHeading();
+                if (focused) {
+                    showToast(`🔍 Focused on "${focused.heading}"`);
+                } else {
+                    showToast('🔍 Focus mode - no heading focused');
+                }
             } else {
                 document.getElementById('focusOverlay').classList.remove('active');
                 renderMain();
-                showToast('📊 Exited focus mode');
             }
             updateFocusButtons();
         });
@@ -1815,525 +2344,7 @@
             document.getElementById('focusOverlay').classList.remove('active');
             renderMain();
             updateFocusButtons();
-            showToast('📊 Exited focus mode');
         });
-
-        // ============================================================
-        // BALLOON PROGRESS TRACKER
-        // ============================================================
-
-        function renderBalloons() {
-            const container = document.getElementById('balloonContainer');
-
-            // Get paginated sections
-            const startIdx = balloonPage * BALLOONS_PER_PAGE;
-            const endIdx = Math.min(startIdx + BALLOONS_PER_PAGE, balloonSections.length);
-            const pageSections = balloonSections.slice(startIdx, endIdx);
-
-            if (balloonSections.length === 0) {
-                container.innerHTML = `
-                    <div class="balloon-section" style="text-align:center;padding:20px 10px;">
-                        <div style="font-size:1.2rem;margin-bottom:8px;">🎈</div>
-                        <div style="color:#8a9bb0;font-size:0.8rem;">No balloon sections yet.</div>
-                        <div style="color:#6a7a8a;font-size:0.6rem;margin-top:4px;">Click "Add New Balloon Section" below to start.</div>
-                    </div>
-                `;
-                updatePagination();
-                return;
-            }
-
-            let html = '';
-            pageSections.forEach(section => {
-                const completedCount = section.balloons.filter(b => b.completed).length;
-                const totalCount = section.balloons.length;
-                const progressPct = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
-                const isFocused = focusedSectionId === section.id;
-
-                let balloonsHTML = '';
-                if (section.balloons.length === 0) {
-                    balloonsHTML = `<div class="balloon-empty">No balloons yet. Click "Add Balloons" to add some.</div>`;
-                } else {
-                    section.balloons.forEach(balloon => {
-                        const completedClass = balloon.completed ? 'completed' : '';
-                        const timestamp = balloon.completed && balloon.timestamp ? balloon.timestamp : '';
-                        balloonsHTML += `
-                            <div class="balloon-item ${completedClass}" 
-                                 data-section-id="${section.id}" 
-                                 data-balloon-id="${balloon.id}"
-                                 onclick="toggleBalloon(${section.id}, ${balloon.id})">
-                                <span class="balloon-number">${balloon.number}</span>
-                                ${timestamp ? `<span class="balloon-timestamp">${timestamp}</span>` : ''}
-                            </div>
-                        `;
-                    });
-                }
-
-                // Section note
-                const noteVisible = section.note && section.note.trim() ? 'visible' : '';
-
-                html += `
-                    <div class="balloon-section ${isFocused ? 'focused' : ''}" data-section-id="${section.id}">
-                        <div class="section-header">
-                            <input type="text" class="heading-input" value="${section.heading}" 
-                                   onchange="updateBalloonHeading(${section.id}, this.value)" 
-                                   placeholder="Enter heading..." />
-                            <div class="controls-row">
-                                <button class="focus-btn ${isFocused ? 'active-focus' : ''}" 
-                                        onclick="toggleFocusSection(${section.id})" 
-                                        title="${isFocused ? 'Remove focus' : 'Set focus'}">
-                                    ${isFocused ? '⭐' : '☆'}
-                                </button>
-                                <button class="note-btn ${section.note && section.note.trim() ? 'has-note' : ''}" 
-                                        onclick="openSectionNoteModal(${section.id})" 
-                                        title="Add/Edit section note">
-                                    📝
-                                </button>
-                                <label>Start:</label>
-                                <input type="number" value="${section.startNumber || 1}" 
-                                       min="0" max="999" style="width:40px;"
-                                       onchange="updateBalloonStartNumber(${section.id}, this.value)" />
-                                <button class="primary-btn" onclick="openBalloonModal(${section.id})">🎈 Add</button>
-                                <button class="danger-btn" onclick="deleteBalloonSection(${section.id})">🗑️</button>
-                            </div>
-                        </div>
-                        <div class="section-note ${noteVisible}">
-                            <span class="note-text">${section.note || ''}</span>
-                            <button class="note-edit-btn" onclick="openSectionNoteModal(${section.id})">✏️</button>
-                        </div>
-                        <div style="font-size:0.5rem;color:#8a9bb0;margin-bottom:4px;">
-                            Progress: ${completedCount}/${totalCount} (${progressPct}%)
-                            <span style="display:inline-block;width:60px;height:4px;background:#2a3442;border-radius:4px;vertical-align:middle;margin-left:4px;">
-                                <span style="display:block;height:100%;width:${progressPct}%;background:#51cf66;border-radius:4px;"></span>
-                            </span>
-                        </div>
-                        <div class="balloon-grid">
-                            ${balloonsHTML}
-                        </div>
-                    </div>
-                `;
-            });
-
-            container.innerHTML = html;
-            updatePagination();
-        }
-
-        function updatePagination() {
-            const totalPages = Math.ceil(balloonSections.length / BALLOONS_PER_PAGE);
-            const pageInfo = document.getElementById('balloonPageInfo');
-            const prevBtn = document.getElementById('balloonPrevPage');
-            const nextBtn = document.getElementById('balloonNextPage');
-
-            if (totalPages <= 1) {
-                pageInfo.textContent = 'Page 1 of 1';
-                prevBtn.disabled = true;
-                nextBtn.disabled = true;
-                return;
-            }
-
-            pageInfo.textContent = `Page ${balloonPage + 1} of ${totalPages}`;
-            prevBtn.disabled = balloonPage === 0;
-            nextBtn.disabled = balloonPage >= totalPages - 1;
-        }
-
-        document.getElementById('balloonPrevPage').addEventListener('click', function() {
-            if (balloonPage > 0) {
-                balloonPage--;
-                renderBalloons();
-                autoSave();
-            }
-        });
-
-        document.getElementById('balloonNextPage').addEventListener('click', function() {
-            const totalPages = Math.ceil(balloonSections.length / BALLOONS_PER_PAGE);
-            if (balloonPage < totalPages - 1) {
-                balloonPage++;
-                renderBalloons();
-                autoSave();
-            }
-        });
-
-        // ============================================================
-        // BALLOON SECTION OPERATIONS
-        // ============================================================
-
-        function addBalloonSection() {
-            const newSection = {
-                id: Date.now() + Math.random() * 1000,
-                heading: 'New Section ' + (balloonSections.length + 1),
-                startNumber: 1,
-                note: '',
-                balloons: []
-            };
-            balloonSections.push(newSection);
-            // Go to the last page
-            const totalPages = Math.ceil(balloonSections.length / BALLOONS_PER_PAGE);
-            balloonPage = totalPages - 1;
-            autoSave();
-            renderBalloons();
-            showToast('✅ New balloon section added');
-        }
-
-        function deleteBalloonSection(sectionId) {
-            if (!confirm('Delete this entire section and all its balloons?')) return;
-            balloonSections = balloonSections.filter(s => s.id !== sectionId);
-            if (focusedSectionId === sectionId) focusedSectionId = null;
-            autoSave();
-            renderBalloons();
-            showToast('🗑️ Section deleted');
-        }
-
-        function updateBalloonHeading(sectionId, newHeading) {
-            const section = balloonSections.find(s => s.id === sectionId);
-            if (section) {
-                section.heading = newHeading || 'Untitled';
-                autoSave();
-                renderBalloons();
-            }
-        }
-
-        function updateBalloonStartNumber(sectionId, value) {
-            const section = balloonSections.find(s => s.id === sectionId);
-            if (section) {
-                const newStart = parseInt(value) || 1;
-                section.startNumber = newStart;
-                section.balloons.forEach((balloon, idx) => {
-                    balloon.number = newStart + idx;
-                });
-                autoSave();
-                renderBalloons();
-            }
-        }
-
-        function toggleBalloon(sectionId, balloonId) {
-            const section = balloonSections.find(s => s.id === sectionId);
-            if (!section) return;
-            const balloon = section.balloons.find(b => b.id === balloonId);
-            if (!balloon) return;
-            balloon.completed = !balloon.completed;
-            if (balloon.completed) {
-                balloon.timestamp = formatTime(new Date());
-            } else {
-                balloon.timestamp = '';
-            }
-            autoSave();
-            renderBalloons();
-
-            const completedCount = section.balloons.filter(b => b.completed).length;
-            if (completedCount === section.balloons.length && section.balloons.length > 0) {
-                showToast('🎉 All balloons completed in "' + section.heading + '"!', 'success');
-                triggerCelebration();
-            }
-        }
-
-        // ============================================================
-        // FOCUS SECTION
-        // ============================================================
-
-        function toggleFocusSection(sectionId) {
-            if (focusedSectionId === sectionId) {
-                focusedSectionId = null;
-                showToast('☆ Focus removed');
-            } else {
-                focusedSectionId = sectionId;
-                const section = balloonSections.find(s => s.id === sectionId);
-                if (section) {
-                    showToast('⭐ Focus set on "' + section.heading + '"');
-                    // Go to the page containing this section
-                    const idx = balloonSections.indexOf(section);
-                    balloonPage = Math.floor(idx / BALLOONS_PER_PAGE);
-                }
-            }
-            autoSave();
-            renderBalloons();
-            // Update focus mode if active
-            if (focusMode) {
-                renderFocus();
-            }
-        }
-
-        // ============================================================
-        // SECTION NOTE MODAL
-        // ============================================================
-
-        let sectionNoteTargetId = null;
-
-        function openSectionNoteModal(sectionId) {
-            sectionNoteTargetId = sectionId;
-            const section = balloonSections.find(s => s.id === sectionId);
-            if (section) {
-                document.getElementById('sectionNoteInput').value = section.note || '';
-                document.getElementById('sectionNoteModal').classList.add('active');
-            }
-        }
-
-        document.getElementById('sectionNoteSaveBtn').addEventListener('click', function() {
-            if (sectionNoteTargetId === null) return;
-            const section = balloonSections.find(s => s.id === sectionNoteTargetId);
-            if (section) {
-                section.note = document.getElementById('sectionNoteInput').value.trim();
-                autoSave();
-                renderBalloons();
-                showToast('📝 Section note saved');
-            }
-            document.getElementById('sectionNoteModal').classList.remove('active');
-            sectionNoteTargetId = null;
-        });
-
-        document.getElementById('sectionNoteClearBtn').addEventListener('click', function() {
-            if (sectionNoteTargetId === null) return;
-            const section = balloonSections.find(s => s.id === sectionNoteTargetId);
-            if (section) {
-                section.note = '';
-                autoSave();
-                renderBalloons();
-                showToast('🗑️ Section note cleared');
-            }
-            document.getElementById('sectionNoteModal').classList.remove('active');
-            sectionNoteTargetId = null;
-        });
-
-        document.getElementById('sectionNoteCancelBtn').addEventListener('click', function() {
-            document.getElementById('sectionNoteModal').classList.remove('active');
-            sectionNoteTargetId = null;
-        });
-
-        document.getElementById('sectionNoteModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                this.classList.remove('active');
-                sectionNoteTargetId = null;
-            }
-        });
-
-        // ============================================================
-        // BALLOON MODAL
-        // ============================================================
-
-        let currentBalloonSectionId = null;
-
-        function openBalloonModal(sectionId) {
-            currentBalloonSectionId = sectionId;
-            document.getElementById('balloonCountInput').value = 5;
-            document.getElementById('balloonStartInput').value = 1;
-            document.getElementById('balloonModal').classList.add('active');
-        }
-
-        document.getElementById('balloonModalAddBtn').addEventListener('click', function() {
-            const sectionId = currentBalloonSectionId;
-            const count = parseInt(document.getElementById('balloonCountInput').value) || 5;
-            const startNum = parseInt(document.getElementById('balloonStartInput').value) || 1;
-
-            const section = balloonSections.find(s => s.id === sectionId);
-            if (!section) {
-                showToast('❌ Section not found', 'error');
-                document.getElementById('balloonModal').classList.remove('active');
-                return;
-            }
-
-            section.startNumber = startNum;
-            let currentMax = 0;
-            section.balloons.forEach(b => {
-                if (b.number > currentMax) currentMax = b.number;
-            });
-            let nextNum = Math.max(startNum, currentMax + 1);
-
-            for (let i = 0; i < count; i++) {
-                section.balloons.push({
-                    id: balloonIdCounter++,
-                    number: nextNum + i,
-                    completed: false,
-                    timestamp: ''
-                });
-            }
-
-            autoSave();
-            renderBalloons();
-            document.getElementById('balloonModal').classList.remove('active');
-            showToast(`🎈 Added ${count} balloons starting from ${nextNum}`);
-        });
-
-        document.getElementById('balloonModalCancelBtn').addEventListener('click', function() {
-            document.getElementById('balloonModal').classList.remove('active');
-        });
-
-        document.getElementById('balloonModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                this.classList.remove('active');
-            }
-        });
-
-        document.getElementById('addBalloonSectionBtn').addEventListener('click', addBalloonSection);
-
-        // ============================================================
-        // EXPORT / IMPORT
-        // ============================================================
-
-        function exportCSV() {
-            const days = getWeekDays(weekOffset);
-            let csv = 'Row,';
-            days.forEach(d => {
-                csv += formatDate(d) + ' (' + DAYS[d.getDay()] + '),';
-            });
-            csv += 'Total\n';
-
-            for (let r = 0; r < TOTAL_ROWS; r++) {
-                const rowLabel = (r * 5) + '-' + ((r + 1) * 5) + 'm';
-                csv += rowLabel + ',';
-                let rowTotal = 0;
-                for (let c = 0; c < 7; c++) {
-                    const cell = getCell(r, c);
-                    const val = cell.value || 0;
-                    const note = cell.note || '';
-                    const time = cell.time || '';
-                    csv += val + (note ? '[' + note + ']' : '') + (time ? '(' + time + ')' : '') + ',';
-                    rowTotal += val;
-                }
-                csv += rowTotal + '\n';
-            }
-
-            csv += 'Total,';
-            let grandTotal = 0;
-            for (let c = 0; c < 7; c++) {
-                const total = getTotalForDay(c);
-                csv += total + ',';
-                grandTotal += total;
-            }
-            csv += grandTotal + '\n';
-
-            // Balloon data
-            csv += '\n--- BALLOON DATA ---\n';
-            balloonSections.forEach(section => {
-                csv += '\nSection: ' + section.heading + '\n';
-                csv += 'Start Number: ' + (section.startNumber || 1) + '\n';
-                csv += 'Note: ' + (section.note || '') + '\n';
-                section.balloons.forEach(b => {
-                    csv += 'Balloon ' + b.number + ',' + (b.completed ? 'Completed' : 'Pending') + ',' + (b
-                        .timestamp || '') + '\n';
-                });
-            });
-
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'time_tracker_week_' + formatDate(days[0]) + '.csv';
-            a.click();
-            URL.revokeObjectURL(url);
-            showToast('📤 Data exported');
-        }
-
-        function importCSV(file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const text = e.target.result;
-                    const lines = text.split('\n').filter(l => l.trim());
-                    if (lines.length < 3) {
-                        showToast('❌ Invalid file format', 'error');
-                        return;
-                    }
-
-                    const header = lines[0].split(',').filter(h => h.trim());
-                    const dateCols = [];
-                    let rowIndex = 0;
-                    for (let i = 0; i < header.length; i++) {
-                        const h = header[i].trim();
-                        if (h && !h.includes('Row') && !h.includes('Total')) {
-                            dateCols.push(i);
-                        }
-                        if (h.includes('Row')) rowIndex = i;
-                    }
-
-                    initData();
-
-                    for (let i = 1; i < lines.length - 1; i++) {
-                        const cols = lines[i].split(',').map(c => c.trim());
-                        const rowNum = parseInt(cols[rowIndex]?.split('-')[0]) / 5 || 0;
-                        if (isNaN(rowNum) || rowNum < 0 || rowNum >= TOTAL_ROWS) continue;
-
-                        for (let c = 0; c < Math.min(dateCols.length, 7); c++) {
-                            const colIdx = c;
-                            const val = parseInt(cols[dateCols[c]]);
-                            if (!isNaN(val) && val > 0) {
-                                const cell = getCell(rowNum, colIdx);
-                                cell.value = val;
-                                const noteMatch = cols[dateCols[c]].match(/\[(.*?)\]/);
-                                if (noteMatch) cell.note = noteMatch[1];
-                                const timeMatch = cols[dateCols[c]].match(/\((.*?)\)/);
-                                if (timeMatch) cell.time = timeMatch[1];
-                            }
-                        }
-                    }
-
-                    // Parse balloon data
-                    const balloonSection = lines.findIndex(l => l.includes('--- BALLOON DATA ---'));
-                    if (balloonSection !== -1) {
-                        let currentSection = null;
-                        for (let i = balloonSection + 1; i < lines.length; i++) {
-                            const line = lines[i].trim();
-                            if (!line) continue;
-                            if (line.startsWith('Section:')) {
-                                const heading = line.replace('Section:', '').trim();
-                                currentSection = { heading, startNumber: 1, note: '', balloons: [] };
-                                balloonSections.push(currentSection);
-                            } else if (line.startsWith('Start Number:')) {
-                                if (currentSection) {
-                                    currentSection.startNumber = parseInt(line.replace('Start Number:', '').trim()) || 1;
-                                }
-                            } else if (line.startsWith('Note:')) {
-                                if (currentSection) {
-                                    currentSection.note = line.replace('Note:', '').trim();
-                                }
-                            } else if (line.includes(',')) {
-                                const parts = line.split(',');
-                                if (parts.length >= 2 && currentSection) {
-                                    const num = parseInt(parts[0].replace('Balloon', '').trim());
-                                    const completed = parts[1].trim() === 'Completed';
-                                    const timestamp = parts[2] || '';
-                                    if (!isNaN(num)) {
-                                        currentSection.balloons.push({
-                                            id: balloonIdCounter++,
-                                            number: num,
-                                            completed: completed,
-                                            timestamp: timestamp
-                                        });
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    autoSave();
-                    renderAll();
-                    showToast('📥 Data imported');
-                } catch (err) {
-                    showToast('❌ Import failed', 'error');
-                }
-            };
-            reader.readAsText(file);
-            document.getElementById('fileInput').value = '';
-        }
-
-        // ============================================================
-        // CLEAR ALL DATA
-        // ============================================================
-
-        function clearAllData() {
-            if (confirm('⚠️ Delete ALL time tracking data?')) {
-                if (confirm('⚠️ This cannot be undone!')) {
-                    initData();
-                    TOTAL_ROWS = 40;
-                    weekOffset = 0;
-                    rowOffset = 0;
-                    balloonSections = [];
-                    balloonIdCounter = 1;
-                    focusedSectionId = null;
-                    balloonPage = 0;
-                    autoSave();
-                    renderAll();
-                    showToast('🗑️ All data cleared');
-                }
-            }
-        }
 
         // ============================================================
         // EXPORT / IMPORT EVENTS
@@ -2372,7 +2383,7 @@
                 }
                 if (document.getElementById('sectionNoteModal').classList.contains('active')) {
                     document.getElementById('sectionNoteModal').classList.remove('active');
-                    sectionNoteTargetId = null;
+                    currentSectionNoteId = null;
                 }
             }
             if (e.ctrlKey && e.key === 'e') {
@@ -2382,6 +2393,10 @@
             if (e.ctrlKey && e.key === 'i') {
                 e.preventDefault();
                 document.getElementById('importBtn').click();
+            }
+            if (e.ctrlKey && e.key === 't') {
+                e.preventDefault();
+                document.getElementById('todayBtn').click();
             }
         });
 
@@ -2399,40 +2414,51 @@
 
         // If no balloon sections, add a default one
         if (balloonSections.length === 0) {
-            balloonSections.push({
+            const defaultSection = {
                 id: Date.now(),
                 heading: 'My Progress',
                 startNumber: 1,
-                note: '',
-                balloons: []
-            });
+                balloons: [],
+                note: ''
+            };
             for (let i = 0; i < 5; i++) {
-                balloonSections[0].balloons.push({
+                defaultSection.balloons.push({
                     id: balloonIdCounter++,
                     number: i + 1,
                     completed: false,
-                    timestamp: ''
+                    completedTime: ''
                 });
             }
+            balloonSections.push(defaultSection);
             autoSave();
         }
 
-        // If no cell data, init
-        if (cellData.length === 0) {
-            initData();
+        // Ensure focus heading exists if saved
+        if (focusedHeadingId) {
+            const exists = balloonSections.some(s => s.id === focusedHeadingId);
+            if (!exists) focusedHeadingId = null;
+        }
+
+        // Go to page containing focused heading
+        if (focusedHeadingId) {
+            const idx = balloonSections.findIndex(s => s.id === focusedHeadingId);
+            if (idx !== -1) {
+                headingPage = Math.floor(idx / HEADINGS_PER_PAGE);
+            }
         }
 
         renderMain();
         renderBalloons();
-        showToast('📊 Time Tracker + Balloons ready');
+        updateFocusHeadingDisplay();
+        showToast('📊 7-Day Time Tracker + Balloons ready');
 
-        console.log('📊 Time Tracker + Balloons loaded');
+        console.log('📊 7-Day Time Tracker + Balloons loaded');
         console.log('💡 Tap: 0 → 5m → 20m → 0');
         console.log('💡 Long press: add note');
         console.log('🎈 Balloons: click to mark complete');
-        console.log('⭐ Click ☆ to focus a section');
-        console.log('📝 Click 📝 to add section note');
-        console.log('📅 Click "Today" to jump to today');
+        console.log('⭐ Click ☆ on heading to focus');
+        console.log('📝 Click 📝 on heading to add a section note');
+        console.log('📍 Click "Today" to jump to current date');
         console.log('💾 Data auto-saves in real-time');
     </script>
 </body>
