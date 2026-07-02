@@ -534,7 +534,7 @@
             background: #141c26;
             border-radius: 12px;
             padding: 10px 8px;
-            border: 1px solid #2a3442;
+            border: 2px solid #2a3442;
             margin-bottom: 8px;
             transition: border-color 0.3s, box-shadow 0.3s;
         }
@@ -628,27 +628,10 @@
             color: #1a1a2e;
         }
         .balloon-section .section-header .controls-row button.note-btn {
-            background: #4a3a5a;
+            background: #4a3a6a;
         }
         .balloon-section .section-header .controls-row button.note-btn.has-note {
-            background: #7a4a7a;
-        }
-
-        /* Section Note Display */
-        .section-note {
-            font-size: 0.6rem;
-            color: #ffe484;
-            background: rgba(255, 217, 61, 0.08);
-            padding: 4px 8px;
-            border-radius: 8px;
-            margin-bottom: 4px;
-            border-left: 3px solid #ffd93d;
-            word-wrap: break-word;
-            max-width: 100%;
-            display: none;
-        }
-        .section-note.visible {
-            display: block;
+            background: #8a6a3a;
         }
 
         /* Balloon Grid */
@@ -716,6 +699,18 @@
             font-size: 0.6rem;
             padding: 6px 0;
             font-style: italic;
+        }
+
+        /* Section Note Display */
+        .section-note-display {
+            font-size: 0.6rem;
+            color: #ffe484;
+            background: rgba(255, 228, 132, 0.08);
+            padding: 4px 8px;
+            border-radius: 8px;
+            margin-top: 4px;
+            border-left: 2px solid #ffe484;
+            word-break: break-word;
         }
 
         /* ===== HEADING PAGINATION ===== */
@@ -840,11 +835,6 @@
             .balloon-section .section-header .heading-input {
                 font-size: 0.65rem;
                 min-width: 60px;
-            }
-            .balloon-section .section-header .controls-row button {
-                font-size: 0.5rem;
-                padding: 1px 6px;
-                min-height: 18px;
             }
         }
 
@@ -1047,20 +1037,9 @@
     <div class="modal-backdrop" id="sectionNoteModal">
         <div class="modal-box">
             <div class="modal-title">📝 Section Note</div>
-            <textarea id="sectionNoteInput" placeholder="Write a note for this section…" style="
-                width: 100%;
-                background: #101a24;
-                border: 1px solid #334154;
-                border-radius: 10px;
-                padding: 6px 8px;
-                color: #eaeef2;
-                font-size: 0.75rem;
-                min-height: 60px;
-                resize: vertical;
-                font-family: inherit;
-            "></textarea>
+            <textarea id="sectionNoteInput" placeholder="Write a note for this section…"></textarea>
             <div class="modal-actions">
-                <button id="sectionNoteSaveBtn" class="primary">💾 Save Note</button>
+                <button id="sectionNoteSaveBtn" class="primary">💾 Save</button>
                 <button id="sectionNoteClearBtn" class="danger">🗑️ Clear</button>
                 <button id="sectionNoteCancelBtn">Cancel</button>
             </div>
@@ -1087,4 +1066,1336 @@
         let saveTimeout = null;
 
         // ===== BALLOON STATE =====
-        let balloonSections =
+        let balloonSections = [];
+        let balloonIdCounter = 1;
+        let currentBalloonSectionId = null;
+        let currentSectionNoteId = null;
+        let focusedHeadingId = null;
+        let headingPage = 0;
+        const HEADINGS_PER_PAGE = 5;
+
+        // ===== DOM REFS =====
+        const saveIndicator = document.getElementById('saveIndicator');
+
+        // ============================================================
+        // TOAST SYSTEM
+        // ============================================================
+
+        function showToast(message, type = 'info') {
+            const el = document.getElementById('toast');
+            el.textContent = message;
+            el.className = 'toast show';
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                el.classList.remove('show');
+            }, 2200);
+        }
+
+        // ============================================================
+        // SAVE INDICATOR
+        // ============================================================
+
+        function flashSaveIndicator() {
+            saveIndicator.classList.add('show');
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(() => {
+                saveIndicator.classList.remove('show');
+            }, 1500);
+        }
+
+        // ============================================================
+        // CELEBRATION SYSTEM
+        // ============================================================
+
+        function triggerCelebration() {
+            const container = document.getElementById('celebrationContainer');
+            const emojis = ['⭐', '🌟', '✨', '🎉', '🎊', '💫', '🏆', '🔥'];
+            const count = 8 + Math.floor(Math.random() * 8);
+
+            for (let i = 0; i < count; i++) {
+                const el = document.createElement('div');
+                el.className = 'celebration-particle';
+                el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                el.style.left = (5 + Math.random() * 90) + '%';
+                el.style.top = (10 + Math.random() * 70) + '%';
+                el.style.fontSize = (0.8 + Math.random() * 1.2) + 'rem';
+                el.style.animationDuration = (1.2 + Math.random() * 0.8) + 's';
+                el.style.animationDelay = (Math.random() * 0.4) + 's';
+                container.appendChild(el);
+            }
+
+            clearTimeout(celebrationTimeout);
+            celebrationTimeout = setTimeout(() => {
+                container.innerHTML = '';
+            }, 2500);
+
+            showToast('🎉 1 hour completed! Keep going!', 'success');
+        }
+
+        function triggerBalloonCelebration() {
+            const container = document.getElementById('celebrationContainer');
+            const emojis = ['🎈', '🎉', '🎊', '⭐', '🌟', '✨', '🏆', '💪'];
+            const count = 10 + Math.floor(Math.random() * 10);
+
+            for (let i = 0; i < count; i++) {
+                const el = document.createElement('div');
+                el.className = 'celebration-particle';
+                el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                el.style.left = (5 + Math.random() * 90) + '%';
+                el.style.top = (10 + Math.random() * 70) + '%';
+                el.style.fontSize = (1 + Math.random() * 1.5) + 'rem';
+                el.style.animationDuration = (1.5 + Math.random() * 1) + 's';
+                el.style.animationDelay = (Math.random() * 0.5) + 's';
+                container.appendChild(el);
+            }
+
+            clearTimeout(celebrationTimeout);
+            celebrationTimeout = setTimeout(() => {
+                container.innerHTML = '';
+            }, 3000);
+
+            showToast('🎉 All balloons completed! Amazing!', 'success');
+        }
+
+        // ============================================================
+        // HELPERS
+        // ============================================================
+
+        function getToday() {
+            const d = new Date();
+            return { date: d, dateStr: d.toISOString().slice(0, 10) };
+        }
+
+        function getWeekStart(date) {
+            const d = new Date(date);
+            const day = d.getDay();
+            d.setDate(d.getDate() - day + (day === 0 ? -6 : 1));
+            return d;
+        }
+
+        function formatDate(d) {
+            return d.toISOString().slice(0, 10);
+        }
+
+        function formatDisplayDate(d) {
+            return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+        }
+
+        function formatTime(d) {
+            return d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function formatDateTime(d) {
+            return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ' ' +
+                d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function getWeekDays(offset) {
+            const today = new Date();
+            const base = getWeekStart(today);
+            base.setDate(base.getDate() + offset * 7);
+            const days = [];
+            for (let i = 0; i < 7; i++) {
+                const d = new Date(base);
+                d.setDate(d.getDate() + i);
+                days.push(d);
+            }
+            return days;
+        }
+
+        function getTotalForDay(colIndex) {
+            let total = 0;
+            for (let r = 0; r < cellData.length; r++) {
+                const v = cellData[r]?.[colIndex]?.value || 0;
+                total += v;
+            }
+            return total;
+        }
+
+        function formatTotal(minutes) {
+            if (minutes < 60) return minutes + 'm';
+            const h = Math.floor(minutes / 60);
+            const m = minutes % 60;
+            return h + 'h' + (m ? ' ' + m + 'm' : '');
+        }
+
+        function getRowColorIndex(rowIndex) {
+            const block = Math.floor(rowIndex / 12);
+            return block % 6;
+        }
+
+        function getRowClass(rowIndex) {
+            return 'color-' + getRowColorIndex(rowIndex);
+        }
+
+        function getCellClass(value, hasNote) {
+            let cls = '';
+            if (value === 5) cls = 'cell-5';
+            else if (value === 20) cls = 'cell-20';
+            if (hasNote) cls += ' cell-note';
+            return cls;
+        }
+
+        function getCell(row, col) {
+            if (!cellData[row]) cellData[row] = [];
+            if (!cellData[row][col]) cellData[row][col] = { value: 0, note: '', time: '' };
+            return cellData[row][col];
+        }
+
+        function fillAbove(row, col) {
+            for (let r = 0; r < row; r++) {
+                const cell = getCell(r, col);
+                if (cell.value === 0) {
+                    cell.value = 5;
+                    cell.time = formatTime(new Date());
+                }
+            }
+        }
+
+        let previousTotals = {};
+
+        function getPreviousTotalForDay(colIndex) {
+            return previousTotals[colIndex] || 0;
+        }
+
+        function updatePreviousTotals() {
+            for (let c = 0; c < 7; c++) {
+                previousTotals[c] = getTotalForDay(c);
+            }
+        }
+
+        function checkHourCelebration(colIndex) {
+            const total = getTotalForDay(colIndex);
+            const previousTotal = getPreviousTotalForDay(colIndex);
+            if (total >= 60 && Math.floor(previousTotal / 60) < Math.floor(total / 60)) {
+                triggerCelebration();
+            }
+            return total;
+        }
+
+        function getFocusedHeading() {
+            if (!focusedHeadingId) return null;
+            return balloonSections.find(s => s.id === focusedHeadingId) || null;
+        }
+
+        // ============================================================
+        // DATA PERSISTENCE
+        // ============================================================
+
+        function saveState() {
+            try {
+                const data = {
+                    cells: cellData,
+                    weekOffset: weekOffset,
+                    rowOffset: rowOffset,
+                    balloonSections: balloonSections,
+                    balloonIdCounter: balloonIdCounter,
+                    focusedHeadingId: focusedHeadingId,
+                    headingPage: headingPage,
+                    TOTAL_ROWS: TOTAL_ROWS
+                };
+                localStorage.setItem('timeTrackerData', JSON.stringify(data));
+                flashSaveIndicator();
+            } catch (_) {}
+        }
+
+        function loadState() {
+            try {
+                const raw = localStorage.getItem('timeTrackerData');
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    if (parsed.cells && Array.isArray(parsed.cells)) {
+                        cellData = parsed.cells;
+                        // Ensure each row has 7 columns
+                        for (let r = 0; r < cellData.length; r++) {
+                            if (!cellData[r]) cellData[r] = [];
+                            for (let c = 0; c < 7; c++) {
+                                if (!cellData[r][c]) cellData[r][c] = { value: 0, note: '', time: '' };
+                            }
+                        }
+                    } else {
+                        initData();
+                    }
+                    if (parsed.weekOffset !== undefined) weekOffset = parsed.weekOffset;
+                    if (parsed.rowOffset !== undefined) rowOffset = parsed.rowOffset;
+                    if (parsed.balloonSections) balloonSections = parsed.balloonSections;
+                    if (parsed.balloonIdCounter) balloonIdCounter = parsed.balloonIdCounter;
+                    if (parsed.focusedHeadingId !== undefined) focusedHeadingId = parsed.focusedHeadingId;
+                    if (parsed.headingPage !== undefined) headingPage = parsed.headingPage;
+                    if (parsed.TOTAL_ROWS) TOTAL_ROWS = parsed.TOTAL_ROWS;
+                } else {
+                    initData();
+                }
+            } catch (_) {
+                initData();
+            }
+            updatePreviousTotals();
+        }
+
+        function initData() {
+            cellData = [];
+            for (let r = 0; r < TOTAL_ROWS; r++) {
+                cellData[r] = [];
+                for (let c = 0; c < 7; c++) {
+                    cellData[r][c] = { value: 0, note: '', time: '' };
+                }
+            }
+            saveState();
+        }
+
+        function autoSave() {
+            saveState();
+        }
+
+        // ============================================================
+        // TAB NAVIGATION
+        // ============================================================
+
+        document.querySelectorAll('.tab-nav button').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.tab-nav button').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                const tabId = this.dataset.tab;
+                document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+                document.getElementById(tabId).classList.add('active');
+                if (tabId === 'tab-balloons') {
+                    renderBalloons();
+                }
+            });
+        });
+
+        // ============================================================
+        // ROW MANAGEMENT
+        // ============================================================
+
+        function addRows() {
+            const newRows = 20;
+            const startRow = cellData.length;
+            for (let r = 0; r < newRows; r++) {
+                cellData.push([]);
+                for (let c = 0; c < 7; c++) {
+                    cellData[startRow + r][c] = { value: 0, note: '', time: '' };
+                }
+            }
+            TOTAL_ROWS = cellData.length;
+            autoSave();
+            renderMain();
+            showToast(`➕ Added ${newRows} rows (${TOTAL_ROWS * 5} minutes total)`);
+        }
+
+        document.getElementById('addRowsBtn').addEventListener('click', addRows);
+
+        // ============================================================
+        // BALLOON PROGRESS TRACKER
+        // ============================================================
+
+        function renderBalloons() {
+            const container = document.getElementById('balloonContainer');
+
+            // Filter sections for current page
+            const startIdx = headingPage * HEADINGS_PER_PAGE;
+            const endIdx = Math.min(startIdx + HEADINGS_PER_PAGE, balloonSections.length);
+            const pageSections = balloonSections.slice(startIdx, endIdx);
+
+            // Update pagination
+            const totalPages = Math.max(1, Math.ceil(balloonSections.length / HEADINGS_PER_PAGE));
+            document.getElementById('headingPageInfo').textContent =
+                `Page ${headingPage + 1} of ${totalPages}`;
+            document.getElementById('headingPrevBtn').disabled = headingPage === 0;
+            document.getElementById('headingNextBtn').disabled = headingPage >= totalPages - 1;
+
+            if (balloonSections.length === 0) {
+                container.innerHTML = `
+                    <div class="balloon-section" style="text-align:center;padding:20px 10px;">
+                        <div style="font-size:1.2rem;margin-bottom:8px;">🎈</div>
+                        <div style="color:#8a9bb0;font-size:0.8rem;">No balloon sections yet.</div>
+                        <div style="color:#6a7a8a;font-size:0.6rem;margin-top:4px;">Click "Add New Balloon Section" below to start.</div>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            pageSections.forEach((section) => {
+                const completedCount = section.balloons.filter(b => b.completed).length;
+                const totalCount = section.balloons.length;
+                const progressPct = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+                const isFocused = focusedHeadingId === section.id;
+
+                let balloonsHTML = '';
+                if (section.balloons.length === 0) {
+                    balloonsHTML =
+                    `<div class="balloon-empty">No balloons yet. Click "Add Balloons" to add some.</div>`;
+                } else {
+                    section.balloons.forEach(balloon => {
+                        const completedClass = balloon.completed ? 'completed' : '';
+                        const timestamp = balloon.completed && balloon.completedTime ?
+                            `<span class="balloon-timestamp">${balloon.completedTime}</span>` : '';
+                        balloonsHTML += `
+                            <div class="balloon-item ${completedClass}" 
+                                 data-section-id="${section.id}" 
+                                 data-balloon-id="${balloon.id}"
+                                 onclick="toggleBalloon(${section.id}, ${balloon.id})">
+                                <span class="balloon-number">${balloon.number}</span>
+                                ${timestamp}
+                            </div>
+                        `;
+                    });
+                }
+
+                const noteDisplay = section.note ? 
+                    `<div class="section-note-display">📝 ${section.note}</div>` : '';
+
+                html += `
+                    <div class="balloon-section ${isFocused ? 'focused' : ''}" data-section-id="${section.id}">
+                        <div class="section-header">
+                            <input type="text" class="heading-input" value="${section.heading}" 
+                                   onchange="updateBalloonHeading(${section.id}, this.value)" 
+                                   placeholder="Enter heading..." />
+                            <div class="controls-row">
+                                <button class="${isFocused ? 'focus-btn active-focus' : 'focus-btn'}" 
+                                        onclick="toggleFocusHeading(${section.id})" 
+                                        title="${isFocused ? 'Remove focus' : 'Focus on this heading'}">
+                                    ${isFocused ? '⭐' : '☆'}
+                                </button>
+                                <button class="note-btn ${section.note ? 'has-note' : ''}" 
+                                        onclick="openSectionNoteModal(${section.id})" 
+                                        title="Add/Edit section note">
+                                    📝
+                                </button>
+                                <label>Start:</label>
+                                <input type="number" id="startNum_${section.id}" value="${section.startNumber || 1}" 
+                                       min="0" max="999" style="width:40px;"
+                                       onchange="updateBalloonStartNumber(${section.id}, this.value)" />
+                                <button class="primary-btn" onclick="openBalloonModal(${section.id})">🎈 Add</button>
+                                <button class="danger-btn" onclick="deleteBalloonSection(${section.id})">🗑️</button>
+                            </div>
+                        </div>
+                        <div style="font-size:0.5rem;color:#8a9bb0;margin-bottom:4px;">
+                            Progress: ${completedCount}/${totalCount} (${progressPct}%)
+                            <span style="display:inline-block;width:60px;height:4px;background:#2a3442;border-radius:4px;vertical-align:middle;margin-left:4px;">
+                                <span style="display:block;height:100%;width:${progressPct}%;background:#51cf66;border-radius:4px;"></span>
+                            </span>
+                        </div>
+                        ${noteDisplay}
+                        <div class="balloon-grid">
+                            ${balloonsHTML}
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function addBalloonSection() {
+            const newSection = {
+                id: Date.now() + Math.random() * 1000,
+                heading: 'New Section ' + (balloonSections.length + 1),
+                startNumber: 1,
+                balloons: [],
+                note: ''
+            };
+            balloonSections.push(newSection);
+            // Go to last page
+            const totalPages = Math.ceil(balloonSections.length / HEADINGS_PER_PAGE);
+            headingPage = totalPages - 1;
+            autoSave();
+            renderBalloons();
+            showToast('✅ New balloon section added');
+        }
+
+        function deleteBalloonSection(sectionId) {
+            if (!confirm('Delete this entire section and all its balloons?')) return;
+            if (focusedHeadingId === sectionId) {
+                focusedHeadingId = null;
+            }
+            balloonSections = balloonSections.filter(s => s.id !== sectionId);
+            // Adjust page if needed
+            const totalPages = Math.ceil(balloonSections.length / HEADINGS_PER_PAGE);
+            if (headingPage >= totalPages) headingPage = Math.max(0, totalPages - 1);
+            autoSave();
+            renderBalloons();
+            showToast('🗑️ Section deleted');
+        }
+
+        function updateBalloonHeading(sectionId, newHeading) {
+            const section = balloonSections.find(s => s.id === sectionId);
+            if (section) {
+                section.heading = newHeading || 'Untitled';
+                autoSave();
+            }
+        }
+
+        function updateBalloonStartNumber(sectionId, value) {
+            const section = balloonSections.find(s => s.id === sectionId);
+            if (section) {
+                const newStart = parseInt(value) || 1;
+                section.startNumber = newStart;
+                // Renumber all balloons in this section
+                section.balloons.forEach((balloon, idx) => {
+                    balloon.number = newStart + idx;
+                });
+                autoSave();
+                renderBalloons();
+            }
+        }
+
+        function toggleBalloon(sectionId, balloonId) {
+            const section = balloonSections.find(s => s.id === sectionId);
+            if (!section) return;
+            const balloon = section.balloons.find(b => b.id === balloonId);
+            if (!balloon) return;
+            balloon.completed = !balloon.completed;
+            if (balloon.completed) {
+                balloon.completedTime = formatDateTime(new Date());
+            } else {
+                balloon.completedTime = '';
+            }
+            autoSave();
+            renderBalloons();
+
+            // Celebration when all balloons in a section are completed
+            const completedCount = section.balloons.filter(b => b.completed).length;
+            if (completedCount === section.balloons.length && section.balloons.length > 0) {
+                triggerBalloonCelebration();
+            }
+        }
+
+        function toggleFocusHeading(sectionId) {
+            if (focusedHeadingId === sectionId) {
+                focusedHeadingId = null;
+                showToast('☆ Focus removed');
+            } else {
+                focusedHeadingId = sectionId;
+                const section = balloonSections.find(s => s.id === sectionId);
+                if (section) {
+                    showToast(`⭐ Focused on "${section.heading}"`);
+                }
+                // Go to page containing this section
+                const idx = balloonSections.findIndex(s => s.id === sectionId);
+                if (idx !== -1) {
+                    headingPage = Math.floor(idx / HEADINGS_PER_PAGE);
+                }
+            }
+            autoSave();
+            renderBalloons();
+            updateFocusHeadingDisplay();
+        }
+
+        function updateFocusHeadingDisplay() {
+            const display = document.getElementById('focusHeadingDisplay');
+            if (focusedHeadingId) {
+                const section = balloonSections.find(s => s.id === focusedHeadingId);
+                display.textContent = section ? `⭐ ${section.heading}` : '⭐ No heading focused';
+            } else {
+                display.textContent = '⭐ No heading focused';
+            }
+        }
+
+        // ===== SECTION NOTE MODAL =====
+
+        function openSectionNoteModal(sectionId) {
+            currentSectionNoteId = sectionId;
+            const section = balloonSections.find(s => s.id === sectionId);
+            if (section) {
+                document.getElementById('sectionNoteInput').value = section.note || '';
+                document.getElementById('sectionNoteModal').classList.add('active');
+            }
+        }
+
+        document.getElementById('sectionNoteSaveBtn').addEventListener('click', function() {
+            const section = balloonSections.find(s => s.id === currentSectionNoteId);
+            if (section) {
+                section.note = document.getElementById('sectionNoteInput').value.trim();
+                autoSave();
+                renderBalloons();
+                showToast('📝 Section note saved');
+            }
+            document.getElementById('sectionNoteModal').classList.remove('active');
+            currentSectionNoteId = null;
+        });
+
+        document.getElementById('sectionNoteClearBtn').addEventListener('click', function() {
+            const section = balloonSections.find(s => s.id === currentSectionNoteId);
+            if (section) {
+                section.note = '';
+                autoSave();
+                renderBalloons();
+                showToast('🗑️ Section note cleared');
+            }
+            document.getElementById('sectionNoteModal').classList.remove('active');
+            currentSectionNoteId = null;
+        });
+
+        document.getElementById('sectionNoteCancelBtn').addEventListener('click', function() {
+            document.getElementById('sectionNoteModal').classList.remove('active');
+            currentSectionNoteId = null;
+        });
+
+        document.getElementById('sectionNoteModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('active');
+                currentSectionNoteId = null;
+            }
+        });
+
+        // ===== BALLOON MODAL =====
+
+        function openBalloonModal(sectionId) {
+            currentBalloonSectionId = sectionId;
+            document.getElementById('balloonCountInput').value = 5;
+            document.getElementById('balloonStartInput').value = 1;
+            document.getElementById('balloonModal').classList.add('active');
+        }
+
+        document.getElementById('balloonModalAddBtn').addEventListener('click', function() {
+            const sectionId = currentBalloonSectionId;
+            const count = parseInt(document.getElementById('balloonCountInput').value) || 5;
+            const startNum = parseInt(document.getElementById('balloonStartInput').value) || 1;
+
+            const section = balloonSections.find(s => s.id === sectionId);
+            if (!section) {
+                showToast('❌ Section not found', 'error');
+                document.getElementById('balloonModal').classList.remove('active');
+                return;
+            }
+
+            section.startNumber = startNum;
+
+            // Get current max number in section
+            let currentMax = 0;
+            section.balloons.forEach(b => {
+                if (b.number > currentMax) currentMax = b.number;
+            });
+
+            let nextNum = Math.max(startNum, currentMax + 1);
+
+            for (let i = 0; i < count; i++) {
+                section.balloons.push({
+                    id: balloonIdCounter++,
+                    number: nextNum + i,
+                    completed: false,
+                    completedTime: ''
+                });
+            }
+
+            autoSave();
+            renderBalloons();
+            document.getElementById('balloonModal').classList.remove('active');
+            showToast(`🎈 Added ${count} balloons starting from ${nextNum}`);
+        });
+
+        document.getElementById('balloonModalCancelBtn').addEventListener('click', function() {
+            document.getElementById('balloonModal').classList.remove('active');
+        });
+
+        document.getElementById('balloonModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('active');
+            }
+        });
+
+        document.getElementById('addBalloonSectionBtn').addEventListener('click', addBalloonSection);
+
+        // ===== HEADING PAGINATION =====
+
+        document.getElementById('headingPrevBtn').addEventListener('click', function() {
+            if (headingPage > 0) {
+                headingPage--;
+                renderBalloons();
+            }
+        });
+
+        document.getElementById('headingNextBtn').addEventListener('click', function() {
+            const totalPages = Math.ceil(balloonSections.length / HEADINGS_PER_PAGE);
+            if (headingPage < totalPages - 1) {
+                headingPage++;
+                renderBalloons();
+            }
+        });
+
+        // ============================================================
+        // RENDER MAIN (Time Tracker)
+        // ============================================================
+
+        function renderMain() {
+            const days = getWeekDays(weekOffset);
+            const today = getToday().dateStr;
+
+            updatePreviousTotals();
+
+            // Header
+            const thead = document.getElementById('tableHead');
+            let headerHTML = '<tr><th style="min-width:22px;">#</th>';
+            days.forEach((d, idx) => {
+                const dateStr = formatDate(d);
+                const isToday = dateStr === today;
+                const total = getTotalForDay(idx);
+                const dayName = DAYS[d.getDay()];
+                const totalClass = isToday ? 'total today-total' : 'total';
+                headerHTML += `
+                        <th style="${isToday ? 'border-bottom:3px solid #6a8bc0;' : ''}">
+                            <span class="date">${d.getDate()}</span>
+                            <span class="day">${dayName}</span>
+                            <span class="${totalClass}">${formatTotal(total)}</span>
+                        </th>
+                    `;
+            });
+            headerHTML += '</tr>';
+            thead.innerHTML = headerHTML;
+
+            // Body
+            const tbody = document.getElementById('tableBody');
+            const startRow = rowOffset * ROWS_VISIBLE;
+            const endRow = Math.min(startRow + ROWS_VISIBLE, cellData.length);
+
+            if (startRow >= cellData.length) {
+                rowOffset = Math.max(0, Math.floor((cellData.length - 1) / ROWS_VISIBLE));
+                renderMain();
+                return;
+            }
+
+            let bodyHTML = '';
+            for (let r = startRow; r < endRow; r++) {
+                const rowClass = getRowClass(r);
+                const rowLabel = (r * 5) + '–' + ((r + 1) * 5) + 'm';
+                bodyHTML += `<tr>`;
+                bodyHTML += `
+                        <td style="font-size:0.45rem;color:#8a9bb0;text-align:center;background:#111b24;min-width:22px;">
+                            ${rowLabel}
+                        </td>
+                    `;
+                for (let c = 0; c < 7; c++) {
+                    const cell = getCell(r, c);
+                    const value = cell.value || 0;
+                    const note = cell.note || '';
+                    const time = cell.time || '';
+                    const cellClass = getCellClass(value, !!note);
+                    const displayValue = value > 0 ? value + 'm' : '';
+                    const noteDisplay = note ? `<span class="cell-note">${note}</span>` : '';
+                    const timeDisplay = time ? `<span class="cell-time">${time}</span>` : '';
+                    bodyHTML += `
+                            <td class="${rowClass} ${cellClass}" data-row="${r}" data-col="${c}">
+                                <div class="cell-content">
+                                    <span class="cell-value">${displayValue}</span>
+                                    ${noteDisplay}
+                                    ${timeDisplay}
+                                </div>
+                            </td>
+                        `;
+                }
+                bodyHTML += `</tr>`;
+            }
+            tbody.innerHTML = bodyHTML;
+
+            // Week label
+            const startOfWeek = days[0];
+            const endOfWeek = days[6];
+            document.getElementById('weekLabel').textContent =
+                `${startOfWeek.getDate()}/${startOfWeek.getMonth()+1} – ${endOfWeek.getDate()}/${endOfWeek.getMonth()+1}`;
+            document.getElementById('todayDisplay').textContent = formatDisplayDate(new Date());
+
+            attachCellEvents('mainTable');
+            updateFocusButtons();
+            updateFocusHeadingDisplay();
+            autoSave();
+        }
+
+        // ============================================================
+        // FOCUS (Today)
+        // ============================================================
+
+        function renderFocus() {
+            const today = new Date();
+            const todayStr = formatDate(today);
+            const days = getWeekDays(0);
+            let colIndex = -1;
+            days.forEach((d, idx) => {
+                if (formatDate(d) === todayStr) colIndex = idx;
+            });
+            if (colIndex === -1) colIndex = 0;
+
+            updatePreviousTotals();
+
+            const thead = document.getElementById('focusHead');
+            const d = days[colIndex];
+            const total = getTotalForDay(colIndex);
+            let headerHTML = `
+                    <tr>
+                        <th style="min-width:22px;">#</th>
+                        <th style="border-bottom:3px solid #6a8bc0;">
+                            <span class="date">${d.getDate()}</span>
+                            <span class="day">${DAYS[d.getDay()]}</span>
+                            <span class="total">${formatTotal(total)}</span>
+                        </th>
+                    </tr>
+                `;
+            thead.innerHTML = headerHTML;
+
+            const tbody = document.getElementById('focusBody');
+            let bodyHTML = '';
+            for (let r = 0; r < cellData.length; r++) {
+                const rowClass = getRowClass(r);
+                const rowLabel = (r * 5) + '–' + ((r + 1) * 5) + 'm';
+                const cell = getCell(r, colIndex);
+                const value = cell.value || 0;
+                const note = cell.note || '';
+                const time = cell.time || '';
+                const cellClass = getCellClass(value, !!note);
+                const displayValue = value > 0 ? value + 'm' : '';
+                const noteDisplay = note ? `<span class="cell-note">${note}</span>` : '';
+                const timeDisplay = time ? `<span class="cell-time">${time}</span>` : '';
+                bodyHTML += `
+                        <tr>
+                            <td style="font-size:0.45rem;color:#8a9bb0;text-align:center;background:#111b24;">${rowLabel}</td>
+                            <td class="${rowClass} ${cellClass}" data-row="${r}" data-col="${colIndex}">
+                                <div class="cell-content">
+                                    <span class="cell-value">${displayValue}</span>
+                                    ${noteDisplay}
+                                    ${timeDisplay}
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+            }
+            tbody.innerHTML = bodyHTML;
+
+            document.getElementById('focusTodayDisplay').textContent = formatDisplayDate(d);
+            updateFocusHeadingDisplay();
+            attachCellEvents('focusTable');
+        }
+
+        // ============================================================
+        // CELL EVENTS
+        // ============================================================
+
+        let pressTimer = null;
+        let isLongPress = false;
+
+        function attachCellEvents(tableId) {
+            const table = document.getElementById(tableId);
+            if (!table) return;
+            const cells = table.querySelectorAll('td[data-row]');
+            cells.forEach(td => {
+                td.removeEventListener('click', handleCellClick);
+                td.removeEventListener('touchstart', handleTouchStart);
+                td.removeEventListener('touchend', handleTouchEnd);
+                td.removeEventListener('touchmove', handleTouchMove);
+                td.removeEventListener('mousedown', handleMouseDown);
+                td.removeEventListener('mouseup', handleMouseUp);
+                td.removeEventListener('mouseleave', handleMouseLeave);
+                td.addEventListener('click', handleCellClick);
+                td.addEventListener('touchstart', handleTouchStart, { passive: true });
+                td.addEventListener('touchend', handleTouchEnd, { passive: true });
+                td.addEventListener('touchmove', handleTouchMove, { passive: true });
+                td.addEventListener('mousedown', handleMouseDown);
+                td.addEventListener('mouseup', handleMouseUp);
+                td.addEventListener('mouseleave', handleMouseLeave);
+            });
+        }
+
+        function handleCellClick(e) {
+            if (isLongPress) {
+                isLongPress = false;
+                return;
+            }
+            const td = e.currentTarget;
+            const row = parseInt(td.dataset.row);
+            const col = parseInt(td.dataset.col);
+            if (isNaN(row) || isNaN(col)) return;
+
+            const cell = getCell(row, col);
+            const now = new Date();
+
+            if (cell.value === 0) {
+                fillAbove(row, col);
+                cell.value = 5;
+                cell.time = formatTime(now);
+            } else if (cell.value === 5) {
+                cell.value = 20;
+                cell.time = formatTime(now);
+            } else {
+                cell.value = 0;
+                cell.note = '';
+                cell.time = '';
+            }
+
+            checkHourCelebration(col);
+            autoSave();
+            renderAll();
+        }
+
+        function handleTouchStart(e) {
+            const td = e.currentTarget;
+            pressTimer = setTimeout(() => {
+                isLongPress = true;
+                openNoteModal(td);
+            }, 600);
+        }
+
+        function handleTouchEnd(e) { clearTimeout(pressTimer); }
+
+        function handleTouchMove(e) { clearTimeout(pressTimer); }
+
+        function handleMouseDown(e) {
+            const td = e.currentTarget;
+            pressTimer = setTimeout(() => {
+                isLongPress = true;
+                openNoteModal(td);
+            }, 600);
+        }
+
+        function handleMouseUp(e) { clearTimeout(pressTimer); }
+
+        function handleMouseLeave(e) { clearTimeout(pressTimer); }
+
+        // ============================================================
+        // NOTE MODAL
+        // ============================================================
+
+        let modalRow = -1,
+            modalCol = -1;
+
+        function openNoteModal(td) {
+            const row = parseInt(td.dataset.row);
+            const col = parseInt(td.dataset.col);
+            if (isNaN(row) || isNaN(col)) return;
+            modalRow = row;
+            modalCol = col;
+            const cell = getCell(row, col);
+            document.getElementById('noteInput').value = cell.note || '';
+            document.getElementById('modalBackdrop').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modalBackdrop').classList.remove('active');
+            modalRow = -1;
+            modalCol = -1;
+        }
+
+        document.getElementById('modalSaveBtn').addEventListener('click', function() {
+            if (modalRow === -1 || modalCol === -1) return;
+            const note = document.getElementById('noteInput').value.trim();
+            const cell = getCell(modalRow, modalCol);
+            cell.note = note;
+            if (note && cell.value === 0) {
+                fillAbove(modalRow, modalCol);
+                cell.value = 5;
+                cell.time = formatTime(new Date());
+            }
+            autoSave();
+            closeModal();
+            renderAll();
+            showToast('✅ Note saved');
+        });
+
+        document.getElementById('modalClearBtn').addEventListener('click', function() {
+            if (modalRow === -1 || modalCol === -1) return;
+            const cell = getCell(modalRow, modalCol);
+            cell.note = '';
+            autoSave();
+            closeModal();
+            renderAll();
+            showToast('🗑️ Note cleared');
+        });
+
+        document.getElementById('modalCancelBtn').addEventListener('click', closeModal);
+
+        document.getElementById('modalBackdrop').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        document.querySelectorAll('.quick-tags button').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const tag = this.dataset.tag;
+                const input = document.getElementById('noteInput');
+                if (tag === 'custom') {
+                    const custom = prompt('Enter custom tag:');
+                    if (custom) input.value = input.value ? input.value + ', ' + custom : custom;
+                } else {
+                    input.value = input.value ? input.value + ', ' + tag : tag;
+                }
+            });
+        });
+
+        // ============================================================
+        // EXPORT / IMPORT
+        // ============================================================
+
+        function exportCSV() {
+            const days = getWeekDays(weekOffset);
+            let csv = 'Row,';
+            days.forEach(d => {
+                csv += formatDate(d) + ' (' + DAYS[d.getDay()] + '),';
+            });
+            csv += 'Total\n';
+
+            for (let r = 0; r < cellData.length; r++) {
+                const rowLabel = (r * 5) + '-' + ((r + 1) * 5) + 'm';
+                csv += rowLabel + ',';
+                let rowTotal = 0;
+                for (let c = 0; c < 7; c++) {
+                    const cell = getCell(r, c);
+                    const val = cell.value || 0;
+                    const note = cell.note || '';
+                    const time = cell.time || '';
+                    csv += val + (note ? '[' + note + ']' : '') + (time ? '(' + time + ')' : '') + ',';
+                    rowTotal += val;
+                }
+                csv += rowTotal + '\n';
+            }
+
+            csv += 'Total,';
+            let grandTotal = 0;
+            for (let c = 0; c < 7; c++) {
+                const total = getTotalForDay(c);
+                csv += total + ',';
+                grandTotal += total;
+            }
+            csv += grandTotal + '\n';
+
+            // Add balloon data
+            csv += '\n--- BALLOON DATA ---\n';
+            balloonSections.forEach(section => {
+                csv += '\nSection: ' + section.heading + '\n';
+                csv += 'Start Number: ' + (section.startNumber || 1) + '\n';
+                if (section.note) {
+                    csv += 'Note: ' + section.note + '\n';
+                }
+                section.balloons.forEach(b => {
+                    csv += 'Balloon ' + b.number + ',' + (b.completed ? 'Completed' : 'Pending') +
+                        (b.completedTime ? ',' + b.completedTime : '') + '\n';
+                });
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'time_tracker_week_' + formatDate(days[0]) + '.csv';
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('📤 Data exported');
+        }
+
+        function importCSV(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const text = e.target.result;
+                    const lines = text.split('\n').filter(l => l.trim());
+                    if (lines.length < 3) {
+                        showToast('❌ Invalid file format', 'error');
+                        return;
+                    }
+
+                    // Parse main table
+                    const header = lines[0].split(',').filter(h => h.trim());
+                    const dateCols = [];
+                    let rowIndex = 0;
+                    for (let i = 0; i < header.length; i++) {
+                        const h = header[i].trim();
+                        if (h && !h.includes('Row') && !h.includes('Total')) {
+                            dateCols.push(i);
+                        }
+                        if (h.includes('Row')) rowIndex = i;
+                    }
+
+                    // Determine total rows from data
+                    let maxRow = 0;
+                    for (let i = 1; i < lines.length - 1; i++) {
+                        const cols = lines[i].split(',').map(c => c.trim());
+                        const rowNum = parseInt(cols[rowIndex]?.split('-')[0]) / 5 || 0;
+                        if (!isNaN(rowNum) && rowNum >= maxRow) maxRow = rowNum + 1;
+                    }
+                    maxRow = Math.max(maxRow, 40);
+                    if (maxRow > cellData.length) {
+                        for (let r = cellData.length; r < maxRow; r++) {
+                            cellData.push([]);
+                            for (let c = 0; c < 7; c++) {
+                                cellData[r][c] = { value: 0, note: '', time: '' };
+                            }
+                        }
+                        TOTAL_ROWS = cellData.length;
+                    }
+
+                    for (let i = 1; i < lines.length - 1; i++) {
+                        const cols = lines[i].split(',').map(c => c.trim());
+                        const rowNum = parseInt(cols[rowIndex]?.split('-')[0]) / 5 || 0;
+                        if (isNaN(rowNum) || rowNum < 0 || rowNum >= cellData.length) continue;
+
+                        for (let c = 0; c < Math.min(dateCols.length, 7); c++) {
+                            const colIdx = c;
+                            const val = parseInt(cols[dateCols[c]]);
+                            if (!isNaN(val) && val > 0) {
+                                const cell = getCell(rowNum, colIdx);
+                                cell.value = val;
+                                const noteMatch = cols[dateCols[c]].match(/\[(.*?)\]/);
+                                if (noteMatch) cell.note = noteMatch[1];
+                                const timeMatch = cols[dateCols[c]].match(/\((.*?)\)/);
+                                if (timeMatch) cell.time = timeMatch[1];
+                            }
+                        }
+                    }
+
+                    // Parse balloon data if present
+                    const balloonSection = lines.findIndex(l => l.includes('--- BALLOON DATA ---'));
+                    if (balloonSection !== -1) {
+                        let currentSection = null;
+                        for (let i = balloonSection + 1; i < lines.length; i++) {
+                            const line = lines[i].trim();
+                            if (!line) continue;
+                            if (line.startsWith('Section:')) {
+                                const heading = line.replace('Section:', '').trim();
+                                currentSection = { heading, startNumber: 1, balloons: [], note: '' };
+                                balloonSections.push(currentSection);
+                            } else if (line.startsWith('Start Number:')) {
+                                if (currentSection) {
+                                    currentSection.startNumber = parseInt(line.replace('Start Number:', '').trim()) || 1;
+                                }
+                            } else if (line.startsWith('Note:')) {
+                                if (currentSection) {
+                                    currentSection.note = line.replace('Note:', '').trim();
+                                }
+                            } else if (line.includes(',')) {
+                                const parts = line.split(',');
+                                if (parts.length >= 2 && currentSection) {
+                                    const num = parseInt(parts[0].replace('Balloon', '').trim());
+                                    const completed = parts[1].trim() === 'Completed';
+                                    const time = parts.length > 2 ? parts[2].trim() : '';
+                                    if (!isNaN(num)) {
+                                        currentSection.balloons.push({
+                                            id: balloonIdCounter++,
+                                            number: num,
+                                            completed: completed,
+                                            completedTime: time || ''
+                                        });
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    autoSave();
+                    renderAll();
+                    showToast('📥 Data imported');
+                } catch (err) {
+                    showToast('❌ Import failed', 'error');
+                }
+            };
+            reader.readAsText(file);
+            document.getElementById('fileInput').value = '';
+        }
+
+        // ============================================================
+        // CLEAR ALL DATA
+        // ============================================================
+
+        function clearAllData() {
+            if (confirm('⚠️ Delete ALL time tracking data?')) {
+                if (confirm('⚠️ This cannot be undone!')) {
+                    TOTAL_ROWS = 40;
+                    initData();
+                    weekOffset = 0;
+                    rowOffset = 0;
+                    balloonSections = [];
+                    balloonIdCounter = 1;
+                    focusedHeadingId = null;
+                    headingPage = 0;
+                    autoSave();
+                    renderAll();
+                    showToast('🗑️ All data cleared');
+                }
+            }
+        }
+
+        // ============================================================
+        // NAVIGATION EVENTS
+        // ============================================================
+
+        document.getElementById('prevWeekBtn').addEventListener('click', function() {
+            if (focusMode) return;
+            weekOffset--;
+            renderMain();
+        });
+
+        document.getElementById('nextWeekBtn').addEventListener('click', function() {
+            if (focusMode) return;
+            weekOffset++;
+            renderMain();
+        });
+
+        document.getElementById('upRowBtn').addEventListener('click', function() {
+            if (focusMode) return;
+            if (rowOffset > 0) {
+                rowOffset--;
+                renderMain();
+            }
+        });
+
+        document.getElementById('downRowBtn').addEventListener('click', function() {
+            if (focusMode) return;
+            if ((rowOffset + 1) * ROWS_VISIBLE < cellData.length) {
+                rowOffset++;
+                renderMain();
+            }
+        });
+
+        // ============================================================
+        // FOCUS TOGGLES
+        // ============================================================
+
+        function updateFocusButtons() {
+            document.getElementById('focusBtn').classList.toggle('active', focusMode);
+        }
+
+        function renderAll() {
+            if (focusMode) {
+                renderFocus();
+            } else {
+                renderMain();
+            }
+            if (document.getElementById('tab-balloons').classList.contains('active')) {
+                renderBalloons();
+            }
+        }
+
+        document.getElementById('focusBtn').addEventListener('click', function() {
+            focusMode = !focusMode;
+            if (focusMode) {
+                document.getElementById('focusOverlay').classList.add('active');
+                renderFocus();
+                // Show focused heading if any
+                const focused = getFocusedHeading();
+                if (focused) {
+                    showToast(`🔍 Focused on "${focused.heading}"`);
+                } else {
+                    showToast('🔍 Focus mode - no heading focused');
+                }
+            } else {
+                document.getElementById('focusOverlay').classList.remove('active');
+                renderMain();
+            }
+            updateFocusButtons();
+        });
+
+        document.getElementById('closeFocusBtn').addEventListener('click', function() {
+            focusMode = false;
+            document.getElementById('focusOverlay').classList.remove('active');
+            renderMain();
+            updateFocusButtons();
+        });
+
+        // ============================================================
+        // EXPORT / IMPORT EVENTS
+        // ============================================================
+
+        document.getElementById('exportBtn').addEventListener('click', exportCSV);
+        document.getElementById('importBtn').addEventListener('click', function() {
+            document.getElementById('fileInput').click();
+        });
+
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            if (this.files && this.files.length > 0) {
+                importCSV(this.files[0]);
+            }
+        });
+
+        document.getElementById('clearBtn').addEventListener('click', clearAllData);
+
+        // ============================================================
+        // KEYBOARD SHORTCUTS
+        // ============================================================
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                if (focusMode) {
+                    focusMode = false;
+                    document.getElementById('focusOverlay').classList.remove('active');
+                    renderMain();
+                    updateFocusButtons();
+                }
+                if (document.getElementById('modalBackdrop').classList.contains('active')) {
+                    closeModal();
+                }
+                if (document.getElementById('balloonModal').classList.contains('active')) {
+                    document.getElementById('balloonModal').classList.remove('active');
+                }
+                if (document.getElementById('sectionNoteModal').classList.contains('active')) {
+                    document.getElementById('sectionNoteModal').classList.remove('active');
+                    currentSectionNoteId = null;
+                }
+            }
+            if (e.ctrlKey && e.key === 'e') {
+                e.preventDefault();
+                document.getElementById('exportBtn').click();
+            }
+            if (e.ctrlKey && e.key === 'i') {
+                e.preventDefault();
+                document.getElementById('importBtn').click();
+            }
+        });
+
+        // ============================================================
+        // AUTOSAVE INTERVAL
+        // ============================================================
+
+        setInterval(autoSave, 10000);
+
+        // ============================================================
+        // INITIALIZATION
+        // ============================================================
+
+        loadState();
+
+        // If no balloon sections, add a default one
+        if (balloonSections.length === 0) {
+            const defaultSection = {
+                id: Date.now(),
+                heading: 'My Progress',
+                startNumber: 1,
+                balloons: [],
+                note: ''
+            };
+            for (let i = 0; i < 5; i++) {
+                defaultSection.balloons.push({
+                    id: balloonIdCounter++,
+                    number: i + 1,
+                    completed: false,
+                    completedTime: ''
+                });
+            }
+            balloonSections.push(defaultSection);
+            autoSave();
+        }
+
+        // Ensure focus heading exists if saved
+        if (focusedHeadingId) {
+            const exists = balloonSections.some(s => s.id === focusedHeadingId);
+            if (!exists) focusedHeadingId = null;
+        }
+
+        // Go to page containing focused heading
+        if (focusedHeadingId) {
+            const idx = balloonSections.findIndex(s => s.id === focusedHeadingId);
+            if (idx !== -1) {
+                headingPage = Math.floor(idx / HEADINGS_PER_PAGE);
+            }
+        }
+
+        renderMain();
+        renderBalloons();
+        updateFocusHeadingDisplay();
+        showToast('📊 7-Day Time Tracker + Balloons ready');
+
+        console.log('📊 7-Day Time Tracker + Balloons loaded');
+        console.log('💡 Tap: 0 → 5m → 20m → 0');
+        console.log('💡 Long press: add note');
+        console.log('🎈 Balloons: click to mark complete');
+        console.log('⭐ Click ☆ on heading to focus');
+        console.log('📝 Click 📝 on heading to add a section note');
+        console.log('💾 Data auto-saves in real-time');
+    </script>
+</body>
+</html>
